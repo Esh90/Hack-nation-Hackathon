@@ -1,9 +1,19 @@
+import KnowledgeGraph from './KnowledgeGraph';
+import { GraphNode, GraphEdge } from '@/lib/synthetic-data';
+
 interface KnowledgeGraphPanelProps {
-  nodeCount: number;
-  connectionCount: number;
+  nodeCount?: number;
+  connectionCount?: number;
+  nodes?: GraphNode[];
+  edges?: GraphEdge[];
 }
 
-export function KnowledgeGraphPanel({ nodeCount, connectionCount }: KnowledgeGraphPanelProps) {
+export function KnowledgeGraphPanel({ 
+  nodeCount, 
+  connectionCount,
+  nodes,
+  edges 
+}: KnowledgeGraphPanelProps) {
   const legendItems = [
     { color: 'bg-success', label: 'Active' },
     { color: 'bg-warning', label: 'Aging' },
@@ -20,7 +30,7 @@ export function KnowledgeGraphPanel({ nodeCount, connectionCount }: KnowledgeGra
           <p className="text-[11px] text-text-muted">Live organizational structure</p>
         </div>
         <span className="font-mono text-[10px] text-text-tertiary">
-          {nodeCount} nodes • {connectionCount.toLocaleString()} connections
+          {nodeCount || nodes?.length || 0} nodes • {connectionCount || edges?.length || 0} connections
         </span>
       </div>
 
@@ -31,15 +41,18 @@ export function KnowledgeGraphPanel({ nodeCount, connectionCount }: KnowledgeGra
           background: 'radial-gradient(ellipse at center, hsl(0 0% 6%) 0%, hsl(0 0% 3%) 100%)'
         }}
       >
-        {/* Placeholder */}
-        <div className="absolute inset-0 flex flex-col items-center justify-center">
-          <span className="text-text-hint text-sm">Graph initializing...</span>
-          <div className="mt-4 w-8 h-8 rounded-full bg-text-hint/20 animate-fade-pulse" />
-        </div>
+        {nodes && edges ? (
+          <KnowledgeGraph nodes={nodes} edges={edges} />
+        ) : (
+          <div className="absolute inset-0 flex flex-col items-center justify-center">
+            <span className="text-text-hint text-sm">Graph initializing...</span>
+            <div className="mt-4 w-8 h-8 rounded-full bg-text-hint/20 animate-fade-pulse" />
+          </div>
+        )}
 
         {/* Legend */}
         <div 
-          className="absolute bottom-4 left-4 w-[200px] p-3 backdrop-blur-panel border border-border"
+          className="absolute bottom-4 left-4 w-[200px] p-3 backdrop-blur-panel border border-border z-10"
           style={{ background: 'hsla(0, 0%, 6%, 0.95)' }}
         >
           <h3 className="text-[10px] uppercase tracking-widest text-text-tertiary mb-3">

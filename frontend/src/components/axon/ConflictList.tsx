@@ -1,19 +1,19 @@
-import { AlertTriangle } from "lucide-react";
-
-export interface Conflict {
-  id: string;
-  team1: string;
-  team2: string;
-  topic: string;
-  severity: 'Low' | 'Medium' | 'High';
-  timeAgo: string;
-}
+import { motion } from 'framer-motion';
+import { AlertTriangle } from 'lucide-react';
+import { Conflict } from '@/lib/synthetic-data';
+import { formatDistanceToNow } from 'date-fns';
 
 interface ConflictListProps {
   conflicts: Conflict[];
 }
 
 export function ConflictList({ conflicts }: ConflictListProps) {
+  const severityColors = {
+    low: '#6b7280',
+    medium: '#f59e0b',
+    high: '#ef4444'
+  };
+
   return (
     <div className="h-full flex flex-col panel">
       {/* Header */}
@@ -29,34 +29,49 @@ export function ConflictList({ conflicts }: ConflictListProps) {
 
       {/* Conflict Cards */}
       <div className="flex-1 overflow-auto p-3 space-y-2">
-        {conflicts.map((conflict) => (
-          <div 
+        {conflicts.map((conflict, index) => (
+          <motion.div
             key={conflict.id}
-            className="p-3 border-l border-warning transition-default hover:bg-secondary/50"
-            style={{ background: 'hsl(0 0% 5%)' }}
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: index * 0.1 }}
+            className="p-3 border-l-2 transition-default hover:bg-secondary/50 cursor-pointer"
+            style={{ 
+              background: 'hsl(0 0% 5%)',
+              borderLeftColor: severityColors[conflict.severity]
+            }}
           >
             {/* Teams */}
-            <div className="flex items-center gap-2 text-xs">
-              <span className="text-text-secondary font-medium">{conflict.team1}</span>
-              <span className="text-text-hint">vs</span>
-              <span className="text-text-secondary font-medium">{conflict.team2}</span>
+            <div className="flex items-center justify-between mb-2">
+              <div className="flex items-center gap-3">
+                <span className="text-xs text-text-secondary font-medium">{conflict.team1}</span>
+                <span className="text-[10px] text-text-hint">vs</span>
+                <span className="text-xs text-text-secondary font-medium">{conflict.team2}</span>
+              </div>
+              <AlertTriangle 
+                className="w-3 h-3" 
+                style={{ color: severityColors[conflict.severity] }}
+              />
             </div>
 
             {/* Topic */}
-            <p className="text-[11px] text-text-tertiary mt-1.5">
+            <p className="text-[11px] text-text-tertiary mb-2">
               {conflict.topic}
             </p>
 
             {/* Footer */}
-            <div className="flex items-center justify-between mt-2">
-              <span className="text-[10px] text-warning">
+            <div className="flex items-center justify-between">
+              <span 
+                className="text-[10px] font-medium uppercase"
+                style={{ color: severityColors[conflict.severity] }}
+              >
                 Severity: {conflict.severity}
               </span>
               <span className="text-[10px] text-text-muted">
-                {conflict.timeAgo}
+                {formatDistanceToNow(conflict.timestamp, { addSuffix: true })}
               </span>
             </div>
-          </div>
+          </motion.div>
         ))}
       </div>
     </div>
