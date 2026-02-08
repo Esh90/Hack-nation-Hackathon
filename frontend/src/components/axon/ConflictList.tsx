@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ChevronDown, ChevronRight } from "lucide-react";
+import { ChevronDown, ChevronRight, AlertTriangle, Send, Bell } from "lucide-react";
+import { Link } from "react-router-dom";
 import { useTheme } from "next-themes";
 import {
   DropdownMenu,
@@ -9,6 +10,8 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import type { Conflict } from "@/lib/api";
+import type { CriticContradiction } from "@/lib/api";
+import { analyzeWithCritic } from "@/lib/api";
 import { formatDistanceToNow } from "date-fns";
 
 type StatusFilter = "all" | "ongoing" | "resolved";
@@ -22,6 +25,13 @@ export function ConflictList({ conflicts }: ConflictListProps) {
   const isDark = theme === 'dark';
   const [statusFilter, setStatusFilter] = useState<StatusFilter>("all");
   const [expandedId, setExpandedId] = useState<string | null>(null);
+  const [criticOpen, setCriticOpen] = useState(false);
+  const [criticInput, setCriticInput] = useState("");
+  const [criticLoading, setCriticLoading] = useState(false);
+  const [criticResult, setCriticResult] = useState<{
+    contradictions: CriticContradiction[];
+    recommendation: string;
+  } | null>(null);
 
   const severityColors = {
     low: "#6b7280",
@@ -53,8 +63,97 @@ export function ConflictList({ conflicts }: ConflictListProps) {
         ? `Active (${activeCount})`
         : `Resolved (${resolvedCount})`;
 
+  const runCritic = async () => {
+    const text = criticInput.trim();
+    if (text.length < 5) return;
+    setCriticLoading(true);
+    setCriticResult(null);
+    try {
+      const res = await analyzeWithCritic(text);
+      setCriticResult({
+        contradictions: res.contradictions ?? [],
+        recommendation: res.recommendation ?? "",
+      });
+    } catch {
+      setCriticResult({ contradictions: [], recommendation: "Analysis failed." });
+    } finally {
+      setCriticLoading(false);
+    }
+  };
+
   return (
     <div className="h-full flex flex-col panel min-h-0">
+      {/* Deconfliction: Check new info with Critic */}
+      <div className="px-2 pt-1.5 pb-1 border-b border-border flex items-center justify-between gap-2 flex-wrap">
+        <Link
+          to="/critic"
+          className="text-[10px] text-info hover:text-primary transition-default flex items-center gap-1"
+        >
+          <AlertTriangle className="w-3.5 h-3.5" />
+          Check new info with Critic
+        </Link>
+        <button
+          type="button"
+          onClick={() => setCriticOpen(!criticOpen)}
+          className="text-[10px] text-text-tertiary hover:text-text-secondary"
+        >
+          {criticOpen ? "Hide quick check" : "Quick check"}
+        </button>
+      </div>
+      {criticOpen && (
+        <div className="p-2 border-b border-border space-y-2 bg-background/50">
+          <textarea
+            value={criticInput}
+            onChange={(e) => setCriticInput(e.target.value)}
+            placeholder="Paste meeting note or new info..."
+            className="w-full min-h-[60px] px-2 py-1.5 text-[11px] bg-background border border-border rounded text-foreground placeholder:text-text-muted resize-y"
+            disabled={criticLoading}
+          />
+          <button
+            type="button"
+            onClick={runCritic}
+            disabled={criticLoading || criticInput.trim().length < 5}
+            className="flex items-center gap-1.5 px-2 py-1 text-[11px] bg-info/20 text-info border border-info/50 rounded hover:bg-info/30 disabled:opacity-50"
+          >
+            <Send className="w-3.5 h-3.5" />
+            {criticLoading ? "Checking…" : "Check with Critic"}
+          </button>
+          {criticResult && (
+            <div className="space-y-2">
+              {criticResult.contradictions.length > 0 ? (
+                <>
+                  <p className="text-[10px] font-medium text-warning">Contradictions</p>
+                  {criticResult.contradictions.map((c, i) => (
+                    <div
+                      key={i}
+                      className="p-2 rounded border border-warning/30 bg-warning/5 text-[10px] space-y-1"
+                    >
+                      <p className="text-text-secondary">{c.description ?? `${c.source_new} vs ${c.source_kg}`}</p>
+                      {(c.parties_to_notify?.length ?? 0) > 0 && (
+                        <div className="flex items-center gap-1.5 flex-wrap">
+                          <Bell className="w-3 h-3 text-info shrink-0" />
+                          <span className="text-text-muted">Notify: </span>
+                          <span className="text-info">{c.parties_to_notify!.join(", ")}</span>
+                          <button
+                            type="button"
+                            className="ml-1 px-1.5 py-0.5 rounded border border-info/50 text-info hover:bg-info/20 text-[9px]"
+                          >
+                            Notify
+                          </button>
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                  <p className="text-[10px] text-text-muted">{criticResult.recommendation}</p>
+                </>
+              ) : (
+                <p className="text-[10px] text-success">No contradictions found.</p>
+              )}
+            </div>
+          )}
+        </div>
+      )}
+
       {/* Header with dropdown */}
       <div className="panel-header">
         <div>

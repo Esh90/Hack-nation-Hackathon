@@ -235,6 +235,11 @@
     50% { opacity: 0.6; }
   }
 
+  @keyframes pulse-subtle {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.25); }
+    50% { box-shadow: 0 0 0 6px rgba(239, 68, 68, 0); }
+  }
+
   .animate-pulse-slow {
     animation: pulse-slow 2s ease-in-out infinite;
   }
@@ -249,6 +254,10 @@
 
   .animate-fade-pulse {
     animation: fade-pulse 2s ease-in-out infinite;
+  }
+
+  .animate-pulse-subtle {
+    animation: pulse-subtle 2s ease-in-out infinite;
   }
 
   .typing-dot {
@@ -298,6 +307,21 @@
   .backdrop-blur-strong {
     -webkit-backdrop-filter: blur(30px);
     backdrop-filter: blur(30px);
+  }
+
+  /* React Flow: ensure edge lines are visible (connect nodes with colored lines) */
+  .react-flow__edge-path {
+    stroke-width: 3px;
+    opacity: 1;
+  }
+
+  /* Information flow animation: pulse on edges connected to focal node (e.g. "What changed today") */
+  .react-flow__edge.flow-edge .react-flow__edge-path {
+    animation: edgeFlow 2s ease-in-out infinite;
+  }
+  @keyframes edgeFlow {
+    0%, 100% { opacity: 1; filter: drop-shadow(0 0 4px currentColor); }
+    50% { opacity: 0.85; filter: drop-shadow(0 0 8px currentColor); }
   }
 
   /* React Flow: black theme for minimap and controls (no gray/white) */

@@ -187,6 +187,36 @@ export async function fetchStats() {
   return response.json();
 }
 
+/** What changed today: for founder moment and visual delta */
+export interface ChangesToday {
+  narrative_summary: string;
+  recent_decisions: Array<{ id?: string; title?: string; change?: string; timestamp?: string }>;
+  ongoing_conflicts: Conflict[];
+  recent_conflicts: Conflict[];
+  node_ids_affected: string[];
+  edge_ids_affected: string[];
+}
+
+export async function fetchChangesToday(): Promise<ChangesToday> {
+  const response = await fetch(`${API_BASE}/api/changes/today`);
+  if (!response.ok) throw new Error("Failed to fetch changes today");
+  return response.json();
+}
+
+/** Daily brief for "What do I need to know?" */
+export interface DailyBrief {
+  summary: string;
+  conflicts_summary: string[];
+  decisions_summary: string[];
+  talk_to: string[];
+}
+
+export async function fetchBrief(): Promise<DailyBrief> {
+  const response = await fetch(`${API_BASE}/api/brief`);
+  if (!response.ok) throw new Error("Failed to fetch brief");
+  return response.json();
+}
+
 // --- Data source (CSV upload / URL) ---
 export interface DataSourceInfo {
   source: "synthetic" | "csv" | "url";
@@ -392,5 +422,77 @@ export async function analyzeWithCritic(text: string): Promise<CriticAnalysisRes
     throw new Error(err.detail || "Failed to analyze");
   }
 
+  return response.json();
+}
+
+// --- Admin: Live Knowledge Graph Builder ---
+
+export interface AdminAuthResponse {
+  authenticated: boolean;
+  session_id: string;
+}
+
+export interface AdminChatResponse {
+  detected: string;
+  nodes_to_add: number;
+  edges_to_add: number;
+  preview: { nodes: unknown[]; edges: unknown[] };
+  entities: unknown;
+  requires_confirmation: boolean;
+  /** Query response: answer from graph (no confirm) */
+  is_query?: boolean;
+  answer?: string;
+  /** Command applied (e.g. conflict resolved); graph was updated */
+  command_applied?: boolean;
+  message?: string;
+}
+
+export interface AdminConfirmResponse {
+  success: boolean;
+  nodes_added: number;
+  edges_added: number;
+  message: string;
+}
+
+export async function adminAuth(password: string): Promise<AdminAuthResponse> {
+  const response = await fetch(`${API_BASE || ""}/api/admin/auth`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ password }),
+  });
+  if (!response.ok) {
+    const err = await response.json().catch(() => ({}));
+    throw new Error(err.detail || "Invalid password");
+  }
+  return response.json();
+}
+
+export async function adminChat(message: string, sessionId: string): Promise<AdminChatResponse> {
+  const response = await fetch(`${API_BASE || ""}/api/admin/chat`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ message, session_id: sessionId }),
+  });
+  if (!response.ok) {
+    const err = await response.json().catch(() => ({}));
+    throw new Error(err.detail || "Failed to process message");
+  }
+  return response.json();
+}
+
+export async function adminConfirmGraph(
+  nodes: unknown[],
+  edges: unknown[],
+  sessionId: string
+): Promise<AdminConfirmResponse> {
+  const response = await fetch(`${API_BASE || ""}/api/admin/confirm`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ nodes, edges, session_id: sessionId }),
+  });
+  if (!response.ok) {
+    const err = await response.json().catch(() => ({}));
+    throw new Error(err.detail || "Failed to update graph");
+  }
   return response.json();
 }

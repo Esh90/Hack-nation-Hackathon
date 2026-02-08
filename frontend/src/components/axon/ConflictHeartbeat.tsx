@@ -11,9 +11,9 @@ export default function ConflictHeartbeat({ healthScore: propScore }: ConflictHe
   const heartbeatData = generateHeartbeatData(healthScore);
 
   const getHealthColor = (score: number) => {
-    if (score >= 80) return '#10b981';
-    if (score >= 60) return '#f59e0b';
-    return '#ef4444';
+    if (score >= 80) return '#10b981';  // green
+    if (score >= 50) return '#f59e0b';  // amber
+    return '#ef4444';                   // red only when quite low
   };
 
   const healthColor = getHealthColor(healthScore);

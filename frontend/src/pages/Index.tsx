@@ -1,4 +1,5 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { TopBar } from "@/components/axon/TopBar";
 import { KnowledgeGraphPanel } from "@/components/axon/KnowledgeGraphPanel";
@@ -6,6 +7,8 @@ import { HealthDisplay } from "@/components/axon/HealthDisplay";
 import { ConflictList } from "@/components/axon/ConflictList";
 import { DecisionStream } from "@/components/axon/DecisionStream";
 import { ShadowCouncil } from "@/components/axon/ShadowCouncil";
+import { AdminChat } from "@/components/axon/AdminChat";
+import { DemoOverlay } from "@/components/axon/DemoOverlay";
 import {
   ResizablePanelGroup,
   ResizablePanel,
@@ -16,10 +19,25 @@ import {
   fetchConflicts,
   fetchDecisions,
   fetchHealthScore,
+  fetchChangesToday,
+  fetchBrief,
 } from "@/lib/api";
-import type { GraphNode, GraphEdge, Conflict, Decision } from "@/lib/api";
+import type { GraphNode, GraphEdge, Conflict, Decision, ChangesToday, DailyBrief } from "@/lib/api";
+import { Sparkles, FileText, AlertTriangle, MessageCircle, Play } from "lucide-react";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 
 export default function Index() {
+  const navigate = useNavigate();
   const [graphData, setGraphData] = useState<{
     nodes: GraphNode[];
     edges: GraphEdge[];
@@ -30,19 +48,26 @@ export default function Index() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [refreshTrigger, setRefreshTrigger] = useState(0);
+  const [isAdminChatOpen, setIsAdminChatOpen] = useState(false);
+  const [changesToday, setChangesToday] = useState<ChangesToday | null>(null);
+  const [highlightedNodeIds, setHighlightedNodeIds] = useState<string[]>([]);
+  const [loadingChanges, setLoadingChanges] = useState(false);
+  const [briefOpen, setBriefOpen] = useState(false);
+  const [briefData, setBriefData] = useState<DailyBrief | null>(null);
+  const [loadingBrief, setLoadingBrief] = useState(false);
+  const [demoOpen, setDemoOpen] = useState(false);
 
-  useEffect(() => {
-    async function load() {
-      setLoading(true);
-      setError(null);
-      try {
-        const [graphRes, conflictsRes, decisionsRes, healthRes] =
-          await Promise.all([
-            fetchGraphData(),
-            fetchConflicts(),
-            fetchDecisions(),
-            fetchHealthScore(),
-          ]);
+  const loadData = useCallback(async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const [graphRes, conflictsRes, decisionsRes, healthRes] =
+        await Promise.all([
+          fetchGraphData(),
+          fetchConflicts(),
+          fetchDecisions(),
+          fetchHealthScore(),
+        ]);
         setGraphData(graphRes);
         setConflicts(conflictsRes);
         setDecisions(decisionsRes);
@@ -56,9 +81,67 @@ export default function Index() {
       } finally {
         setLoading(false);
       }
+  }, []);
+
+  useEffect(() => {
+    loadData();
+  }, [loadData]);
+
+  /** Refetch all dashboard data (graph, conflicts, decisions, health) without full-page loading. */
+  const refreshDashboard = useCallback(async () => {
+    try {
+      const [graphRes, conflictsRes, decisionsRes, healthRes] =
+        await Promise.all([
+          fetchGraphData(),
+          fetchConflicts(),
+          fetchDecisions(),
+          fetchHealthScore(),
+        ]);
+      setGraphData(graphRes);
+      setConflicts(conflictsRes);
+      setDecisions(decisionsRes);
+      setHealthScore(healthRes.score);
+      setError(null);
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Failed to refresh");
     }
-    load();
-  }, [refreshTrigger]);
+  }, []);
+
+  const handleAdminGraphUpdated = useCallback(async () => {
+    await refreshDashboard();
+  }, [refreshDashboard]);
+
+  const loadWhatChangedToday = useCallback(async () => {
+    setLoadingChanges(true);
+    try {
+      const data = await fetchChangesToday();
+      setChangesToday(data);
+      setHighlightedNodeIds(data.node_ids_affected ?? []);
+    } catch {
+      setChangesToday(null);
+      setHighlightedNodeIds([]);
+    } finally {
+      setLoadingChanges(false);
+    }
+  }, []);
+
+  const clearChangesHighlight = useCallback(() => {
+    setChangesToday(null);
+    setHighlightedNodeIds([]);
+  }, []);
+
+  const loadBrief = useCallback(async () => {
+    setLoadingBrief(true);
+    try {
+      const data = await fetchBrief();
+      setBriefData(data);
+      setBriefOpen(true);
+    } catch {
+      setBriefData(null);
+    } finally {
+      setLoadingBrief(false);
+    }
+  }, []);
 
   const hasConflicts = conflicts.length > 0;
   const isMobile = useIsMobile();
@@ -70,7 +153,59 @@ export default function Index() {
         healthScore={healthScore}
         hasConflicts={hasConflicts}
         onDataUpdated={() => setRefreshTrigger((t) => t + 1)}
+        onWhatChangedToday={loadWhatChangedToday}
+        loadingChanges={loadingChanges}
+        onMyBrief={loadBrief}
+        loadingBrief={loadingBrief}
       />
+
+      <Dialog open={briefOpen} onOpenChange={setBriefOpen}>
+        <DialogContent className="max-w-md bg-background border-border">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <FileText className="w-4 h-4 text-primary" />
+              My brief
+            </DialogTitle>
+          </DialogHeader>
+          {briefData && (
+            <div className="space-y-4 text-sm">
+              <p className="text-text-secondary leading-relaxed">{briefData.summary}</p>
+              {briefData.conflicts_summary.length > 0 && (
+                <div>
+                  <div className="flex items-center gap-1.5 text-warning font-medium mb-1">
+                    <AlertTriangle className="w-4 h-4" />
+                    Conflicts
+                  </div>
+                  <ul className="list-disc list-inside text-[11px] text-text-muted space-y-0.5">
+                    {briefData.conflicts_summary.map((c, i) => (
+                      <li key={i}>{c}</li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+              {briefData.decisions_summary.length > 0 && (
+                <div>
+                  <div className="font-medium text-text-secondary mb-1">Recent decisions</div>
+                  <ul className="list-disc list-inside text-[11px] text-text-muted space-y-0.5">
+                    {briefData.decisions_summary.map((d, i) => (
+                      <li key={i}>{d}</li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+              {briefData.talk_to.length > 0 && (
+                <div>
+                  <div className="flex items-center gap-1.5 text-info font-medium mb-1">
+                    <MessageCircle className="w-4 h-4" />
+                    Talk to
+                  </div>
+                  <p className="text-[11px] text-text-muted">{briefData.talk_to.join(", ")}</p>
+                </div>
+              )}
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
 
       {/* Main Content - Scrollable */}
       <div className="flex-1 relative pb-14 min-h-0 overflow-auto scrollbar-thin">
@@ -101,6 +236,10 @@ export default function Index() {
                   edges={graphData?.edges ?? []}
                   nodeCount={graphData?.nodes.length ?? 0}
                   connectionCount={graphData?.edges.length ?? 0}
+                  highlightedNodeIds={highlightedNodeIds}
+                  changesToday={changesToday}
+                  onClearChanges={clearChangesHighlight}
+                  onPersonClick={(id) => navigate(`/context/${id}`)}
                 />
               </div>
             </ResizablePanel>
@@ -142,6 +281,7 @@ export default function Index() {
                 <DecisionStream
                   decisions={decisions}
                   nodes={graphData?.nodes ?? []}
+                  edges={graphData?.edges ?? []}
                   conflicts={conflicts}
                 />
               </div>
@@ -152,6 +292,48 @@ export default function Index() {
 
       {/* Shadow Council - Fixed at bottom */}
       <ShadowCouncil />
+
+      {/* Demo - floating button */}
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <button
+            type="button"
+            onClick={() => setDemoOpen(true)}
+            className="fixed bottom-[4.25rem] right-24 w-12 h-12 bg-primary/90 hover:bg-primary rounded-full flex items-center justify-center shadow-lg transition-all z-30 text-primary-foreground"
+            aria-label="Start demo"
+          >
+            <Play className="w-5 h-5" />
+          </button>
+        </TooltipTrigger>
+        <TooltipContent side="left" className="font-medium">
+          Guided demo (2 min)
+        </TooltipContent>
+      </Tooltip>
+
+      {/* Admin: Live Knowledge Builder - floating button */}
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <button
+            type="button"
+            onClick={() => setIsAdminChatOpen(true)}
+            className="fixed bottom-[4.25rem] right-6 w-14 h-14 bg-emerald-600 hover:bg-emerald-500 rounded-full flex items-center justify-center shadow-lg transition-all z-30 text-white hover:scale-105 hover:shadow-emerald-500/25 focus:outline-none focus:ring-2 focus:ring-emerald-400 focus:ring-offset-2 focus:ring-offset-background"
+            aria-label="Chat with Admin"
+          >
+            <Sparkles className="w-6 h-6" />
+          </button>
+        </TooltipTrigger>
+        <TooltipContent side="left" className="font-medium">
+          Chat with Admin · Live Knowledge Builder
+        </TooltipContent>
+      </Tooltip>
+
+      <DemoOverlay open={demoOpen} onClose={() => setDemoOpen(false)} />
+
+      <AdminChat
+        isOpen={isAdminChatOpen}
+        onClose={() => setIsAdminChatOpen(false)}
+        onGraphUpdated={handleAdminGraphUpdated}
+      />
     </div>
   );
 }

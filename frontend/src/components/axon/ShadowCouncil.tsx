@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect, useCallback } from "react";
-import { Mic, MicOff, Send, Volume2, VolumeX, X, Square } from "lucide-react";
+import { Mic, MicOff, Send, Volume2, VolumeX, X, Square, ChevronDown, ChevronRight, GitBranch } from "lucide-react";
 import {
   queryCouncil,
   getSuggestions,
@@ -7,7 +7,14 @@ import {
   playAudioSfx,
 } from "@/lib/api";
 import { stopAllAudio, registerAudio } from "@/lib/audioController";
+import { useSpeechRecognition } from "@/hooks/useSpeechRecognition";
 import type { CouncilResponse } from "@/lib/api";
+
+export interface ReasoningStep {
+  agent: string;
+  output: string;
+  timestamp?: string;
+}
 
 interface Agent {
   id: string;
@@ -40,6 +47,7 @@ const defaultAgents: Agent[] = [
 ];
 
 const FALLBACK_QUESTIONS = [
+  "What changed today?",
   "What are the biggest risks to our Q1 product launch?",
   "What dependencies could block our roadmap?",
   "Where do we have alignment gaps?",
@@ -51,18 +59,54 @@ const roleColors = {
     dot: "bg-success",
     avatar: "bg-success/20 text-success",
     bubble: "bg-[#0f1f0f] border-[#1a3a1a]",
+    heading: "text-success",
   },
   chief: {
     dot: "bg-info",
     avatar: "bg-info/20 text-info",
     bubble: "bg-secondary border-border",
+    heading: "text-info",
   },
   skeptic: {
     dot: "bg-warning",
     avatar: "bg-warning/20 text-warning",
     bubble: "bg-[#1f1709] border-[#3a2a0a]",
+    heading: "text-warning",
   },
 };
+
+/** Format long LLM text into readable blocks: paragraphs and lists */
+function formatAgentMessage(text: string) {
+  if (!text?.trim()) return null;
+  const blocks = text.split(/\n\n+/).filter((b) => b.trim());
+  return blocks.map((block, i) => {
+    const lines = block.split(/\n/).map((l) => l.trim()).filter(Boolean);
+    const isList =
+      lines.length > 1 &&
+      lines.every(
+        (l) =>
+          /^[-•*]\s/.test(l) ||
+          /^\d+[.)]\s/.test(l) ||
+          l.startsWith("·")
+      );
+    if (isList) {
+      return (
+        <ul key={i} className="list-disc list-inside space-y-1 my-1.5 text-[11px] text-text-secondary">
+          {lines.map((line, j) => (
+            <li key={j} className="leading-relaxed">
+              {line.replace(/^[-•*·]\s/, "").replace(/^\d+[.)]\s/, "")}
+            </li>
+          ))}
+        </ul>
+      );
+    }
+    return (
+      <p key={i} className="my-1.5 text-[11px] text-text-secondary leading-relaxed whitespace-pre-wrap">
+        {block.trim()}
+      </p>
+    );
+  });
+}
 
 function responseToAgents(res: CouncilResponse): Agent[] {
   return [
@@ -70,6 +114,26 @@ function responseToAgents(res: CouncilResponse): Agent[] {
     { id: "2", name: "Chief of Staff", role: "chief", message: res.final_answer },
     { id: "3", name: "Skeptic", role: "skeptic", message: res.skeptic_view },
   ];
+}
+
+function parseReasoningTrace(trace: unknown[]): ReasoningStep[] {
+  if (!Array.isArray(trace)) return [];
+  return trace
+    .filter((t): t is { agent?: string; output?: string; timestamp?: string } => t != null && typeof t === "object")
+    .map((t) => ({
+      agent: String(t.agent ?? "Agent"),
+      output: String(t.output ?? ""),
+      timestamp: t.timestamp ? String(t.timestamp) : undefined,
+    }))
+    .filter((t) => t.output.trim());
+}
+
+/** One-line summary for reasoning step (first sentence or first ~80 chars) */
+function stepSummary(output: string, maxLen = 80): string {
+  const trimmed = output.trim();
+  const firstLine = trimmed.split(/\n/)[0]?.trim() ?? trimmed;
+  if (firstLine.length <= maxLen) return firstLine;
+  return firstLine.slice(0, maxLen).trim() + "…";
 }
 
 export function ShadowCouncil() {
@@ -81,8 +145,15 @@ export function ShadowCouncil() {
   const [voiceOn, setVoiceOn] = useState(true);
   const [isVoicePlaying, setIsVoicePlaying] = useState(false);
   const [councilQuestions, setCouncilQuestions] = useState<string[]>(FALLBACK_QUESTIONS);
+  const [reasoningTrace, setReasoningTrace] = useState<ReasoningStep[]>([]);
+  const [reasoningOpen, setReasoningOpen] = useState(true);
   const abortRef = useRef(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
+
+  const onSpeechResult = useCallback((transcript: string) => {
+    setQuestion((q) => (q ? `${q} ${transcript}` : transcript));
+  }, []);
+  const { isListening: isMicListening, startListening: startMic, stopListening: stopMic, supported: micSupported } = useSpeechRecognition(onSpeechResult);
 
   const handleStopVoice = useCallback(() => {
     stopAllAudio();
@@ -121,6 +192,7 @@ export function ShadowCouncil() {
       const result = await queryCouncil(q);
       if (abortRef.current) return;
       setAgents(responseToAgents(result));
+      setReasoningTrace(parseReasoningTrace(result.reasoning_trace ?? []));
 
       if (voiceOn && result.final_answer) {
         stopAllAudio();
@@ -141,6 +213,7 @@ export function ShadowCouncil() {
       if (abortRef.current) return;
       setError(e instanceof Error ? e.message : "Failed to query council");
       setAgents(defaultAgents);
+      setReasoningTrace([]);
     } finally {
       setLoading(false);
     }
@@ -217,6 +290,18 @@ export function ShadowCouncil() {
               className="flex-1 px-3 py-2 text-sm bg-background border border-border rounded text-foreground placeholder:text-text-muted"
               disabled={loading}
             />
+            {micSupported && (
+              <button
+                type="button"
+                onClick={isMicListening ? stopMic : startMic}
+                className={`p-2 rounded border transition-default ${
+                  isMicListening ? "border-error/50 bg-error/10 text-error" : "border-border text-text-muted hover:text-text-secondary"
+                }`}
+                title={isMicListening ? "Stop listening" : "Voice input"}
+              >
+                <Mic className="w-4 h-4" />
+              </button>
+            )}
             <button
               onClick={() => {
                 playAudioSfx("confirm");
@@ -253,20 +338,70 @@ export function ShadowCouncil() {
             </div>
           </div>
 
-          {/* Agent panels - scrollable */}
+          {/* Reasoning trace: Question → Optimist → Skeptic → Chief */}
+          {reasoningTrace.length > 0 && (
+            <div className="shrink-0 border-b border-border">
+              <button
+                type="button"
+                onClick={() => setReasoningOpen(!reasoningOpen)}
+                className="w-full px-3 py-2 flex items-center gap-2 text-left bg-secondary/30 hover:bg-secondary/50 transition-default"
+              >
+                <GitBranch className="w-4 h-4 text-info shrink-0" />
+                <span className="text-xs font-medium text-foreground">Agentic reasoning flow</span>
+                {reasoningOpen ? (
+                  <ChevronDown className="w-4 h-4 text-text-muted ml-auto" />
+                ) : (
+                  <ChevronRight className="w-4 h-4 text-text-muted ml-auto" />
+                )}
+              </button>
+              {reasoningOpen && (
+                <div className="px-3 pb-2 pt-0 space-y-1.5">
+                  <div className="flex items-center gap-2 text-[10px] text-text-muted">
+                    <span className="font-medium text-text-secondary">Question</span>
+                    <span className="flex-1 truncate">{question || "—"}</span>
+                  </div>
+                  {reasoningTrace.map((step, i) => (
+                    <div key={i} className="flex gap-2">
+                      <div className="flex flex-col items-center shrink-0">
+                        <div
+                          className={`w-2 h-2 rounded-full ${
+                            step.agent === "Optimist"
+                              ? "bg-success"
+                              : step.agent === "Skeptic"
+                                ? "bg-warning"
+                                : "bg-info"
+                          }`}
+                        />
+                        {i < reasoningTrace.length - 1 && (
+                          <div className="w-px flex-1 min-h-[12px] bg-border my-0.5" />
+                        )}
+                      </div>
+                      <div className="flex-1 min-w-0 pb-1">
+                        <span className="text-[10px] font-medium text-text-secondary">{step.agent}</span>
+                        <p className="text-[10px] text-text-muted leading-snug mt-0.5">
+                          {stepSummary(step.output)}
+                        </p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* Agent panels - scrollable, formatted sections */}
           <div className="flex-1 min-h-0 grid grid-cols-1 sm:grid-cols-3 gap-px bg-border overflow-auto">
             {agents.map((agent) => {
               const colors = roleColors[agent.role];
               return (
-                <div key={agent.id} className="bg-background p-2 flex flex-col min-h-[120px]">
-                  <div className="flex items-center gap-2 mb-2 shrink-0">
-                    <div className={`w-2 h-2 rounded-full ${colors.dot}`} />
-                    <span className="text-xs font-medium text-text-secondary">{agent.name}</span>
+                <div key={agent.id} className="bg-background p-3 flex flex-col min-h-[120px]">
+                  <div className="flex items-center gap-2 mb-2 shrink-0 border-b border-border/50 pb-1.5">
+                    <div className={`w-2.5 h-2.5 rounded-full ${colors.dot}`} />
+                    <h3 className={`text-sm font-semibold uppercase tracking-wide ${colors.heading}`}>
+                      {agent.name}
+                    </h3>
                   </div>
-                  <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-medium mb-2 shrink-0 ${colors.avatar}`}>
-                    {agent.name.charAt(0)}
-                  </div>
-                  <div className={`flex-1 p-2 border overflow-auto text-[11px] min-h-0 ${colors.bubble}`}>
+                  <div className={`flex-1 p-2.5 border rounded overflow-auto min-h-0 ${colors.bubble}`}>
                     {agent.isTyping ? (
                       <div className="flex flex-col gap-2">
                         <span className="text-xs text-text-tertiary">{agent.message}</span>
@@ -277,7 +412,13 @@ export function ShadowCouncil() {
                         </div>
                       </div>
                     ) : (
-                      <p className="text-xs text-text-secondary leading-relaxed whitespace-pre-wrap">{agent.message}</p>
+                      <div className="space-y-0">
+                        {formatAgentMessage(agent.message) ?? (
+                          <p className="text-[11px] text-text-secondary leading-relaxed whitespace-pre-wrap">
+                            {agent.message}
+                          </p>
+                        )}
+                      </div>
                     )}
                   </div>
                 </div>
