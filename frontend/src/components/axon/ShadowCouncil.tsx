@@ -1,7 +1,8 @@
-import { useState, useRef, useCallback } from "react";
+import { useState, useRef, useCallback, useEffect } from "react";
 import { Mic, MicOff, Send, Volume2, VolumeX, X, Square } from "lucide-react";
 import { queryCouncil, synthesizeSpeech } from "@/lib/api";
 import { stopAllAudio, registerAudio } from "@/lib/audioController";
+import { useCrisisMode } from "@/hooks/useCrisisMode";
 import type { CouncilResponse } from "@/lib/api";
 
 interface Agent {
@@ -74,6 +75,7 @@ function responseToAgents(res: CouncilResponse): Agent[] {
 }
 
 export function ShadowCouncil() {
+  const { isCrisisActive } = useCrisisMode();
   const [isActive, setIsActive] = useState(false);
   const [question, setQuestion] = useState("");
   const [agents, setAgents] = useState<Agent[]>(defaultAgents);
@@ -82,6 +84,7 @@ export function ShadowCouncil() {
   const [voiceOn, setVoiceOn] = useState(true);
   const [isVoicePlaying, setIsVoicePlaying] = useState(false);
   const abortRef = useRef(false);
+  const crisisTriggeredRef = useRef(false);
 
   const handleStopVoice = useCallback(() => {
     stopAllAudio();
@@ -89,7 +92,7 @@ export function ShadowCouncil() {
     abortRef.current = true;
   }, []);
 
-  const handleAsk = async () => {
+  const handleAsk = useCallback(async () => {
     const q = question.trim();
     if (q.length < 5) {
       setError("Question must be at least 5 characters");
@@ -135,7 +138,28 @@ export function ShadowCouncil() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [question, voiceOn]);
+
+  // Auto-activate Shadow Council during crisis
+  useEffect(() => {
+    if (isCrisisActive && !crisisTriggeredRef.current) {
+      crisisTriggeredRef.current = true;
+      const timer = setTimeout(() => {
+        setIsActive(true);
+        const crisisQuestion = "How should we resolve the engineering deadline mismatch between Project Alpha and Team Beta?";
+        setQuestion(crisisQuestion);
+        // Auto-submit after a short delay
+        setTimeout(() => {
+          if (crisisQuestion.length >= 5) {
+            handleAsk();
+          }
+        }, 500);
+      }, 2000);
+      return () => clearTimeout(timer);
+    } else if (!isCrisisActive) {
+      crisisTriggeredRef.current = false;
+    }
+  }, [isCrisisActive, handleAsk]);
 
   return (
     <>

@@ -15,6 +15,7 @@ import ReactFlow, {
 import 'reactflow/dist/style.css';
 import { motion } from 'framer-motion';
 import { useTheme } from 'next-themes';
+import { useCrisisMode } from '@/hooks/useCrisisMode';
 import type { GraphNode, GraphEdge } from "@/lib/api";
 
 // Compute scale factor so many nodes stay visible (smaller nodes when more nodes)
@@ -30,6 +31,7 @@ function getNodeScale(nodeCount: number): number {
 const CustomNode = ({ data }: { data: GraphNode & { _scale?: number } }) => {
   const { theme } = useTheme();
   const isDark = theme === 'dark';
+  const { isCrisisActive } = useCrisisMode();
   const scale = data._scale ?? 1;
   
   const statusColors = {
@@ -59,13 +61,16 @@ const CustomNode = ({ data }: { data: GraphNode & { _scale?: number } }) => {
   const fontSize = scale < 0.8 ? '10px' : '12px';
   const iconSize = scale < 0.8 ? 'text-base' : 'text-lg';
 
+  // Override status to 'conflicted' during crisis
+  const nodeStatus = isCrisisActive ? 'conflicted' : data.status;
+
   // Determine background color based on theme and status
   const getBackgroundColor = () => {
     if (isDark) {
       return '#0f0f0f'; // Dark theme - keep as is
     } else {
       // Light theme - use status-based colors
-      return lightStatusBgColors[data.status];
+      return lightStatusBgColors[nodeStatus];
     }
   };
 
@@ -80,7 +85,7 @@ const CustomNode = ({ data }: { data: GraphNode & { _scale?: number } }) => {
         conflicted: '#fecaca',
         stale: '#e5e7eb'
       };
-      return hoverColors[data.status];
+      return hoverColors[nodeStatus];
     }
   };
 
@@ -101,18 +106,20 @@ const CustomNode = ({ data }: { data: GraphNode & { _scale?: number } }) => {
     <motion.div
       initial={{ scale: 0 }}
       animate={{ 
-        scale: (0.5 + (data.centrality * 0.5)) * scale,
+        scale: isCrisisActive 
+          ? 1.1 * (0.5 + (data.centrality * 0.5)) * scale
+          : (0.5 + (data.centrality * 0.5)) * scale,
         opacity: data.decay 
       }}
       transition={{ duration: 0.3 }}
       className="relative"
     >
       <div 
-        className={`rounded-lg border-2 cursor-pointer transition-all ${iconSize}`}
+        className={`rounded-lg border-2 cursor-pointer transition-all ${iconSize} ${isCrisisActive ? 'animate-pulse' : ''}`}
         style={{ 
           backgroundColor: getBackgroundColor(),
-          borderColor: statusColors[data.status],
-          boxShadow: `0 0 ${10 + data.centrality * 20}px ${statusColors[data.status]}40`,
+          borderColor: statusColors[nodeStatus],
+          boxShadow: `0 0 ${10 + data.centrality * 20}px ${statusColors[nodeStatus]}40`,
           minWidth: minW,
           padding: `${paddingY}px ${paddingX}px`,
         }}
@@ -151,9 +158,9 @@ const CustomNode = ({ data }: { data: GraphNode & { _scale?: number } }) => {
         
         {/* Status indicator */}
         <div 
-          className="absolute -top-1 -right-1 w-3 h-3 rounded-full border-2"
+          className={`absolute -top-1 -right-1 w-3 h-3 rounded-full border-2 ${isCrisisActive ? 'animate-pulse' : ''}`}
           style={{ 
-            backgroundColor: statusColors[data.status],
+            backgroundColor: statusColors[nodeStatus],
             borderColor: getBackgroundColor()
           }}
         />

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { TopBar } from "@/components/axon/TopBar";
 import { KnowledgeGraphPanel } from "@/components/axon/KnowledgeGraphPanel";
@@ -6,6 +6,8 @@ import { HealthDisplay } from "@/components/axon/HealthDisplay";
 import { ConflictList } from "@/components/axon/ConflictList";
 import { DecisionStream } from "@/components/axon/DecisionStream";
 import { ShadowCouncil } from "@/components/axon/ShadowCouncil";
+import { ToastManager } from "@/components/axon/CrisisToast";
+import { useCrisisMode } from "@/hooks/useCrisisMode";
 import {
   ResizablePanelGroup,
   ResizablePanel,
@@ -20,6 +22,7 @@ import {
 import type { GraphNode, GraphEdge, Conflict, Decision } from "@/lib/api";
 
 export default function Index() {
+  const { isCrisisActive, deactivateCrisis } = useCrisisMode();
   const [graphData, setGraphData] = useState<{
     nodes: GraphNode[];
     edges: GraphEdge[];
@@ -29,6 +32,7 @@ export default function Index() {
   const [healthScore, setHealthScore] = useState<number>(100);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [toasts, setToasts] = useState<Array<{ id: string; message: string }>>([]);
 
   useEffect(() => {
     async function load() {
@@ -62,8 +66,34 @@ export default function Index() {
   const hasConflicts = conflicts.length > 0;
   const isMobile = useIsMobile();
 
+  // Handle crisis activation - show toast
+  useEffect(() => {
+    if (isCrisisActive) {
+      const toastId = `crisis-${Date.now()}`;
+      setToasts(prev => [...prev, {
+        id: toastId,
+        message: "CRITICAL: Engineering deadline mismatch detected! Project Alpha vs Team Beta conflict."
+      }]);
+
+      // Auto-reset after 15 seconds (optional - for demo purposes)
+      const resetTimer = setTimeout(() => {
+        deactivateCrisis();
+        setToasts([]);
+      }, 15000);
+      
+      return () => clearTimeout(resetTimer);
+    }
+  }, [isCrisisActive, deactivateCrisis]);
+
+  const removeToast = useCallback((id: string) => {
+    setToasts(prev => prev.filter(toast => toast.id !== id));
+  }, []);
+
   return (
     <div className="min-h-screen w-full max-w-[100vw] flex flex-col bg-background overflow-x-hidden">
+      {/* Toast Manager */}
+      <ToastManager toasts={toasts} onRemove={removeToast} />
+
       {/* Top Bar */}
       <TopBar healthScore={healthScore} hasConflicts={hasConflicts} />
 
