@@ -1,4 +1,4 @@
-# Aetheris / AxonAI
+#  AxonAI
 
 AI-powered organizational intelligence system with a knowledge graph, Shadow Council (multi-agent advisory), Critic Agent, and voice synthesis.
 
