@@ -187,6 +187,68 @@ export async function fetchStats() {
   return response.json();
 }
 
+// --- Data source (CSV upload / URL) ---
+export interface DataSourceInfo {
+  source: "synthetic" | "csv" | "url";
+  url: string | null;
+}
+
+export async function getDataSource(): Promise<DataSourceInfo> {
+  const response = await fetch(`${API_BASE}/api/data/source`);
+  if (!response.ok) throw new Error("Failed to fetch data source");
+  return response.json();
+}
+
+export async function uploadDataCsv(file: File): Promise<{ nodes: number; edges: number; decisions: number; conflicts: number; dependencies: number }> {
+  const form = new FormData();
+  form.append("file", file);
+  const response = await fetch(`${API_BASE}/api/data/upload`, { method: "POST", body: form });
+  if (!response.ok) {
+    const err = await response.json().catch(() => ({}));
+    throw new Error(err.detail || "Upload failed");
+  }
+  return response.json();
+}
+
+export async function setDataSourceUrl(url: string): Promise<{ nodes: number; edges: number; decisions: number; conflicts: number; dependencies: number }> {
+  const response = await fetch(`${API_BASE}/api/data/source`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ url: url.trim() }),
+  });
+  if (!response.ok) {
+    const err = await response.json().catch(() => ({}));
+    throw new Error(err.detail || "Failed to load from URL");
+  }
+  return response.json();
+}
+
+export async function resetToDefaultData(): Promise<{ nodes: number; edges: number; decisions: number; conflicts: number; dependencies: number }> {
+  const response = await fetch(`${API_BASE}/api/data/reset`, { method: "POST" });
+  if (!response.ok) {
+    const err = await response.json().catch(() => ({}));
+    throw new Error(err.detail || "Failed to reset to default data");
+  }
+  return response.json();
+}
+
+export async function getCsvFormat(): Promise<Record<string, string>> {
+  const response = await fetch(`${API_BASE}/api/data/csv-format`);
+  if (!response.ok) return {};
+  return response.json();
+}
+
+export interface SuggestionsResponse {
+  council_questions: string[];
+  critic_examples: string[];
+}
+
+export async function getSuggestions(): Promise<SuggestionsResponse> {
+  const response = await fetch(`${API_BASE}/api/suggestions`);
+  if (!response.ok) return { council_questions: [], critic_examples: [] };
+  return response.json();
+}
+
 export async function queryCouncil(question: string): Promise<CouncilResponse> {
   const response = await fetch(`${API_BASE}/api/council/query`, {
     method: "POST",
@@ -247,6 +309,25 @@ export function playIntroThenProcessing(): void {
   intro.play().catch(() => {});
 }
 
+export type SfxKey = "click" | "confirm" | "tab" | "soft";
+
+/**
+ * Play ElevenLabs sound effect. Fires and forgets; fails silently if not generated.
+ * - click: generic buttons
+ * - confirm: Chief of Staff open / submit Ask
+ * - tab: All Teams toggle, team selection
+ * - soft: close, voice toggle, suggestion chips
+ */
+export function playAudioSfx(key: SfxKey): void {
+  try {
+    const audio = new Audio(`${API_BASE || ""}/api/audio/sfx/${key}`);
+    audio.volume = 0.45;
+    audio.play().catch(() => {});
+  } catch {
+    // Silently ignore
+  }
+}
+
 /**
  * Synthesize speech from text via ElevenLabs. Returns blob URL to play.
  * Call URL.revokeObjectURL() when done playing.
@@ -260,6 +341,23 @@ export async function synthesizeSpeech(text: string): Promise<string | null> {
   if (!response.ok) return null;
   const blob = await response.blob();
   return URL.createObjectURL(blob);
+}
+
+/**
+ * Transcribe audio to text via ElevenLabs Speech-to-Text.
+ * Pass a Blob (e.g. from MediaRecorder). Returns transcript or null.
+ */
+export async function transcribeSpeech(audioBlob: Blob): Promise<string | null> {
+  const form = new FormData();
+  const ext = audioBlob.type.includes("webm") ? "webm" : audioBlob.type.includes("mp3") ? "mp3" : "webm";
+  form.append("file", audioBlob, `voice.${ext}`);
+  const response = await fetch(`${API_BASE || ""}/api/audio/transcribe`, {
+    method: "POST",
+    body: form,
+  });
+  if (!response.ok) return null;
+  const data = await response.json();
+  return (data.text ?? "").trim() || null;
 }
 
 // --- Critic Agent ---

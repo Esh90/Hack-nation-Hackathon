@@ -15,7 +15,6 @@ AI-powered organizational intelligence system: knowledge graph, **Shadow Council
 ---
 
 ## Project structure
-
 ```
 Hackathon/
 ├── backend/                    # FastAPI backend
@@ -31,7 +30,8 @@ Hackathon/
 │   │   └── rich_knowledge_graph.json
 │   ├── utils/
 │   │   ├── knowledge_extractor.py  # Builds graph (uses Gemini)
-│   │   └── voice_synthesis.py     # ElevenLabs TTS
+│   │   ├── voice_synthesis.py      # ElevenLabs TTS
+│   │   └── data_loader.py          # CSV / URL → knowledge graph
 │   ├── .env.example            # Template – copy to .env and add keys
 │   ├── .env                    # Your API keys (gitignored – do not commit)
 │   └── requirements.txt
@@ -58,7 +58,6 @@ Hackathon/
 - At least one LLM API key (Groq recommended – free tier, no card required)
 
 ### 1. Backend
-
 ```bash
 cd backend
 
@@ -85,7 +84,6 @@ On startup the backend prints which LLM is active (e.g. `Using Groq (GROQ_API_KE
 ### 2. Frontend
 
 In a **new terminal**:
-
 ```bash
 cd frontend
 
@@ -95,14 +93,48 @@ npm run dev
 
 The frontend proxies `/api` to `http://localhost:8000`, so backend and frontend must both be running.
 
-### 3. Optional: pre-generated voice clips
+### 3. Optional: Pre-generate voice clips and sound effects
 
-For intro/processing/complete audio (ElevenLabs):
-
+For intro/processing/complete audio and button-click sound effects (ElevenLabs):
 ```bash
 cd backend
 python utils/voice_synthesis.py
 ```
+
+This creates `data/audio/*.mp3` (intro, processing, complete) and `data/audio/sfx/*.mp3` (UI sounds).
+
+### 4. Dynamic data: any admin URL or any CSV
+
+The app uses **synthetic** data by default. You can use **any admin URL** or **any CSV**; the backend processes it and builds the graph, and the dashboard updates automatically.
+
+- **Data source** (Top Bar) → **Upload CSV**: Accepts (1) **record_type** + columns (node, edge, decision, conflict, dependency); (2) **edge list**: `source` + `target` (or `from`/`to`); (3) **node list**: `id` + `label` or `name`; (4) **any 2 columns** (first = id, second = label); (5) **single column** (each value = one node). Example full CSVs (nodes with team/role, edges, decisions, conflicts): `backend/data/full_tech_startup.csv`, `full_retail_ops.csv`, `full_healthcare_team.csv`, `full_agency_projects.csv`, `full_education_org.csv`. See `GET /api/data/csv-format` for details.
+- **Admin page URL**: Paste **any** URL. If it returns JSON (nodes/edges or wrapped), the backend normalizes it. If it's **any website** (e.g. `https://nstp.pk`), the backend fetches the HTML and builds a graph from the page title and all outbound links (page → linked URLs). The graph and dashboard then use the new data.
+
+**Where do I get the URL? (and how)**
+
+| Source | Where | How |
+|--------|--------|-----|
+| **This dashboard's backend** | Your running API | 1. Start the backend (`uvicorn` on port 8000). 2. Use URL: `http://localhost:8000/api/data/export`. 3. In the app: **Data source** → paste that URL → click Load. This reloads the current graph (useful to test the flow). |
+| **Your own admin API** | Another service you run or host | 1. Expose an HTTP GET endpoint that returns JSON with `nodes`, `edges`, `decisions`, `conflicts` (see `GET /api/data/export` response shape). 2. Use that endpoint's full URL (e.g. `https://your-api.com/graph`). 3. In the app: **Data source** → paste URL → Load. |
+| **Static JSON file** | Any URL that serves JSON | 1. Create a `.json` file in the same shape (nodes, edges, decisions, conflicts, etc.). 2. Host it somewhere reachable (e.g. GitHub raw, S3, or a simple static server). 3. Use the file's public URL in **Data source** → Load. |
+
+**Quick test:** With the backend running, open **Data source** in the Top Bar, paste `http://localhost:8000/api/data/export`, click the link button. The dashboard will refetch and show the same data.
+
+**Websites you can use to get a URL** (host your own JSON in the dashboard's format):
+
+| Website | URL | How to get a URL |
+|--------|-----|-------------------|
+| **GitHub Gist** | https://gist.github.com | 1. Copy your graph JSON (e.g. from `GET http://localhost:8000/api/data/export`). 2. New Gist → paste JSON, name file `graph.json`. 3. Create public gist → click "Raw" → copy that URL. Use that raw URL in Data source. |
+| **JSONBin.io** | https://jsonbin.io | 1. Sign up (free). 2. Create a new bin, paste JSON from `/api/data/export`. 3. Save and use the bin's API URL (e.g. `https://api.jsonbin.io/v3/b/<bin-id>`) in Data source. |
+| **Pastebin** | https://pastebin.com | 1. Paste your JSON. 2. Set expiration (e.g. 1 month). 3. Create paste → use **raw** URL (e.g. `https://pastebin.com/raw/xxxxx`) in Data source. |
+| **GitHub repo (raw)** | https://github.com | 1. Put a `graph.json` (or any name) in a repo. 2. Use raw URL: `https://raw.githubusercontent.com/<user>/<repo>/<branch>/graph.json`. |
+| **Netlify / Vercel** | https://netlify.com or https://vercel.com | Deploy a static site with a `graph.json` file; your URL is `https://your-site.com/graph.json`. |
+| **This backend (local)** | — | `http://localhost:8000/api/data/export` (backend must be running). |
+| **This backend (deployed)** | Your host | Same path on your deployed API, e.g. `https://your-api.onrender.com/api/data/export`. |
+
+The backend normalizes responses (unwrap `data`/`result`/`graph`, map `vertices`→nodes, `links`→edges). Ideal shape: top-level `nodes`, `edges`, `decisions`, `conflicts` (see `GET /api/data/export`).
+
+After you upload a CSV or load from a URL, the dashboard refreshes automatically and all panels (graph, conflicts, decisions, health) show the new data.
 
 ### URLs
 

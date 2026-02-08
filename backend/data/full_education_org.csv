@@ -1,0 +1,17 @@
+record_type,id,type,label,status,team,role,centrality,source,target,strength,title,author,team1,team2,topic,severity,description
+node,prof_moore,person,Prof. Sarah Moore,active,Faculty,Dean of Science,0.92,,,,,,,,,,
+node,david,person,David Okello,active,Admin,Registrar,0.88,,,,,,,,,,
+node,anna,person,Anna Berg,active,Faculty,Dept Head Humanities,0.85,,,,,,,,,,
+node,kevin,person,Kevin Liu,active,IT,IT Director,0.82,,,,,,,,,,
+node,lms,topic,LMS Upgrade,active,,,0.9,,,,,,,,,,
+node,enrollment,topic,Enrollment Strategy,active,,,0.88,,,,,,,,,,
+node,budget_fy,topic,FY Budget,aging,,,0.78,,,,,,,,,,
+edge,,,,,,,prof_moore,lms,0.9,,,,,,,,
+edge,,,,,,,david,enrollment,0.92,,,,,,,,
+edge,,,,,,,anna,enrollment,0.85,,,,,,,,
+edge,,,,,,,kevin,lms,0.9,,,,,,,,
+decision,,,,,,,,,,Select new LMS vendor,Prof. Sarah Moore,,,,,
+decision,,,,,,,,,,Enrollment targets for next year,David Okello,,,,,
+conflict,,,,,,,,,,,,,Faculty,Admin,Calendar changes,medium,Semester start date
+conflict,,,,,,,,,,,,,IT,Faculty,Software rollout pace,high,Training vs go-live date
+conflict,,,,,,,,,,,,,Admin,IT,Budget for LMS,medium,Cost vs feature set

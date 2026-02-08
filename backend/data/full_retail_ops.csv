@@ -1,0 +1,17 @@
+record_type,id,type,label,status,team,role,centrality,source,target,strength,title,author,team1,team2,topic,severity,description
+node,priya,person,Priya Sharma,active,Stores,Regional Manager,0.88,,,,,,,,,,
+node,marcus,person,Marcus Webb,active,Supply Chain,Logistics Lead,0.85,,,,,,,,,,
+node,lena,person,Lena Kowalski,active,Marketing,Brand Director,0.82,,,,,,,,,,
+node,yuki,person,Yuki Tanaka,active,Finance,FP&A Manager,0.8,,,,,,,,,,
+node,holiday,topic,Holiday Campaign,active,,,0.9,,,,,,,,,,
+node,inventory,topic,Inventory Rollout,active,,,0.85,,,,,,,,,,
+node,costs,topic,Cost Reduction,aging,,,0.78,,,,,,,,,,
+edge,,,,,,,priya,holiday,0.88,,,,,,,,
+edge,,,,,,,marcus,inventory,0.9,,,,,,,,
+edge,,,,,,,lena,holiday,0.92,,,,,,,,
+edge,,,,,,,yuki,costs,0.85,,,,,,,,
+decision,,,,,,,,,,Approve Holiday budget,Lena Kowalski,,,,,
+decision,,,,,,,,,,Roll out new inventory system,Marcus Webb,,,,,
+conflict,,,,,,,,,,,,,Stores,Supply Chain,Delivery windows,medium,Store capacity vs truck schedules
+conflict,,,,,,,,,,,,,Marketing,Finance,Budget for campaign,high,Spend level disagreement
+conflict,,,,,,,,,,,,,Supply Chain,Stores,Stock allocation,medium,Who gets priority stock

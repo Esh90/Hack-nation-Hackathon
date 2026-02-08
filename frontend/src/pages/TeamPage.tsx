@@ -6,6 +6,7 @@ import {
   fetchConflicts,
   fetchDecisions,
   fetchHealthScore,
+  playAudioSfx,
 } from "@/lib/api";
 import type { GraphNode, GraphEdge, Conflict, Decision } from "@/lib/api";
 import { formatDistanceToNow } from "date-fns";
@@ -74,7 +75,10 @@ export default function TeamPage() {
       {/* Header */}
       <div className="border-b border-border px-4 py-2 flex items-center gap-3">
         <button
-          onClick={() => navigate("/")}
+          onClick={() => {
+            playAudioSfx("tab");
+            navigate("/");
+          }}
           className="p-2 rounded border border-border hover:bg-secondary/50 transition-default text-text-secondary"
         >
           <ArrowLeft className="w-4 h-4" />

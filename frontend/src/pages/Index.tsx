@@ -29,6 +29,7 @@ export default function Index() {
   const [healthScore, setHealthScore] = useState<number>(100);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [refreshTrigger, setRefreshTrigger] = useState(0);
 
   useEffect(() => {
     async function load() {
@@ -57,7 +58,7 @@ export default function Index() {
       }
     }
     load();
-  }, []);
+  }, [refreshTrigger]);
 
   const hasConflicts = conflicts.length > 0;
   const isMobile = useIsMobile();
@@ -65,7 +66,11 @@ export default function Index() {
   return (
     <div className="min-h-screen w-full max-w-[100vw] flex flex-col bg-background overflow-x-hidden">
       {/* Top Bar */}
-      <TopBar healthScore={healthScore} hasConflicts={hasConflicts} />
+      <TopBar
+        healthScore={healthScore}
+        hasConflicts={hasConflicts}
+        onDataUpdated={() => setRefreshTrigger((t) => t + 1)}
+      />
 
       {/* Main Content - Scrollable */}
       <div className="flex-1 relative pb-14 min-h-0 overflow-auto scrollbar-thin">

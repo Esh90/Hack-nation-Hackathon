@@ -1,15 +1,25 @@
-import { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { ChevronRight, ChevronDown } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { ChevronRight, ChevronDown } from 'lucide-react';
+import { Decision } from '@/lib/synthetic-data';
+import { formatDistanceToNow } from 'date-fns';
+import { useNavigate } from 'react-router-dom';
 import {
   DropdownMenu,
+  DropdownMenuTrigger,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import type { Decision, GraphNode, Conflict } from "@/lib/api";
-import { formatDistanceToNow } from "date-fns";
+} from '@/components/ui/dropdown-menu';
+
+interface GraphNode {
+  id: string;
+  team?: string;
+}
+
+interface Conflict {
+  team1?: string;
+  team2?: string;
+}
 
 interface DecisionStreamProps {
   decisions: Decision[];
@@ -41,7 +51,12 @@ export function DecisionStream({
   const statusColors = {
     new: '#10b981',
     updated: '#3b82f6',
-    old: '#6b7280'
+    old: '#6b7280',
+  };
+
+  const playAudioSfx = (type: string) => {
+    // Implement your audio SFX playback here
+    console.log('Play SFX:', type);
   };
 
   return (
@@ -54,17 +69,25 @@ export function DecisionStream({
         </div>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <button className="flex items-center gap-1 text-[11px] text-text-tertiary hover:text-text-secondary transition-default">
+            <button
+              onClick={() => playAudioSfx('tab')}
+              className="flex items-center gap-1 text-[11px] text-text-tertiary hover:text-text-secondary transition-default"
+            >
               All Teams
               <ChevronDown className="w-3 h-3" />
             </button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="min-w-[160px]">
-            <DropdownMenuItem onClick={() => {}}>All Teams</DropdownMenuItem>
+            <DropdownMenuItem onClick={() => playAudioSfx('tab')}>
+              All Teams
+            </DropdownMenuItem>
             {teams.map((team) => (
               <DropdownMenuItem
                 key={team}
-                onClick={() => navigate(`/team/${encodeURIComponent(team)}`)}
+                onClick={() => {
+                  playAudioSfx('tab');
+                  navigate(`/team/${encodeURIComponent(team)}`);
+                }}
               >
                 {team}
               </DropdownMenuItem>
@@ -89,13 +112,14 @@ export function DecisionStream({
                 className="relative pl-12"
               >
                 {/* Timeline node */}
-                <div 
+                <div
                   className="absolute left-[15px] top-1.5 w-2.5 h-2.5 rounded-full border-2 border-background z-10"
-                  style={{ 
+                  style={{
                     backgroundColor: statusColors[decision.status],
-                    boxShadow: decision.status === 'new' 
-                      ? `0 0 12px ${statusColors[decision.status]}` 
-                      : 'none'
+                    boxShadow:
+                      decision.status === 'new'
+                        ? `0 0 12px ${statusColors[decision.status]}`
+                        : 'none',
                   }}
                 >
                   {decision.status === 'new' && (
@@ -109,15 +133,16 @@ export function DecisionStream({
                 </div>
 
                 {/* Decision card */}
-                <div 
+                <div
                   className="bg-card p-2.5 cursor-pointer hover:bg-secondary/50 transition-all border border-border"
-                  onClick={() => setExpandedId(expandedId === decision.id ? null : decision.id)}
+                  onClick={() => {
+                    playAudioSfx('soft');
+                    setExpandedId(expandedId === decision.id ? null : decision.id);
+                  }}
                 >
                   <div className="flex items-start justify-between mb-1">
                     <div className="flex items-center gap-2">
-                      <span 
-                        className="text-[10px] font-mono text-text-tertiary px-2 py-0.5 bg-secondary"
-                      >
+                      <span className="text-[10px] font-mono text-text-tertiary px-2 py-0.5 bg-secondary">
                         v{decision.version}
                       </span>
                       <h3 className="text-sm font-medium text-text-primary">
@@ -133,12 +158,11 @@ export function DecisionStream({
                   </div>
 
                   <div className="text-[11px] text-text-muted mb-1">
-                    by {decision.author} • {formatDistanceToNow(decision.timestamp, { addSuffix: true })}
+                    by {decision.author} •{' '}
+                    {formatDistanceToNow(decision.timestamp, { addSuffix: true })}
                   </div>
 
-                  <div className="text-[10px] text-success mb-1">
-                    ↗ {decision.change}
-                  </div>
+                  <div className="text-[10px] text-success mb-1">↗ {decision.change}</div>
 
                   <AnimatePresence>
                     {expandedId === decision.id && (

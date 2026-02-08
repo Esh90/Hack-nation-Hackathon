@@ -112,7 +112,7 @@ export function ConflictList({ conflicts }: ConflictListProps) {
                   <ChevronRight className="w-3 h-3 text-text-muted shrink-0" />
                 </motion.div>
                 <div className="flex-1 min-w-0 flex items-center gap-2">
-                  <span className="text-[11px] text-text-secondary font-medium truncate">
+                  <span className="text-[11px] text-text-secondary font-medium truncate" title={`${conflict.team1} vs ${conflict.team2}`}>
                     {conflict.team1} vs {conflict.team2}
                   </span>
                   <span className="text-[10px] text-text-hint">·</span>
