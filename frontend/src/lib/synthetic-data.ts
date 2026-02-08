@@ -260,10 +260,10 @@ export const calculateHealthScore = (): number => {
 };
 
 // Heartbeat data (simulates real-time health over last 30 minutes)
-export const generateHeartbeatData = () => {
+export const generateHeartbeatData = (baseScore?: number) => {
   const data = [];
   const now = Date.now();
-  const healthScore = calculateHealthScore();
+  const healthScore = baseScore ?? calculateHealthScore();
   
   for (let i = 30; i >= 0; i--) {
     data.push({

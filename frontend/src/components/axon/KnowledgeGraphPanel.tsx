@@ -1,5 +1,5 @@
 import KnowledgeGraph from './KnowledgeGraph';
-import { GraphNode, GraphEdge } from '@/lib/synthetic-data';
+import type { GraphNode, GraphEdge } from "@/lib/api";
 
 interface KnowledgeGraphPanelProps {
   nodeCount?: number;
@@ -22,7 +22,7 @@ export function KnowledgeGraphPanel({
   ];
 
   return (
-    <div className="h-full flex flex-col panel">
+    <div className="h-full flex flex-col panel min-h-0">
       {/* Header */}
       <div className="panel-header">
         <div>
@@ -52,13 +52,13 @@ export function KnowledgeGraphPanel({
 
         {/* Legend */}
         <div 
-          className="absolute bottom-4 left-4 w-[200px] p-3 backdrop-blur-panel border border-border z-10"
+          className="absolute bottom-2 left-2 w-[160px] p-2 backdrop-blur-panel border border-border z-10"
           style={{ background: 'hsla(0, 0%, 6%, 0.95)' }}
         >
-          <h3 className="text-[10px] uppercase tracking-widest text-text-tertiary mb-3">
+          <h3 className="text-[9px] uppercase tracking-widest text-text-tertiary mb-1.5">
             Node Status
           </h3>
-          <div className="space-y-2">
+          <div className="space-y-1">
             {legendItems.map((item) => (
               <div key={item.label} className="flex items-center gap-2">
                 <div className={`w-2 h-2 rounded-full ${item.color}`} />

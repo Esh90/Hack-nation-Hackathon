@@ -12,7 +12,7 @@ import ReactFlow, {
 } from 'reactflow';
 import 'reactflow/dist/style.css';
 import { motion } from 'framer-motion';
-import { GraphNode, GraphEdge } from '@/lib/synthetic-data';
+import type { GraphNode, GraphEdge } from "@/lib/api";
 
 // Custom node component with decay effect
 const CustomNode = ({ data }: { data: GraphNode }) => {
@@ -82,8 +82,8 @@ export default function KnowledgeGraph({ nodes, edges }: KnowledgeGraphProps) {
       id: node.id,
       type: 'custom',
       position: { 
-        x: (index % 3) * 250 + 100, 
-        y: Math.floor(index / 3) * 150 + 50 
+        x: (index % 4) * 180 + 60, 
+        y: Math.floor(index / 4) * 120 + 30 
       },
       data: node,
     })),

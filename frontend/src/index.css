@@ -125,7 +125,7 @@
   }
 
   .panel-header {
-    @apply h-12 px-4 flex items-center justify-between bg-background border-b border-border;
+    @apply h-9 px-3 flex items-center justify-between bg-background border-b border-border;
   }
 
   /* Monospace text for data */

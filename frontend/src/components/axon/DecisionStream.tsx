@@ -1,15 +1,42 @@
-import { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { ChevronRight, ChevronDown } from 'lucide-react';
-import { Decision } from '@/lib/synthetic-data';
-import { formatDistanceToNow } from 'date-fns';
+import { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { ChevronRight, ChevronDown } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import type { Decision, GraphNode, Conflict } from "@/lib/api";
+import { formatDistanceToNow } from "date-fns";
 
 interface DecisionStreamProps {
   decisions: Decision[];
+  nodes?: GraphNode[];
+  conflicts?: Conflict[];
 }
 
-export function DecisionStream({ decisions }: DecisionStreamProps) {
+function getTeams(nodes: GraphNode[], conflicts: Conflict[]): string[] {
+  const teams = new Set<string>();
+  nodes.forEach((n) => {
+    if (n.team) teams.add(n.team);
+  });
+  conflicts.forEach((c) => {
+    if (c.team1) teams.add(c.team1);
+    if (c.team2) teams.add(c.team2);
+  });
+  return Array.from(teams).sort();
+}
+
+export function DecisionStream({
+  decisions,
+  nodes = [],
+  conflicts = [],
+}: DecisionStreamProps) {
   const [expandedId, setExpandedId] = useState<string | null>(null);
+  const navigate = useNavigate();
+  const teams = getTeams(nodes, conflicts);
 
   const statusColors = {
     new: '#10b981',
@@ -18,37 +45,52 @@ export function DecisionStream({ decisions }: DecisionStreamProps) {
   };
 
   return (
-    <div className="h-full flex flex-col panel">
+    <div className="h-full flex flex-col panel min-h-0">
       {/* Header */}
       <div className="panel-header">
         <div>
           <h2 className="text-sm font-medium text-foreground">Decision Stream</h2>
           <p className="text-[11px] text-text-muted">Versioned organizational truth</p>
         </div>
-        <button className="flex items-center gap-1 text-[11px] text-text-tertiary hover:text-text-secondary transition-default">
-          All Teams
-          <ChevronDown className="w-3 h-3" />
-        </button>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <button className="flex items-center gap-1 text-[11px] text-text-tertiary hover:text-text-secondary transition-default">
+              All Teams
+              <ChevronDown className="w-3 h-3" />
+            </button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end" className="min-w-[160px]">
+            <DropdownMenuItem onClick={() => {}}>All Teams</DropdownMenuItem>
+            {teams.map((team) => (
+              <DropdownMenuItem
+                key={team}
+                onClick={() => navigate(`/team/${encodeURIComponent(team)}`)}
+              >
+                {team}
+              </DropdownMenuItem>
+            ))}
+          </DropdownMenuContent>
+        </DropdownMenu>
       </div>
 
       {/* Timeline */}
-      <div className="flex-1 overflow-auto p-4">
+      <div className="flex-1 overflow-auto p-2 min-h-0">
         <div className="relative">
           {/* Timeline line */}
-          <div className="absolute left-6 top-0 bottom-0 w-px bg-border" />
+          <div className="absolute left-5 top-0 bottom-0 w-px bg-border" />
 
-          <div className="space-y-4">
+          <div className="space-y-2">
             {decisions.map((decision, index) => (
               <motion.div
                 key={decision.id}
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: index * 0.1 }}
-                className="relative pl-14"
+                className="relative pl-12"
               >
                 {/* Timeline node */}
                 <div 
-                  className="absolute left-[19px] top-2 w-3 h-3 rounded-full border-2 border-[#0a0a0a] z-10"
+                  className="absolute left-[15px] top-1.5 w-2.5 h-2.5 rounded-full border-2 border-[#0a0a0a] z-10"
                   style={{ 
                     backgroundColor: statusColors[decision.status],
                     boxShadow: decision.status === 'new' 
@@ -68,11 +110,11 @@ export function DecisionStream({ decisions }: DecisionStreamProps) {
 
                 {/* Decision card */}
                 <div 
-                  className="bg-[#0d0d0d] p-4 cursor-pointer hover:bg-[#121212] transition-all"
+                  className="bg-[#0d0d0d] p-2.5 cursor-pointer hover:bg-[#121212] transition-all"
                   style={{ background: 'hsl(0 0% 5%)' }}
                   onClick={() => setExpandedId(expandedId === decision.id ? null : decision.id)}
                 >
-                  <div className="flex items-start justify-between mb-2">
+                  <div className="flex items-start justify-between mb-1">
                     <div className="flex items-center gap-2">
                       <span 
                         className="text-[10px] font-mono text-text-tertiary px-2 py-0.5"
@@ -92,7 +134,7 @@ export function DecisionStream({ decisions }: DecisionStreamProps) {
                     </motion.div>
                   </div>
 
-                  <div className="text-[11px] text-text-muted mb-2">
+                  <div className="text-[11px] text-text-muted mb-1">
                     by {decision.author} • {formatDistanceToNow(decision.timestamp, { addSuffix: true })}
                   </div>
 
@@ -109,7 +151,7 @@ export function DecisionStream({ decisions }: DecisionStreamProps) {
                         transition={{ duration: 0.2 }}
                         className="overflow-hidden"
                       >
-                        <div className="mt-3 pt-3 border-t border-border">
+                        <div className="mt-2 pt-2 border-t border-border">
                           <div className="text-[10px] text-text-tertiary uppercase tracking-wide mb-1">
                             Reasoning
                           </div>

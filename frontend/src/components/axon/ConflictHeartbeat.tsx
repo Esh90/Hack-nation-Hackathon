@@ -1,10 +1,14 @@
-import { LineChart, Line, ResponsiveContainer, YAxis, Tooltip } from 'recharts';
-import { motion } from 'framer-motion';
-import { generateHeartbeatData, calculateHealthScore } from '@/lib/synthetic-data';
+import { LineChart, Line, ResponsiveContainer, YAxis, Tooltip } from "recharts";
+import { motion } from "framer-motion";
+import { generateHeartbeatData, calculateHealthScore } from "@/lib/synthetic-data";
 
-export default function ConflictHeartbeat() {
-  const healthScore = calculateHealthScore();
-  const heartbeatData = generateHeartbeatData();
+interface ConflictHeartbeatProps {
+  healthScore?: number;
+}
+
+export default function ConflictHeartbeat({ healthScore: propScore }: ConflictHeartbeatProps) {
+  const healthScore = propScore ?? calculateHealthScore();
+  const heartbeatData = generateHeartbeatData(healthScore);
 
   const getHealthColor = (score: number) => {
     if (score >= 80) return '#10b981';
@@ -25,7 +29,7 @@ export default function ConflictHeartbeat() {
           className="text-center"
         >
           <div 
-            className="text-7xl font-light font-mono mb-2"
+            className="text-5xl font-light font-mono mb-1"
             style={{ 
               background: `linear-gradient(135deg, ${healthColor}, ${healthColor}cc)`,
               WebkitBackgroundClip: 'text',
@@ -40,7 +44,7 @@ export default function ConflictHeartbeat() {
         </motion.div>
 
         {/* Heartbeat Visualization */}
-        <div className="w-full h-32 mt-8">
+        <div className="w-full h-20 mt-3">
           <ResponsiveContainer width="100%" height="100%">
             <LineChart data={heartbeatData}>
               <YAxis hide domain={[0, 100]} />
@@ -79,7 +83,7 @@ export default function ConflictHeartbeat() {
             repeat: Infinity,
             ease: "easeInOut"
           }}
-          className="w-2 h-2 rounded-full mt-4"
+          className="w-2 h-2 rounded-full mt-2"
           style={{ backgroundColor: healthColor }}
         />
       </div>

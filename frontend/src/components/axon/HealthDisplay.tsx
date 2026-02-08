@@ -1,4 +1,4 @@
-import ConflictHeartbeat from './ConflictHeartbeat';
+import ConflictHeartbeat from "./ConflictHeartbeat";
 
 interface HealthDisplayProps {
   score?: number;
@@ -6,7 +6,7 @@ interface HealthDisplayProps {
 
 export function HealthDisplay({ score }: HealthDisplayProps) {
   return (
-    <div className="h-full flex flex-col panel">
+    <div className="h-full flex flex-col panel min-h-0">
       {/* Header */}
       <div className="panel-header">
         <div>
@@ -17,7 +17,7 @@ export function HealthDisplay({ score }: HealthDisplayProps) {
 
       {/* Heartbeat Component */}
       <div className="flex-1">
-        <ConflictHeartbeat />
+        <ConflictHeartbeat healthScore={score} />
       </div>
     </div>
   );

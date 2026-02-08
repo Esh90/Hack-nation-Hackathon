@@ -1,8 +1,11 @@
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+
 interface TopBarProps {
   healthScore: number;
   hasConflicts: boolean;
 }
+
 export function TopBar({
   healthScore,
   hasConflicts
@@ -27,17 +30,25 @@ export function TopBar({
       year: 'numeric'
     });
   };
-  return <header className="h-[60px] bg-background border-b border-border flex items-center justify-between px-6 shrink-0">
+  return <header className="h-11 bg-background border-b border-border flex items-center justify-between px-4 shrink-0">
       {/* Logo Section */}
-      <div className="flex flex-col justify-center">
-        <h1 className="text-xl font-semibold tracking-tight text-foreground">AxonAI</h1>
-        <span className="text-[11px] text-text-muted -mt-0.5">
+      <div className="flex items-center gap-4">
+        <Link to="/" className="flex flex-col justify-center hover:opacity-90 transition-opacity">
+          <h1 className="text-base font-semibold tracking-tight text-foreground">AxonAI</h1>
+        <span className="text-[10px] text-text-muted -mt-0.5">
           Organizational Intelligence Layer
         </span>
+        </Link>
+        <Link
+          to="/critic"
+          className="text-[11px] text-text-tertiary hover:text-primary transition-default px-2 py-1 border border-border hover:border-primary/50 rounded"
+        >
+          Critic Agent
+        </Link>
       </div>
 
       {/* System Status */}
-      <div className="flex items-center gap-6">
+        <div className="flex items-center gap-4">
         {/* Health Indicator */}
         <div className="flex items-center gap-3">
           <div className="flex items-center gap-2">

@@ -1,0 +1,7 @@
+# Backend secrets
+backend/.env
+backend/__pycache__/
+backend/pycache/
+backend/chromadb/
+backend/data/processed/
+backend/*.db

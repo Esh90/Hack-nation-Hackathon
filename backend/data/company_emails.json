@@ -1,0 +1,1361 @@
+[
+  {
+    "id": "email_budget_allocation_2025_0",
+    "sender": "David Kim",
+    "sender_team": "Finance",
+    "sender_role": "CFO",
+    "topic": "Budget Allocation 2025",
+    "content": "2025 budget review: Engineering requesting $2M for infrastructure, Marketing wants $1.5M for campaigns, Product needs $800K for research tools. Total ask: $4.3M, budget: $3M.",
+    "timestamp": "2026-01-09T22:36:19.180005",
+    "type": "discussion",
+    "thread_id": "thread_budget_allocation_2025",
+    "thread_position": 1,
+    "recipients": [
+      "Nina Patel",
+      "Jennifer Lee",
+      "Sarah Chen",
+      "Emily Rodriguez"
+    ]
+  },
+  {
+    "id": "email_security_compliance_audit_0",
+    "sender": "David Kim",
+    "sender_team": "Finance",
+    "sender_role": "CFO",
+    "topic": "Security Compliance Audit",
+    "content": "Annual SOC 2 audit is due in March. Last year we had 12 findings that need remediation before this year's audit. Currently only 7 are resolved.",
+    "timestamp": "2026-01-11T17:02:19.180203",
+    "type": "discussion",
+    "thread_id": "thread_security_compliance_audit",
+    "thread_position": 1,
+    "recipients": [
+      "Lisa Wang",
+      "Jennifer Lee",
+      "James Wilson",
+      "Tom Anderson"
+    ]
+  },
+  {
+    "id": "email_marketing_campaign_q1_0",
+    "sender": "David Kim",
+    "sender_team": "Finance",
+    "sender_role": "CFO",
+    "topic": "Marketing Campaign Q1",
+    "content": "Q1 campaign plan: Focus on enterprise segment with LinkedIn ads, webinar series, and case study content. Budget request: $500K.",
+    "timestamp": "2026-01-11T20:27:19.180140",
+    "type": "discussion",
+    "thread_id": "thread_marketing_campaign_q1",
+    "thread_position": 1,
+    "recipients": [
+      "Michael Brown",
+      "Rachel Green",
+      "Lisa Wang"
+    ]
+  },
+  {
+    "id": "email_budget_allocation_2025_1",
+    "sender": "Marcus Johnson",
+    "sender_team": "Engineering",
+    "sender_role": "CTO",
+    "topic": "Budget Allocation 2025",
+    "content": "David Kim analysis: We need to cut $1.3M from requests. Recommending: Engineering $1.5M (-$500K), Marketing $1M (-$500K), Product $500K (-$300K).",
+    "timestamp": "2026-01-11T20:44:19.180005",
+    "type": "discussion",
+    "thread_id": "thread_budget_allocation_2025",
+    "thread_position": 2,
+    "recipients": [
+      "Michael Brown",
+      "Rachel Green",
+      "Amanda White"
+    ]
+  },
+  {
+    "id": "email_sales_compensation_plan_0",
+    "sender": "Marcus Johnson",
+    "sender_team": "Engineering",
+    "sender_role": "CTO",
+    "topic": "Sales Compensation Plan",
+    "content": "Proposing 2025 comp plan: Base 60%, commission 40%, with accelerators for enterprise deals. OTE increase of 15% to remain competitive.",
+    "timestamp": "2026-01-11T20:50:19.180172",
+    "type": "discussion",
+    "thread_id": "thread_sales_compensation_plan",
+    "thread_position": 1,
+    "recipients": [
+      "Nina Patel",
+      "James Wilson",
+      "Rachel Green",
+      "David Kim",
+      "Sarah Chen"
+    ]
+  },
+  {
+    "id": "email_marketing_campaign_q1_1",
+    "sender": "David Kim",
+    "sender_team": "Finance",
+    "sender_role": "CFO",
+    "topic": "Marketing Campaign Q1",
+    "content": "Emily Rodriguez proposal: Shift 30% of budget to performance marketing for SMB segment. Claims higher ROI based on last quarter's data.",
+    "timestamp": "2026-01-13T16:41:19.180140",
+    "type": "discussion",
+    "thread_id": "thread_marketing_campaign_q1",
+    "thread_position": 2,
+    "recipients": [
+      "Nina Patel",
+      "Lisa Wang",
+      "Jennifer Lee",
+      "Rachel Green",
+      "Michael Brown"
+    ]
+  },
+  {
+    "id": "email_sales_compensation_plan_1",
+    "sender": "Sarah Chen",
+    "sender_team": "Product",
+    "sender_role": "VP Product",
+    "topic": "Sales Compensation Plan",
+    "content": "James Wilson concern: Current plan doesn't incentivize land-and-expand. Reps are closing small initial deals and not pushing expansion.",
+    "timestamp": "2026-01-13T20:35:19.180172",
+    "type": "discussion",
+    "thread_id": "thread_sales_compensation_plan",
+    "thread_position": 2,
+    "recipients": [
+      "Emily Rodriguez",
+      "Amanda White",
+      "Tom Anderson"
+    ]
+  },
+  {
+    "id": "email_budget_allocation_2025_2",
+    "sender": "David Kim",
+    "sender_team": "Finance",
+    "sender_role": "CFO",
+    "topic": "Budget Allocation 2025",
+    "content": "Strong pushback from all teams on budget cuts. Marketing claims they can't hit growth targets with reduced budget. Engineering warns of technical debt explosion.",
+    "timestamp": "2026-01-13T22:02:19.180005",
+    "type": "conflict",
+    "thread_id": "thread_budget_allocation_2025",
+    "thread_position": 3,
+    "recipients": [
+      "Maria Garcia",
+      "Rachel Green",
+      "Kevin Zhang",
+      "Emily Rodriguez"
+    ]
+  },
+  {
+    "id": "email_security_compliance_audit_1",
+    "sender": "Robert Taylor",
+    "sender_team": "Marketing",
+    "sender_role": "Growth Lead",
+    "topic": "Security Compliance Audit",
+    "content": "Kevin Zhang status: Remaining 5 findings require: (1) encryption key rotation automation, (2) access log retention policy, (3) incident response plan update, (4) penetration testing, (5) vendor risk assessments.",
+    "timestamp": "2026-01-13T22:14:19.180203",
+    "type": "discussion",
+    "thread_id": "thread_security_compliance_audit",
+    "thread_position": 2,
+    "recipients": [
+      "Nina Patel",
+      "Michael Brown",
+      "Jennifer Lee",
+      "Emily Rodriguez",
+      "Tom Anderson"
+    ]
+  },
+  {
+    "id": "email_q1_product_launch_0",
+    "sender": "Marcus Johnson",
+    "sender_team": "Engineering",
+    "sender_role": "CTO",
+    "topic": "Q1 Product Launch",
+    "content": "We need to finalize the Q1 launch date. Engineering suggests March 1st, but Marketing wants Feb 15th to align with the industry conference. This is becoming a blocker.",
+    "timestamp": "2026-01-14T22:06:19.179846",
+    "type": "discussion",
+    "thread_id": "thread_q1_product_launch",
+    "thread_position": 1,
+    "recipients": [
+      "Amanda White",
+      "Robert Taylor"
+    ]
+  },
+  {
+    "id": "email_sales_compensation_plan_2",
+    "sender": "David Kim",
+    "sender_team": "Finance",
+    "sender_role": "CFO",
+    "topic": "Sales Compensation Plan",
+    "content": "Finance pushback: 15% OTE increase adds $800K to annual costs. Need to see ROI projections before approving.",
+    "timestamp": "2026-01-15T16:29:19.180172",
+    "type": "conflict",
+    "thread_id": "thread_sales_compensation_plan",
+    "thread_position": 3,
+    "recipients": [
+      "Tom Anderson",
+      "Sarah Chen",
+      "James Wilson",
+      "Jennifer Lee",
+      "Robert Taylor"
+    ]
+  },
+  {
+    "id": "email_marketing_campaign_q1_2",
+    "sender": "Robert Taylor",
+    "sender_team": "Marketing",
+    "sender_role": "Growth Lead",
+    "topic": "Marketing Campaign Q1",
+    "content": "Debate: Brand team wants to protect enterprise positioning, performance team wants more bottom-funnel spend. Need alignment by Friday.",
+    "timestamp": "2026-01-15T16:58:19.180140",
+    "type": "discussion",
+    "thread_id": "thread_marketing_campaign_q1",
+    "thread_position": 3,
+    "recipients": [
+      "David Kim",
+      "Rachel Green",
+      "Sarah Chen"
+    ]
+  },
+  {
+    "id": "email_budget_allocation_2025_3",
+    "sender": "David Kim",
+    "sender_team": "Finance",
+    "sender_role": "CFO",
+    "topic": "Budget Allocation 2025",
+    "content": "Emergency budget meeting scheduled for tomorrow. Each team must present case for why their budget shouldn't be cut. Tension is very high.",
+    "timestamp": "2026-01-15T17:41:19.180005",
+    "type": "discussion",
+    "thread_id": "thread_budget_allocation_2025",
+    "thread_position": 4,
+    "recipients": [
+      "Michael Brown",
+      "Amanda White",
+      "Nina Patel",
+      "Lisa Wang",
+      "Kevin Zhang"
+    ]
+  },
+  {
+    "id": "email_infrastructure_migration_to_aws_0",
+    "sender": "Nina Patel",
+    "sender_team": "Finance",
+    "sender_role": "FP&A Manager",
+    "topic": "Infrastructure Migration to AWS",
+    "content": "AWS migration plan: Phase 1 (dev environments) complete. Phase 2 (staging) scheduled for Feb. Phase 3 (production) is high-risk and needs careful planning.",
+    "timestamp": "2026-01-15T21:24:19.180074",
+    "type": "discussion",
+    "thread_id": "thread_infrastructure_migration_to_aws",
+    "thread_position": 1,
+    "recipients": [
+      "Rachel Green",
+      "James Wilson",
+      "Marcus Johnson",
+      "Lisa Wang",
+      "Sarah Chen"
+    ]
+  },
+  {
+    "id": "email_security_compliance_audit_2",
+    "sender": "Marcus Johnson",
+    "sender_team": "Engineering",
+    "sender_role": "CTO",
+    "topic": "Security Compliance Audit",
+    "content": "Audit failure risk: If we don't resolve all findings, we could fail SOC 2, which would block all enterprise deals. This is a company-level risk.",
+    "timestamp": "2026-01-15T21:56:19.180203",
+    "type": "discussion",
+    "thread_id": "thread_security_compliance_audit",
+    "thread_position": 3,
+    "recipients": [
+      "Rachel Green",
+      "Amanda White",
+      "Jennifer Lee",
+      "Robert Taylor",
+      "Sarah Chen"
+    ]
+  },
+  {
+    "id": "email_q1_product_launch_1",
+    "sender": "Marcus Johnson",
+    "sender_team": "Engineering",
+    "sender_role": "CTO",
+    "topic": "Q1 Product Launch",
+    "content": "Update from yesterday's meeting: After heated discussion between Engineering and Marketing, we're proposing Feb 28th as a compromise. Need exec approval by EOD.",
+    "timestamp": "2026-01-16T14:19:19.179846",
+    "type": "discussion",
+    "thread_id": "thread_q1_product_launch",
+    "thread_position": 2,
+    "recipients": [
+      "Sarah Chen",
+      "Amanda White",
+      "Kevin Zhang",
+      "Nina Patel"
+    ]
+  },
+  {
+    "id": "email_remote_work_policy_update_0",
+    "sender": "Maria Garcia",
+    "sender_team": "Product",
+    "sender_role": "PM",
+    "topic": "Remote Work Policy Update",
+    "content": "Current policy allows full remote. Proposing hybrid: 2 days in office for roles that benefit from collaboration.",
+    "timestamp": "2026-01-16T21:25:19.180371",
+    "type": "discussion",
+    "thread_id": "thread_remote_work_policy_update",
+    "thread_position": 1,
+    "recipients": [
+      "Marcus Johnson",
+      "Amanda White",
+      "Robert Taylor",
+      "Michael Brown"
+    ]
+  },
+  {
+    "id": "email_sales_compensation_plan_3",
+    "sender": "David Kim",
+    "sender_team": "Finance",
+    "sender_role": "CFO",
+    "topic": "Sales Compensation Plan",
+    "content": "Revised proposal: Add expansion quota (20% of total) with 1.5x accelerator. Base increase reduced to 10%. Finance conditionally approves.",
+    "timestamp": "2026-01-17T15:19:19.180172",
+    "type": "discussion",
+    "thread_id": "thread_sales_compensation_plan",
+    "thread_position": 4,
+    "recipients": [
+      "Sarah Chen",
+      "Amanda White",
+      "Rachel Green",
+      "Robert Taylor"
+    ]
+  },
+  {
+    "id": "email_marketing_campaign_q1_3",
+    "sender": "James Wilson",
+    "sender_team": "Sales",
+    "sender_role": "VP Sales",
+    "topic": "Marketing Campaign Q1",
+    "content": "Compromise: 70% enterprise, 30% SMB performance. A/B test both approaches and reallocate in Q2 based on results. Approved.",
+    "timestamp": "2026-01-17T15:25:19.180140",
+    "type": "discussion",
+    "thread_id": "thread_marketing_campaign_q1",
+    "thread_position": 4,
+    "recipients": [
+      "Maria Garcia",
+      "Nina Patel",
+      "Amanda White",
+      "Jennifer Lee"
+    ]
+  },
+  {
+    "id": "email_budget_allocation_2025_4",
+    "sender": "David Kim",
+    "sender_team": "Finance",
+    "sender_role": "CFO",
+    "topic": "Budget Allocation 2025",
+    "content": "FINAL BUDGET APPROVED: Engineering $1.7M, Marketing $900K, Product $400K. Everyone had to compromise. Implementation starts next week.",
+    "timestamp": "2026-01-17T18:27:19.180005",
+    "type": "decision",
+    "thread_id": "thread_budget_allocation_2025",
+    "thread_position": 5,
+    "recipients": [
+      "Nina Patel",
+      "Amanda White"
+    ]
+  },
+  {
+    "id": "email_infrastructure_migration_to_aws_1",
+    "sender": "Sarah Chen",
+    "sender_team": "Product",
+    "sender_role": "VP Product",
+    "topic": "Infrastructure Migration to AWS",
+    "content": "Risk identified: Production migration conflicts with Q1 product launch timeline. If migration has issues, we could miss the March 1st launch date.",
+    "timestamp": "2026-01-17T19:20:19.180074",
+    "type": "conflict",
+    "thread_id": "thread_infrastructure_migration_to_aws",
+    "thread_position": 2,
+    "recipients": [
+      "David Kim",
+      "Robert Taylor",
+      "Rachel Green",
+      "Michael Brown",
+      "Marcus Johnson"
+    ]
+  },
+  {
+    "id": "email_security_compliance_audit_3",
+    "sender": "James Wilson",
+    "sender_team": "Sales",
+    "sender_role": "VP Sales",
+    "topic": "Security Compliance Audit",
+    "content": "Resource allocation needed: Completing audit prep requires 200 engineering hours over next 4 weeks. This pulls resources from other priorities.",
+    "timestamp": "2026-01-17T20:17:19.180203",
+    "type": "discussion",
+    "thread_id": "thread_security_compliance_audit",
+    "thread_position": 4,
+    "recipients": [
+      "Maria Garcia",
+      "Jennifer Lee",
+      "Kevin Zhang",
+      "Lisa Wang",
+      "Michael Brown"
+    ]
+  },
+  {
+    "id": "email_remote_work_policy_update_1",
+    "sender": "Marcus Johnson",
+    "sender_team": "Engineering",
+    "sender_role": "CTO",
+    "topic": "Remote Work Policy Update",
+    "content": "Employee sentiment: Engineering strongly prefers remote. Sales and Marketing are split. Product leans hybrid.",
+    "timestamp": "2026-01-18T19:14:19.180371",
+    "type": "discussion",
+    "thread_id": "thread_remote_work_policy_update",
+    "thread_position": 2,
+    "recipients": [
+      "Rachel Green",
+      "Jennifer Lee",
+      "Robert Taylor",
+      "David Kim"
+    ]
+  },
+  {
+    "id": "email_q1_product_launch_2",
+    "sender": "Sarah Chen",
+    "sender_team": "Product",
+    "sender_role": "VP Product",
+    "topic": "Q1 Product Launch",
+    "content": "DECISION CONFIRMED: Launch date is March 1st. Sarah Chen made the final call after reviewing capacity constraints. Marketing will adjust their timeline.",
+    "timestamp": "2026-01-18T19:53:19.179846",
+    "type": "decision",
+    "thread_id": "thread_q1_product_launch",
+    "thread_position": 3,
+    "recipients": [
+      "Emily Rodriguez",
+      "Tom Anderson",
+      "Lisa Wang",
+      "Jennifer Lee",
+      "Kevin Zhang"
+    ]
+  },
+  {
+    "id": "email_feature_prioritization_0",
+    "sender": "Marcus Johnson",
+    "sender_team": "Engineering",
+    "sender_role": "CTO",
+    "topic": "Feature Prioritization",
+    "content": "Q2 roadmap debate: Engineering wants to focus on technical debt, Product wants new enterprise features, Marketing needs better analytics for campaigns.",
+    "timestamp": "2026-01-19T18:28:19.179970",
+    "type": "discussion",
+    "thread_id": "thread_feature_prioritization",
+    "thread_position": 1,
+    "recipients": [
+      "Sarah Chen",
+      "Robert Taylor",
+      "Maria Garcia"
+    ]
+  },
+  {
+    "id": "email_sales_compensation_plan_4",
+    "sender": "Nina Patel",
+    "sender_team": "Finance",
+    "sender_role": "FP&A Manager",
+    "topic": "Sales Compensation Plan",
+    "content": "FINAL COMP PLAN: 60/40 base/commission, 20% expansion quota, 1.5x accelerator on enterprise. Effective March 1st.",
+    "timestamp": "2026-01-19T19:29:19.180172",
+    "type": "decision",
+    "thread_id": "thread_sales_compensation_plan",
+    "thread_position": 5,
+    "recipients": [
+      "Rachel Green",
+      "Maria Garcia",
+      "Sarah Chen",
+      "Kevin Zhang"
+    ]
+  },
+  {
+    "id": "email_marketing_campaign_q1_4",
+    "sender": "Sarah Chen",
+    "sender_team": "Product",
+    "sender_role": "VP Product",
+    "topic": "Marketing Campaign Q1",
+    "content": "Campaign launch scheduled for Feb 1st. Creative assets in review. Targeting 200 enterprise leads and 500 SMB signups.",
+    "timestamp": "2026-01-19T19:35:19.180140",
+    "type": "discussion",
+    "thread_id": "thread_marketing_campaign_q1",
+    "thread_position": 5,
+    "recipients": [
+      "Rachel Green",
+      "Maria Garcia",
+      "Amanda White",
+      "Robert Taylor",
+      "David Kim"
+    ]
+  },
+  {
+    "id": "email_security_compliance_audit_4",
+    "sender": "Marcus Johnson",
+    "sender_team": "Engineering",
+    "sender_role": "CTO",
+    "topic": "Security Compliance Audit",
+    "content": "EXECUTIVE DECISION: SOC 2 compliance is top priority. All other work is secondary until audit prep is complete. Engineering roadmap adjusted accordingly.",
+    "timestamp": "2026-01-19T20:20:19.180203",
+    "type": "decision",
+    "thread_id": "thread_security_compliance_audit",
+    "thread_position": 5,
+    "recipients": [
+      "Lisa Wang",
+      "Emily Rodriguez",
+      "Sarah Chen",
+      "Rachel Green",
+      "Nina Patel"
+    ]
+  },
+  {
+    "id": "email_infrastructure_migration_to_aws_2",
+    "sender": "Marcus Johnson",
+    "sender_team": "Engineering",
+    "sender_role": "CTO",
+    "topic": "Infrastructure Migration to AWS",
+    "content": "Kevin Zhang recommendation: Delay production migration to April to avoid jeopardizing launch. Product team supports this. Engineering wants to push forward.",
+    "timestamp": "2026-01-19T21:45:19.180074",
+    "type": "discussion",
+    "thread_id": "thread_infrastructure_migration_to_aws",
+    "thread_position": 3,
+    "recipients": [
+      "James Wilson",
+      "Jennifer Lee",
+      "Tom Anderson"
+    ]
+  },
+  {
+    "id": "email_api_v3_development_0",
+    "sender": "Rachel Green",
+    "sender_team": "Marketing",
+    "sender_role": "Content Lead",
+    "topic": "API v3 Development",
+    "content": "API v3 scope: GraphQL support, better rate limiting, webhook improvements, documentation overhaul. Enterprise customers are demanding this.",
+    "timestamp": "2026-01-20T18:58:19.180275",
+    "type": "discussion",
+    "thread_id": "thread_api_v3_development",
+    "thread_position": 1,
+    "recipients": [
+      "Sarah Chen",
+      "Maria Garcia",
+      "Emily Rodriguez"
+    ]
+  },
+  {
+    "id": "email_remote_work_policy_update_2",
+    "sender": "Marcus Johnson",
+    "sender_team": "Engineering",
+    "sender_role": "CTO",
+    "topic": "Remote Work Policy Update",
+    "content": "Marcus Johnson (CTO): Forcing office days will hurt engineering retention. We're already losing candidates to fully remote competitors.",
+    "timestamp": "2026-01-20T20:22:19.180371",
+    "type": "discussion",
+    "thread_id": "thread_remote_work_policy_update",
+    "thread_position": 3,
+    "recipients": [
+      "James Wilson",
+      "Emily Rodriguez",
+      "Maria Garcia",
+      "Lisa Wang"
+    ]
+  },
+  {
+    "id": "email_q1_product_launch_3",
+    "sender": "Marcus Johnson",
+    "sender_team": "Engineering",
+    "sender_role": "CTO",
+    "topic": "Q1 Product Launch",
+    "content": "Following up on the launch decision - we need to assign ownership for: beta testing (Engineering), PR strategy (Marketing), and customer onboarding (Product).",
+    "timestamp": "2026-01-20T22:40:19.179846",
+    "type": "discussion",
+    "thread_id": "thread_q1_product_launch",
+    "thread_position": 4,
+    "recipients": [
+      "Rachel Green",
+      "Nina Patel",
+      "Maria Garcia",
+      "Emily Rodriguez",
+      "Michael Brown"
+    ]
+  },
+  {
+    "id": "email_feature_prioritization_1",
+    "sender": "Robert Taylor",
+    "sender_team": "Marketing",
+    "sender_role": "Growth Lead",
+    "topic": "Feature Prioritization",
+    "content": "Capacity planning shows we can only deliver 2 of the 3 priorities. This is creating tension across teams - everyone thinks their priority is most critical.",
+    "timestamp": "2026-01-21T14:18:19.179970",
+    "type": "discussion",
+    "thread_id": "thread_feature_prioritization",
+    "thread_position": 2,
+    "recipients": [
+      "Maria Garcia",
+      "Nina Patel",
+      "Tom Anderson",
+      "Lisa Wang"
+    ]
+  },
+  {
+    "id": "email_infrastructure_migration_to_aws_3",
+    "sender": "Marcus Johnson",
+    "sender_team": "Engineering",
+    "sender_role": "CTO",
+    "topic": "Infrastructure Migration to AWS",
+    "content": "Debate: Engineering argues that delaying migration increases technical debt and limits our ability to scale. Product prioritizes launch stability.",
+    "timestamp": "2026-01-21T20:22:19.180074",
+    "type": "discussion",
+    "thread_id": "thread_infrastructure_migration_to_aws",
+    "thread_position": 4,
+    "recipients": [
+      "Robert Taylor",
+      "Rachel Green",
+      "David Kim"
+    ]
+  },
+  {
+    "id": "email_remote_work_policy_update_3",
+    "sender": "Maria Garcia",
+    "sender_team": "Product",
+    "sender_role": "PM",
+    "topic": "Remote Work Policy Update",
+    "content": "Revised proposal: Hybrid optional, 2 days recommended but not required. Office space for those who want it. Approved.",
+    "timestamp": "2026-01-22T16:13:19.180371",
+    "type": "discussion",
+    "thread_id": "thread_remote_work_policy_update",
+    "thread_position": 4,
+    "recipients": [
+      "Kevin Zhang",
+      "David Kim",
+      "Amanda White"
+    ]
+  },
+  {
+    "id": "email_q1_product_launch_4",
+    "sender": "Sarah Chen",
+    "sender_team": "Product",
+    "sender_role": "VP Product",
+    "topic": "Q1 Product Launch",
+    "content": "Risk alert: The March 1st launch depends on the API v3 completion by Feb 15th. Infrastructure team flagged potential delays due to AWS migration conflicts.",
+    "timestamp": "2026-01-22T19:27:19.179846",
+    "type": "conflict",
+    "thread_id": "thread_q1_product_launch",
+    "thread_position": 5,
+    "recipients": [
+      "Nina Patel",
+      "Michael Brown",
+      "Jennifer Lee",
+      "Rachel Green",
+      "Marcus Johnson"
+    ]
+  },
+  {
+    "id": "email_api_v3_development_1",
+    "sender": "Maria Garcia",
+    "sender_team": "Product",
+    "sender_role": "PM",
+    "topic": "API v3 Development",
+    "content": "Timeline concern: Original estimate was 3 months, but scope keeps expanding. Now looking at 4-5 months with current team size.",
+    "timestamp": "2026-01-22T21:22:19.180275",
+    "type": "discussion",
+    "thread_id": "thread_api_v3_development",
+    "thread_position": 2,
+    "recipients": [
+      "David Kim",
+      "Lisa Wang",
+      "Emily Rodriguez"
+    ]
+  },
+  {
+    "id": "email_feature_prioritization_2",
+    "sender": "Marcus Johnson",
+    "sender_team": "Engineering",
+    "sender_role": "CTO",
+    "topic": "Feature Prioritization",
+    "content": "Maria Garcia (PM) proposal: Split team 60% enterprise features, 40% tech debt, defer analytics to Q3. Engineering team is frustrated with this approach.",
+    "timestamp": "2026-01-23T15:54:19.179970",
+    "type": "discussion",
+    "thread_id": "thread_feature_prioritization",
+    "thread_position": 3,
+    "recipients": [
+      "Maria Garcia",
+      "Robert Taylor",
+      "Lisa Wang",
+      "Michael Brown"
+    ]
+  },
+  {
+    "id": "email_infrastructure_migration_to_aws_4",
+    "sender": "Marcus Johnson",
+    "sender_team": "Engineering",
+    "sender_role": "CTO",
+    "topic": "Infrastructure Migration to AWS",
+    "content": "DECISION: Migration delayed to April 15th. Launch takes priority. Engineering will implement temporary scaling solutions to bridge the gap.",
+    "timestamp": "2026-01-23T22:41:19.180074",
+    "type": "decision",
+    "thread_id": "thread_infrastructure_migration_to_aws",
+    "thread_position": 5,
+    "recipients": [
+      "Sarah Chen",
+      "James Wilson",
+      "Maria Garcia",
+      "David Kim"
+    ]
+  },
+  {
+    "id": "email_remote_work_policy_update_4",
+    "sender": "Rachel Green",
+    "sender_team": "Marketing",
+    "sender_role": "Content Lead",
+    "topic": "Remote Work Policy Update",
+    "content": "Remote work policy: Hybrid optional, 2 days recommended. No mandatory office days. Effective immediately.",
+    "timestamp": "2026-01-24T20:16:19.180371",
+    "type": "discussion",
+    "thread_id": "thread_remote_work_policy_update",
+    "thread_position": 5,
+    "recipients": [
+      "Robert Taylor",
+      "Nina Patel",
+      "David Kim",
+      "Marcus Johnson",
+      "Emily Rodriguez"
+    ]
+  },
+  {
+    "id": "email_api_v3_development_2",
+    "sender": "Sarah Chen",
+    "sender_team": "Product",
+    "sender_role": "VP Product",
+    "topic": "API v3 Development",
+    "content": "Dependency alert: Q1 product launch assumes API v3 is ready. If API v3 slips, the launch either delays or ships with limited functionality.",
+    "timestamp": "2026-01-24T22:14:19.180275",
+    "type": "discussion",
+    "thread_id": "thread_api_v3_development",
+    "thread_position": 3,
+    "recipients": [
+      "James Wilson",
+      "Rachel Green",
+      "Kevin Zhang",
+      "Tom Anderson",
+      "Amanda White"
+    ]
+  },
+  {
+    "id": "email_pricing_strategy_review_0",
+    "sender": "David Kim",
+    "sender_team": "Finance",
+    "sender_role": "CFO",
+    "topic": "Pricing Strategy Review",
+    "content": "Proposing new pricing tiers for 2025: Basic ($29/mo), Pro ($99/mo), Enterprise (custom). Finance has concerns about margin compression at the Pro tier.",
+    "timestamp": "2026-01-24T22:23:19.179929",
+    "type": "discussion",
+    "thread_id": "thread_pricing_strategy_review",
+    "thread_position": 1,
+    "recipients": [
+      "Sarah Chen",
+      "Robert Taylor",
+      "Jennifer Lee",
+      "Michael Brown"
+    ]
+  },
+  {
+    "id": "email_feature_prioritization_3",
+    "sender": "Marcus Johnson",
+    "sender_team": "Engineering",
+    "sender_role": "CTO",
+    "topic": "Feature Prioritization",
+    "content": "Marcus Johnson (CTO) counter-proposal: 70% tech debt now to prevent system instability, defer enterprise features. Product team strongly opposes.",
+    "timestamp": "2026-01-25T15:03:19.179970",
+    "type": "discussion",
+    "thread_id": "thread_feature_prioritization",
+    "thread_position": 4,
+    "recipients": [
+      "David Kim",
+      "James Wilson"
+    ]
+  },
+  {
+    "id": "email_pricing_strategy_review_1",
+    "sender": "David Kim",
+    "sender_team": "Finance",
+    "sender_role": "CFO",
+    "topic": "Pricing Strategy Review",
+    "content": "Finance pushback on $99 pricing: Analysis shows we need $119 minimum to hit our margin targets. Product team disagrees - claims $99 is critical for market positioning.",
+    "timestamp": "2026-01-26T14:39:19.179929",
+    "type": "conflict",
+    "thread_id": "thread_pricing_strategy_review",
+    "thread_position": 2,
+    "recipients": [
+      "Rachel Green",
+      "Lisa Wang",
+      "Sarah Chen",
+      "Nina Patel",
+      "Tom Anderson"
+    ]
+  },
+  {
+    "id": "email_api_v3_development_3",
+    "sender": "Marcus Johnson",
+    "sender_team": "Engineering",
+    "sender_role": "CTO",
+    "topic": "API v3 Development",
+    "content": "Lisa Wang technical assessment: We can deliver core API v3 features by Feb 15th (meeting launch deadline), but advanced features will come in v3.1 later.",
+    "timestamp": "2026-01-26T16:25:19.180275",
+    "type": "discussion",
+    "thread_id": "thread_api_v3_development",
+    "thread_position": 4,
+    "recipients": [
+      "David Kim",
+      "Jennifer Lee",
+      "Emily Rodriguez",
+      "Rachel Green"
+    ]
+  },
+  {
+    "id": "email_feature_prioritization_4",
+    "sender": "Tom Anderson",
+    "sender_team": "Sales",
+    "sender_role": "Enterprise Sales",
+    "topic": "Feature Prioritization",
+    "content": "DECISION by Sarah Chen: 50/50 split between enterprise features and tech debt. Analytics dashboard deprioritized to Q3. Not everyone is happy but we're moving forward.",
+    "timestamp": "2026-01-27T15:51:19.179970",
+    "type": "decision",
+    "thread_id": "thread_feature_prioritization",
+    "thread_position": 5,
+    "recipients": [
+      "Nina Patel",
+      "Michael Brown",
+      "Maria Garcia",
+      "Marcus Johnson"
+    ]
+  },
+  {
+    "id": "email_enterprise_feature_requests_0",
+    "sender": "James Wilson",
+    "sender_team": "Sales",
+    "sender_role": "VP Sales",
+    "topic": "Enterprise Feature Requests",
+    "content": "Top 5 enterprise requests: SSO SAML, custom branding, audit logs, data export API, multi-region deployment. Need to prioritize for Q2.",
+    "timestamp": "2026-01-27T17:22:19.180306",
+    "type": "discussion",
+    "thread_id": "thread_enterprise_feature_requests",
+    "thread_position": 1,
+    "recipients": [
+      "Tom Anderson",
+      "Jennifer Lee",
+      "Marcus Johnson",
+      "Emily Rodriguez",
+      "Rachel Green"
+    ]
+  },
+  {
+    "id": "email_mobile_app_redesign_0",
+    "sender": "Kevin Zhang",
+    "sender_team": "Engineering",
+    "sender_role": "DevOps Lead",
+    "topic": "Mobile App Redesign",
+    "content": "User research shows 40% of our users are mobile-first, but our mobile app has 3.2 star rating. Competitors have 4.5+. This is hurting acquisition.",
+    "timestamp": "2026-01-27T18:55:19.180238",
+    "type": "discussion",
+    "thread_id": "thread_mobile_app_redesign",
+    "thread_position": 1,
+    "recipients": [
+      "James Wilson",
+      "Rachel Green",
+      "Emily Rodriguez",
+      "Sarah Chen",
+      "Nina Patel"
+    ]
+  },
+  {
+    "id": "email_api_v3_development_4",
+    "sender": "Sarah Chen",
+    "sender_team": "Product",
+    "sender_role": "VP Product",
+    "topic": "API v3 Development",
+    "content": "DECISION: Ship API v3.0 with core features for launch, iterate with v3.1 in April. Enterprise customers get early access to v3.1 beta.",
+    "timestamp": "2026-01-28T18:41:19.180275",
+    "type": "decision",
+    "thread_id": "thread_api_v3_development",
+    "thread_position": 5,
+    "recipients": [
+      "Tom Anderson",
+      "Maria Garcia",
+      "Rachel Green"
+    ]
+  },
+  {
+    "id": "email_pricing_strategy_review_2",
+    "sender": "David Kim",
+    "sender_team": "Finance",
+    "sender_role": "CFO",
+    "topic": "Pricing Strategy Review",
+    "content": "ESCALATED to David Kim (CFO): We have a fundamental disagreement between Finance and Product on pricing strategy. Need executive decision.",
+    "timestamp": "2026-01-28T20:17:19.179929",
+    "type": "conflict",
+    "thread_id": "thread_pricing_strategy_review",
+    "thread_position": 3,
+    "recipients": [
+      "Jennifer Lee",
+      "Amanda White",
+      "Maria Garcia"
+    ]
+  },
+  {
+    "id": "email_enterprise_feature_requests_1",
+    "sender": "Marcus Johnson",
+    "sender_team": "Engineering",
+    "sender_role": "CTO",
+    "topic": "Enterprise Feature Requests",
+    "content": "Product vs Engineering tension: Product wants all 5, Engineering says we can only do 2-3 without delaying other commitments.",
+    "timestamp": "2026-01-29T14:04:19.180306",
+    "type": "discussion",
+    "thread_id": "thread_enterprise_feature_requests",
+    "thread_position": 2,
+    "recipients": [
+      "Lisa Wang",
+      "David Kim",
+      "James Wilson",
+      "Tom Anderson",
+      "Jennifer Lee"
+    ]
+  },
+  {
+    "id": "email_mobile_app_redesign_1",
+    "sender": "Michael Brown",
+    "sender_team": "Engineering",
+    "sender_role": "Senior Eng",
+    "topic": "Mobile App Redesign",
+    "content": "Amanda White proposal: Complete mobile redesign with modern UI, better performance, offline mode. Estimated timeline: 4 months, requires dedicated iOS/Android devs.",
+    "timestamp": "2026-01-29T15:53:19.180238",
+    "type": "discussion",
+    "thread_id": "thread_mobile_app_redesign",
+    "thread_position": 2,
+    "recipients": [
+      "Jennifer Lee",
+      "Kevin Zhang",
+      "Lisa Wang",
+      "Rachel Green",
+      "Amanda White"
+    ]
+  },
+  {
+    "id": "email_engineering_team_expansion_0",
+    "sender": "Robert Taylor",
+    "sender_team": "Marketing",
+    "sender_role": "Growth Lead",
+    "topic": "Engineering Team Expansion",
+    "content": "Hiring plan for Q1-Q2: Need 5 senior engineers to handle infrastructure migration and new product features. Recruiting timeline: 8-12 weeks per hire.",
+    "timestamp": "2026-01-29T16:53:19.180039",
+    "type": "discussion",
+    "thread_id": "thread_engineering_team_expansion",
+    "thread_position": 1,
+    "recipients": [
+      "Rachel Green",
+      "Michael Brown",
+      "Maria Garcia",
+      "Nina Patel",
+      "Amanda White"
+    ]
+  },
+  {
+    "id": "email_pricing_strategy_review_3",
+    "sender": "David Kim",
+    "sender_team": "Finance",
+    "sender_role": "CFO",
+    "topic": "Pricing Strategy Review",
+    "content": "Resolution from exec team: Going with $99 Pro tier but cutting features to reduce costs. Emily Rodriguez will lead the feature reduction analysis.",
+    "timestamp": "2026-01-30T16:47:19.179929",
+    "type": "discussion",
+    "thread_id": "thread_pricing_strategy_review",
+    "thread_position": 4,
+    "recipients": [
+      "Kevin Zhang",
+      "Maria Garcia",
+      "Rachel Green",
+      "Sarah Chen",
+      "Marcus Johnson"
+    ]
+  },
+  {
+    "id": "email_engineering_team_expansion_1",
+    "sender": "David Kim",
+    "sender_team": "Finance",
+    "sender_role": "CFO",
+    "topic": "Engineering Team Expansion",
+    "content": "Concern from Finance: Each senior engineer costs ~$180K fully loaded. 5 hires = $900K annual run rate increase. This wasn't in the approved budget.",
+    "timestamp": "2026-01-31T16:09:19.180039",
+    "type": "discussion",
+    "thread_id": "thread_engineering_team_expansion",
+    "thread_position": 2,
+    "recipients": [
+      "Maria Garcia",
+      "James Wilson",
+      "Tom Anderson",
+      "Rachel Green"
+    ]
+  },
+  {
+    "id": "email_enterprise_feature_requests_2",
+    "sender": "Kevin Zhang",
+    "sender_team": "Engineering",
+    "sender_role": "DevOps Lead",
+    "topic": "Enterprise Feature Requests",
+    "content": "Customer success input: SSO and audit logs are blocking 3 deals worth $1.2M. Recommend prioritizing those two.",
+    "timestamp": "2026-01-31T16:46:19.180306",
+    "type": "discussion",
+    "thread_id": "thread_enterprise_feature_requests",
+    "thread_position": 3,
+    "recipients": [
+      "James Wilson",
+      "Maria Garcia",
+      "Robert Taylor",
+      "Amanda White",
+      "Marcus Johnson"
+    ]
+  },
+  {
+    "id": "email_mobile_app_redesign_2",
+    "sender": "Tom Anderson",
+    "sender_team": "Sales",
+    "sender_role": "Enterprise Sales",
+    "topic": "Mobile App Redesign",
+    "content": "Resource conflict: The mobile redesign competes with API v3 development for the same engineering resources. We can't do both simultaneously.",
+    "timestamp": "2026-01-31T20:53:19.180238",
+    "type": "conflict",
+    "thread_id": "thread_mobile_app_redesign",
+    "thread_position": 3,
+    "recipients": [
+      "Nina Patel",
+      "David Kim",
+      "Maria Garcia",
+      "Jennifer Lee",
+      "Marcus Johnson"
+    ]
+  },
+  {
+    "id": "email_pricing_strategy_review_4",
+    "sender": "David Kim",
+    "sender_team": "Finance",
+    "sender_role": "CFO",
+    "topic": "Pricing Strategy Review",
+    "content": "Implementation plan for new pricing: Sales needs 2 weeks for customer communications, Finance needs 1 week for billing system updates. Launch target: March 15th.",
+    "timestamp": "2026-02-01T20:44:19.179929",
+    "type": "discussion",
+    "thread_id": "thread_pricing_strategy_review",
+    "thread_position": 5,
+    "recipients": [
+      "Michael Brown",
+      "Amanda White",
+      "Maria Garcia",
+      "Kevin Zhang"
+    ]
+  },
+  {
+    "id": "email_engineering_team_expansion_2",
+    "sender": "Maria Garcia",
+    "sender_team": "Product",
+    "sender_role": "PM",
+    "topic": "Engineering Team Expansion",
+    "content": "Marcus Johnson defending headcount: Without these hires, we can't deliver on product commitments. This creates a dependency chain affecting everything.",
+    "timestamp": "2026-02-02T15:21:19.180039",
+    "type": "discussion",
+    "thread_id": "thread_engineering_team_expansion",
+    "thread_position": 3,
+    "recipients": [
+      "David Kim",
+      "James Wilson",
+      "Kevin Zhang",
+      "Amanda White"
+    ]
+  },
+  {
+    "id": "email_mobile_app_redesign_3",
+    "sender": "Sarah Chen",
+    "sender_team": "Product",
+    "sender_role": "VP Product",
+    "topic": "Mobile App Redesign",
+    "content": "Product prioritization debate: Mobile redesign affects consumer segment (60% of users), API v3 affects enterprise segment (40% revenue). Which matters more?",
+    "timestamp": "2026-02-02T17:32:19.180238",
+    "type": "discussion",
+    "thread_id": "thread_mobile_app_redesign",
+    "thread_position": 4,
+    "recipients": [
+      "David Kim",
+      "Marcus Johnson",
+      "Robert Taylor",
+      "Kevin Zhang"
+    ]
+  },
+  {
+    "id": "email_enterprise_feature_requests_3",
+    "sender": "Jennifer Lee",
+    "sender_team": "Finance",
+    "sender_role": "Controller",
+    "topic": "Enterprise Feature Requests",
+    "content": "Sarah Chen direction: SSO and audit logs for Q2. Custom branding and data export for Q3. Multi-region deferred to 2026.",
+    "timestamp": "2026-02-02T17:56:19.180306",
+    "type": "discussion",
+    "thread_id": "thread_enterprise_feature_requests",
+    "thread_position": 4,
+    "recipients": [
+      "Rachel Green",
+      "Emily Rodriguez",
+      "Amanda White"
+    ]
+  },
+  {
+    "id": "email_performance_review_process_0",
+    "sender": "Nina Patel",
+    "sender_team": "Finance",
+    "sender_role": "FP&A Manager",
+    "topic": "Performance Review Process",
+    "content": "Proposing new performance review cycle: Quarterly check-ins, annual review, 360 feedback for managers. Rollout in March.",
+    "timestamp": "2026-02-02T20:28:19.180339",
+    "type": "discussion",
+    "thread_id": "thread_performance_review_process",
+    "thread_position": 1,
+    "recipients": [
+      "Robert Taylor",
+      "Maria Garcia",
+      "Marcus Johnson"
+    ]
+  },
+  {
+    "id": "email_engineering_team_expansion_3",
+    "sender": "Amanda White",
+    "sender_team": "Product",
+    "sender_role": "Designer",
+    "topic": "Engineering Team Expansion",
+    "content": "Compromise proposal: Hire 3 seniors immediately, re-evaluate in Q2 for remaining 2 based on revenue performance. Approved by exec team.",
+    "timestamp": "2026-02-04T14:01:19.180039",
+    "type": "discussion",
+    "thread_id": "thread_engineering_team_expansion",
+    "thread_position": 4,
+    "recipients": [
+      "Robert Taylor",
+      "James Wilson",
+      "Nina Patel",
+      "Emily Rodriguez",
+      "Rachel Green"
+    ]
+  },
+  {
+    "id": "email_enterprise_feature_requests_4",
+    "sender": "Marcus Johnson",
+    "sender_team": "Engineering",
+    "sender_role": "CTO",
+    "topic": "Enterprise Feature Requests",
+    "content": "Roadmap updated. Engineering allocating 2 senior devs to SSO and audit logs. Target completion: end of Q2.",
+    "timestamp": "2026-02-04T16:02:19.180306",
+    "type": "discussion",
+    "thread_id": "thread_enterprise_feature_requests",
+    "thread_position": 5,
+    "recipients": [
+      "Jennifer Lee",
+      "Rachel Green",
+      "Kevin Zhang",
+      "Tom Anderson"
+    ]
+  },
+  {
+    "id": "email_mobile_app_redesign_4",
+    "sender": "Rachel Green",
+    "sender_team": "Marketing",
+    "sender_role": "Content Lead",
+    "topic": "Mobile App Redesign",
+    "content": "DECISION: Prioritize API v3 (enterprise revenue is critical). Mobile redesign delayed to Q3. Consumer team is disappointed but understands the business logic.",
+    "timestamp": "2026-02-04T16:13:19.180238",
+    "type": "decision",
+    "thread_id": "thread_mobile_app_redesign",
+    "thread_position": 5,
+    "recipients": [
+      "David Kim",
+      "Michael Brown",
+      "Tom Anderson",
+      "Maria Garcia"
+    ]
+  },
+  {
+    "id": "email_performance_review_process_1",
+    "sender": "Sarah Chen",
+    "sender_team": "Product",
+    "sender_role": "VP Product",
+    "topic": "Performance Review Process",
+    "content": "HR concern: Current managers aren't trained on giving feedback. Need to run manager training before new process launches.",
+    "timestamp": "2026-02-04T17:39:19.180339",
+    "type": "discussion",
+    "thread_id": "thread_performance_review_process",
+    "thread_position": 2,
+    "recipients": [
+      "Amanda White",
+      "Nina Patel",
+      "Marcus Johnson",
+      "Jennifer Lee"
+    ]
+  },
+  {
+    "id": "email_performance_review_process_2",
+    "sender": "Rachel Green",
+    "sender_team": "Marketing",
+    "sender_role": "Content Lead",
+    "topic": "Performance Review Process",
+    "content": "Timeline debate: HR wants to delay to Q2 for training. Leadership wants March to align with comp planning.",
+    "timestamp": "2026-02-06T18:53:19.180339",
+    "type": "discussion",
+    "thread_id": "thread_performance_review_process",
+    "thread_position": 3,
+    "recipients": [
+      "Nina Patel",
+      "Sarah Chen",
+      "Marcus Johnson"
+    ]
+  },
+  {
+    "id": "email_engineering_team_expansion_4",
+    "sender": "Sarah Chen",
+    "sender_team": "Product",
+    "sender_role": "VP Product",
+    "topic": "Engineering Team Expansion",
+    "content": "Recruiting update: First 2 offers accepted, starting March 1st. Third candidate in final rounds. Timeline still tight but achievable.",
+    "timestamp": "2026-02-06T20:39:19.180039",
+    "type": "discussion",
+    "thread_id": "thread_engineering_team_expansion",
+    "thread_position": 5,
+    "recipients": [
+      "James Wilson",
+      "Kevin Zhang",
+      "Maria Garcia",
+      "Robert Taylor"
+    ]
+  },
+  {
+    "id": "email_customer_support_sla_0",
+    "sender": "Marcus Johnson",
+    "sender_team": "Engineering",
+    "sender_role": "CTO",
+    "topic": "Customer Support SLA",
+    "content": "Proposal: New enterprise SLA commitments - 1-hour response time for P1 issues, 4-hour for P2. This would differentiate us from competitors.",
+    "timestamp": "2026-02-07T21:50:19.180105",
+    "type": "discussion",
+    "thread_id": "thread_customer_support_sla",
+    "thread_position": 1,
+    "recipients": [
+      "Amanda White",
+      "Sarah Chen",
+      "Nina Patel",
+      "Maria Garcia",
+      "Robert Taylor"
+    ]
+  },
+  {
+    "id": "email_performance_review_process_3",
+    "sender": "Sarah Chen",
+    "sender_team": "Product",
+    "sender_role": "VP Product",
+    "topic": "Performance Review Process",
+    "content": "Compromise: Launch lightweight quarterly check-ins in March, full 360 process in Q2 after manager training. Approved.",
+    "timestamp": "2026-02-08T16:26:19.180339",
+    "type": "discussion",
+    "thread_id": "thread_performance_review_process",
+    "thread_position": 4,
+    "recipients": [
+      "Marcus Johnson",
+      "David Kim",
+      "Michael Brown",
+      "Lisa Wang",
+      "Tom Anderson"
+    ]
+  },
+  {
+    "id": "email_customer_support_sla_1",
+    "sender": "Lisa Wang",
+    "sender_team": "Engineering",
+    "sender_role": "Tech Lead",
+    "topic": "Customer Support SLA",
+    "content": "Operations concern: Current support team of 8 can't meet 1-hour SLA without hiring 4 more agents. This adds $300K to annual costs.",
+    "timestamp": "2026-02-09T15:19:19.180105",
+    "type": "discussion",
+    "thread_id": "thread_customer_support_sla",
+    "thread_position": 2,
+    "recipients": [
+      "Tom Anderson",
+      "Kevin Zhang",
+      "Sarah Chen",
+      "James Wilson"
+    ]
+  },
+  {
+    "id": "email_performance_review_process_4",
+    "sender": "Sarah Chen",
+    "sender_team": "Product",
+    "sender_role": "VP Product",
+    "topic": "Performance Review Process",
+    "content": "Performance review timeline: Q1 check-ins March 15-31, manager training April, full cycle in Q2.",
+    "timestamp": "2026-02-10T18:35:19.180339",
+    "type": "discussion",
+    "thread_id": "thread_performance_review_process",
+    "thread_position": 5,
+    "recipients": [
+      "Tom Anderson",
+      "James Wilson",
+      "Michael Brown",
+      "Emily Rodriguez"
+    ]
+  },
+  {
+    "id": "email_customer_support_sla_2",
+    "sender": "James Wilson",
+    "sender_team": "Sales",
+    "sender_role": "VP Sales",
+    "topic": "Customer Support SLA",
+    "content": "Sales team perspective: Enterprise deals worth $2M+ are being lost because our SLA isn't competitive. We need this to close big deals.",
+    "timestamp": "2026-02-11T15:33:19.180105",
+    "type": "discussion",
+    "thread_id": "thread_customer_support_sla",
+    "thread_position": 3,
+    "recipients": [
+      "Maria Garcia",
+      "Amanda White",
+      "Jennifer Lee",
+      "Michael Brown"
+    ]
+  },
+  {
+    "id": "email_customer_support_sla_3",
+    "sender": "David Kim",
+    "sender_team": "Finance",
+    "sender_role": "CFO",
+    "topic": "Customer Support SLA",
+    "content": "Finance analysis: If we close 2 additional enterprise deals, the $300K investment pays for itself. But it's still a risk if we don't win the deals.",
+    "timestamp": "2026-02-13T14:55:19.180105",
+    "type": "discussion",
+    "thread_id": "thread_customer_support_sla",
+    "thread_position": 4,
+    "recipients": [
+      "Emily Rodriguez",
+      "Sarah Chen",
+      "Rachel Green",
+      "Lisa Wang",
+      "Amanda White"
+    ]
+  },
+  {
+    "id": "email_customer_support_sla_4",
+    "sender": "Sarah Chen",
+    "sender_team": "Product",
+    "sender_role": "VP Product",
+    "topic": "Customer Support SLA",
+    "content": "APPROVED with conditions: Implement new SLA for trials only. Hire 2 support agents initially, expand if we convert 2+ enterprise trials to paid.",
+    "timestamp": "2026-02-15T15:04:19.180105",
+    "type": "decision",
+    "thread_id": "thread_customer_support_sla",
+    "thread_position": 5,
+    "recipients": [
+      "Tom Anderson",
+      "Robert Taylor",
+      "Maria Garcia",
+      "Kevin Zhang",
+      "James Wilson"
+    ]
+  }
+]

@@ -1,0 +1,39 @@
+# Core AI - Using Anthropic Claude instead of OpenAI!
+anthropic==0.39.0
+
+# LangChain with Anthropic support
+langchain==0.3.13
+langchain-anthropic==0.3.0
+langgraph==0.2.53
+langsmith==0.1.147
+
+# Vector DB & Embeddings (using sentence-transformers - FREE!)
+chromadb==0.5.23
+sentence-transformers==3.3.1
+
+# Data Processing
+pandas==2.2.3
+numpy==1.26.4
+python-dateutil==2.9.0
+
+# Graph & Network Analysis
+networkx==3.4.2
+
+# API & Web
+fastapi==0.115.6
+uvicorn==0.34.0
+pydantic==2.10.3
+python-dotenv==1.0.1
+
+# Voice (optional)
+elevenlabs>=1.0.0
+
+# Google Gemini (FREE tier)
+google-generativeai>=0.8.0
+langchain-google-genai>=2.0.0
+
+# OpenAI (preferred for Shadow Council)
+langchain-openai>=0.2.0
+
+# Utilities
+tqdm==4.67.1
