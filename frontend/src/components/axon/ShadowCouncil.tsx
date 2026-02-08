@@ -1,5 +1,6 @@
 import { useState, useRef } from "react";
 import { Mic, MicOff, Send, Volume2, VolumeX, X } from "lucide-react";
+import { useTheme } from "next-themes";
 import { queryCouncil, playIntroThenProcessing, playAudio, synthesizeSpeech } from "@/lib/api";
 import type { CouncilResponse } from "@/lib/api";
 
@@ -41,11 +42,11 @@ const MOCK_QUESTIONS = [
   "What's the highest-impact decision we should make this week?",
 ];
 
-const roleColors = {
+const getRoleColors = (isDark: boolean) => ({
   optimist: {
     dot: "bg-success",
     avatar: "bg-success/20 text-success",
-    bubble: "bg-[#0f1f0f] border-[#1a3a1a]",
+    bubble: isDark ? "bg-[#0f1f0f] border-[#1a3a1a]" : "bg-[#d1fae5] border-[#10b981]",
   },
   chief: {
     dot: "bg-info",
@@ -55,9 +56,9 @@ const roleColors = {
   skeptic: {
     dot: "bg-warning",
     avatar: "bg-warning/20 text-warning",
-    bubble: "bg-[#1f1709] border-[#3a2a0a]",
+    bubble: isDark ? "bg-[#1f1709] border-[#3a2a0a]" : "bg-[#fef3c7] border-[#f59e0b]",
   },
-};
+});
 
 function responseToAgents(res: CouncilResponse): Agent[] {
   return [
@@ -73,6 +74,8 @@ function responseToAgents(res: CouncilResponse): Agent[] {
 }
 
 export function ShadowCouncil() {
+  const { theme } = useTheme();
+  const isDark = theme === 'dark';
   const [isActive, setIsActive] = useState(false);
   const [question, setQuestion] = useState("");
   const [agents, setAgents] = useState<Agent[]>(defaultAgents);
@@ -80,6 +83,7 @@ export function ShadowCouncil() {
   const [error, setError] = useState<string | null>(null);
   const [voiceOn, setVoiceOn] = useState(true);
   const audioRef = useRef<HTMLAudioElement | null>(null);
+  const roleColors = getRoleColors(isDark);
 
   const handleAsk = async () => {
     const q = question.trim();
@@ -146,26 +150,47 @@ export function ShadowCouncil() {
       <div
         className="fixed bottom-0 left-0 right-0 h-14 z-40 border-t border-border flex flex-col items-center justify-center backdrop-blur-panel"
         style={{
-          background:
-            "linear-gradient(180deg, transparent, hsl(0 0% 4%) 20%)",
+          background: isDark
+            ? "linear-gradient(180deg, transparent, hsl(0 0% 4%) 20%)"
+            : "linear-gradient(180deg, transparent, hsl(0 0% 98%) 20%)",
         }}
       >
         {/* Voice Button */}
         <button
           onClick={() => setIsActive(!isActive)}
-          className={`w-[240px] h-9 flex items-center justify-center gap-2 border transition-default
+          className={`w-[240px] h-9 flex items-center justify-center gap-2 border-2 transition-default font-medium
             ${
               isActive
-                ? "border-success/50 bg-success/10 glow-success"
-                : "border-border-subtle bg-gradient-to-b from-secondary to-background hover:border-text-hint"
+                ? "border-success/50 bg-success/10 glow-success text-success"
+                : "text-white"
             }`}
+          style={{
+            borderColor: isActive 
+              ? (isDark ? 'rgba(16, 185, 129, 0.5)' : 'rgba(16, 185, 129, 0.5)')
+              : (isDark ? '#10b981' : '#10b981'),
+            backgroundColor: isActive
+              ? (isDark ? 'rgba(16, 185, 129, 0.1)' : 'rgba(16, 185, 129, 0.1)')
+              : (isDark ? '#10b981' : '#10b981')
+          }}
+          onMouseEnter={(e) => {
+            if (!isActive) {
+              e.currentTarget.style.backgroundColor = isDark ? '#059669' : '#059669';
+              e.currentTarget.style.borderColor = isDark ? '#059669' : '#047857';
+            }
+          }}
+          onMouseLeave={(e) => {
+            if (!isActive) {
+              e.currentTarget.style.backgroundColor = isDark ? '#10b981' : '#10b981';
+              e.currentTarget.style.borderColor = isDark ? '#10b981' : '#10b981';
+            }
+          }}
         >
           {isActive ? (
-            <MicOff className="w-4 h-4 text-success" />
+            <MicOff className="w-4 h-4" />
           ) : (
-            <Mic className="w-4 h-4 text-text-tertiary" />
+            <Mic className="w-4 h-4" />
           )}
-          <span className="text-sm text-text-secondary">
+          <span className="text-sm">
             {isActive ? "Listening..." : "Ask Chief of Staff"}
           </span>
         </button>
@@ -182,7 +207,11 @@ export function ShadowCouncil() {
       {isActive && (
         <div
           className="fixed bottom-14 left-0 right-0 h-[380px] border-t border-border-subtle backdrop-blur-strong z-50"
-          style={{ background: "hsla(0, 0%, 4%, 0.95)" }}
+          style={{ 
+            background: isDark 
+              ? "hsla(0, 0%, 4%, 0.95)" 
+              : "hsla(0, 0%, 100%, 0.95)" 
+          }}
         >
           {/* Close button */}
           <button
@@ -242,7 +271,7 @@ export function ShadowCouncil() {
                   key={mq}
                   type="button"
                   onClick={() => setQuestion(mq)}
-                  className="px-2 py-1 text-[11px] rounded border border-border bg-background hover:bg-secondary/50 text-text-secondary transition-default text-left max-w-full truncate"
+                  className="px-2 py-1 text-[11px] rounded border border-border bg-secondary hover:bg-secondary/80 text-text-primary transition-default text-left max-w-full truncate"
                 >
                   {mq}
                 </button>

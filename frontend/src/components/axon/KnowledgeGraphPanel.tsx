@@ -1,3 +1,4 @@
+import { useTheme } from "next-themes";
 import KnowledgeGraph from './KnowledgeGraph';
 import type { GraphNode, GraphEdge } from "@/lib/api";
 
@@ -14,6 +15,9 @@ export function KnowledgeGraphPanel({
   nodes,
   edges 
 }: KnowledgeGraphPanelProps) {
+  const { theme } = useTheme();
+  const isDark = theme === 'dark';
+  
   const legendItems = [
     { color: 'bg-success', label: 'Active' },
     { color: 'bg-warning', label: 'Aging' },
@@ -38,7 +42,9 @@ export function KnowledgeGraphPanel({
       <div 
         className="flex-1 relative grid-pattern"
         style={{
-          background: 'radial-gradient(ellipse at center, hsl(0 0% 6%) 0%, hsl(0 0% 3%) 100%)'
+          background: isDark 
+            ? 'radial-gradient(ellipse at center, hsl(0 0% 6%) 0%, hsl(0 0% 3%) 100%)'
+            : 'radial-gradient(ellipse at center, hsl(0 0% 96%) 0%, hsl(0 0% 98%) 100%)'
         }}
       >
         {nodes && edges ? (
@@ -50,21 +56,74 @@ export function KnowledgeGraphPanel({
           </div>
         )}
 
-        {/* Legend */}
+        {/* Legend with Status Cards */}
         <div 
-          className="absolute bottom-2 left-2 w-[160px] p-2 backdrop-blur-panel border border-border z-10"
-          style={{ background: 'hsla(0, 0%, 6%, 0.95)' }}
+          className="absolute bottom-2 left-2 w-[180px] p-2 backdrop-blur-panel border border-border z-10"
+          style={{ 
+            background: isDark 
+              ? 'hsla(0, 0%, 6%, 0.95)' 
+              : 'hsla(0, 0%, 100%, 0.95)' 
+          }}
         >
-          <h3 className="text-[9px] uppercase tracking-widest text-text-tertiary mb-1.5">
+          <h3 className="text-[9px] uppercase tracking-widest text-text-tertiary mb-2">
             Node Status
           </h3>
-          <div className="space-y-1">
-            {legendItems.map((item) => (
-              <div key={item.label} className="flex items-center gap-2">
-                <div className={`w-2 h-2 rounded-full ${item.color}`} />
-                <span className="text-xs text-text-secondary">{item.label}</span>
+          <div className="space-y-2">
+            {/* Active Card */}
+            <div 
+              className="p-2 border-2 rounded"
+              style={{
+                backgroundColor: isDark ? '#0f0f0f' : '#d1fae5',
+                borderColor: '#10b981'
+              }}
+            >
+              <div className="flex items-center gap-2 mb-1">
+                <div className="w-2 h-2 rounded-full bg-success" />
+                <span className="text-xs font-medium text-text-primary">Active</span>
               </div>
-            ))}
+            </div>
+            
+            {/* Aging Card */}
+            <div 
+              className="p-2 border-2 rounded"
+              style={{
+                backgroundColor: isDark ? '#0f0f0f' : '#fef3c7',
+                borderColor: '#f59e0b'
+              }}
+            >
+              <div className="flex items-center gap-2 mb-1">
+                <div className="w-2 h-2 rounded-full bg-warning" />
+                <span className="text-xs font-medium text-text-primary">Aging</span>
+              </div>
+            </div>
+            
+            {/* Conflicted Card */}
+            <div 
+              className="p-2 border-2 rounded"
+              style={{
+                backgroundColor: isDark ? '#0f0f0f' : '#fee2e2',
+                borderColor: '#ef4444'
+              }}
+            >
+              <div className="flex items-center gap-2 mb-1">
+                <div className="w-2 h-2 rounded-full bg-error" />
+                <span className="text-xs font-medium text-text-primary">Conflicted</span>
+              </div>
+            </div>
+            
+            {/* Stale Card */}
+            <div 
+              className="p-2 border-2 rounded"
+              style={{
+                backgroundColor: isDark ? '#0f0f0f' : '#f3f4f6',
+                borderColor: '#6b7280'
+              }}
+            >
+              <div className="flex items-center gap-2 mb-1">
+                <div className="w-2 h-2 rounded-full bg-text-hint opacity-40" />
+                <span className="text-xs font-medium text-text-primary">Stale</span>
+              </div>
+            </div>
           </div>
         </div>
       </div>

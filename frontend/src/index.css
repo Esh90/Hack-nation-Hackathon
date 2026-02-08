@@ -7,7 +7,77 @@
 
 @layer base {
   :root {
-    /* Background system */
+    /* Light theme - Background system */
+    --background: 0 0% 98%;
+    --background-secondary: 0 0% 96%;
+    --background-tertiary: 0 0% 97%;
+    --foreground: 0 0% 7%;
+
+    /* Card/Panel backgrounds */
+    --card: 0 0% 100%;
+    --card-foreground: 0 0% 7%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 0 0% 7%;
+
+    /* Primary accent - Emerald for success/active */
+    --primary: 160 84% 39%;
+    --primary-foreground: 0 0% 100%;
+
+    /* Secondary - subtle light (darker for better visibility) */
+    --secondary: 0 0% 85%;
+    --secondary-foreground: 0 0% 15%;
+
+    /* Muted for subtle text (darker for better visibility) */
+    --muted: 0 0% 80%;
+    --muted-foreground: 0 0% 50%;
+
+    /* Accent colors */
+    --accent: 217 91% 60%;
+    --accent-foreground: 0 0% 100%;
+
+    /* Status colors */
+    --success: 160 84% 39%;
+    --warning: 38 92% 50%;
+    --error: 0 84% 60%;
+    --info: 217 91% 60%;
+
+    /* Destructive */
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+
+    /* Borders - subtle (darker for better visibility) */
+    --border: 0 0% 80%;
+    --border-subtle: 0 0% 75%;
+    --input: 0 0% 85%;
+    --ring: 160 84% 39%;
+
+    /* Text hierarchy */
+    --text-primary: 0 0% 7%;
+    --text-secondary: 0 0% 20%;
+    --text-tertiary: 0 0% 40%;
+    --text-muted: 0 0% 60%;
+    --text-hint: 0 0% 73%;
+
+    /* Custom color scheme for light theme */
+    --person-bg: 54 100% 85%; /* #FFF9B5 */
+    --person-text: 207 26% 20%; /* #25343F */
+    --person-team: 207 15% 78%; /* #BFC9D1 */
+
+    --radius: 0px;
+
+    /* Sidebar (keeping for compatibility) */
+    --sidebar-background: 0 0% 98%;
+    --sidebar-foreground: 0 0% 20%;
+    --sidebar-primary: 160 84% 39%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 0 0% 90%;
+    --sidebar-accent-foreground: 0 0% 7%;
+    --sidebar-border: 0 0% 90%;
+    --sidebar-ring: 160 84% 39%;
+  }
+
+  .dark {
+    /* Dark theme - Background system */
     --background: 0 0% 4%;
     --background-secondary: 0 0% 6%;
     --background-tertiary: 0 0% 5%;
@@ -58,8 +128,6 @@
     --text-muted: 0 0% 40%;
     --text-hint: 0 0% 27%;
 
-    --radius: 0px;
-
     /* Sidebar (keeping for compatibility) */
     --sidebar-background: 0 0% 4%;
     --sidebar-foreground: 0 0% 80%;
@@ -69,31 +137,6 @@
     --sidebar-accent-foreground: 0 0% 93%;
     --sidebar-border: 0 0% 10%;
     --sidebar-ring: 160 84% 39%;
-  }
-
-  .dark {
-    --background: 0 0% 4%;
-    --background-secondary: 0 0% 6%;
-    --background-tertiary: 0 0% 5%;
-    --foreground: 0 0% 93%;
-    --card: 0 0% 6%;
-    --card-foreground: 0 0% 93%;
-    --popover: 0 0% 4%;
-    --popover-foreground: 0 0% 93%;
-    --primary: 160 84% 39%;
-    --primary-foreground: 0 0% 100%;
-    --secondary: 0 0% 10%;
-    --secondary-foreground: 0 0% 80%;
-    --muted: 0 0% 15%;
-    --muted-foreground: 0 0% 40%;
-    --accent: 217 91% 60%;
-    --accent-foreground: 0 0% 100%;
-    --destructive: 0 84% 60%;
-    --destructive-foreground: 0 0% 100%;
-    --border: 0 0% 10%;
-    --border-subtle: 0 0% 16%;
-    --input: 0 0% 10%;
-    --ring: 160 84% 39%;
   }
 }
 

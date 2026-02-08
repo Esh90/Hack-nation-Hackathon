@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
+import { useTheme } from "next-themes";
 import { Link } from "react-router-dom";
+import { ThemeToggle } from "./ThemeToggle";
 
 interface TopBarProps {
   healthScore: number;
@@ -10,6 +12,8 @@ export function TopBar({
   healthScore,
   hasConflicts
 }: TopBarProps) {
+  const { theme } = useTheme();
+  const isDark = theme === 'dark';
   const [timestamp, setTimestamp] = useState(new Date());
   useEffect(() => {
     const interval = setInterval(() => setTimestamp(new Date()), 1000);
@@ -41,7 +45,19 @@ export function TopBar({
         </Link>
         <Link
           to="/critic"
-          className="text-[11px] text-text-tertiary hover:text-primary transition-default px-2 py-1 border border-border hover:border-primary/50 rounded"
+          className="text-[11px] text-white font-medium hover:opacity-90 transition-default px-2 py-1 border-2 rounded"
+          style={{
+            borderColor: isDark ? '#10b981' : '#059669',
+            backgroundColor: isDark ? '#10b981' : '#10b981'
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.backgroundColor = isDark ? '#059669' : '#059669';
+            e.currentTarget.style.borderColor = isDark ? '#059669' : '#047857';
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.backgroundColor = isDark ? '#10b981' : '#10b981';
+            e.currentTarget.style.borderColor = isDark ? '#10b981' : '#059669';
+          }}
         >
           Critic Agent
         </Link>
@@ -58,6 +74,9 @@ export function TopBar({
             </span>
           </div>
         </div>
+
+        {/* Theme Toggle */}
+        <ThemeToggle />
 
         {/* Timestamp */}
         <div className="flex flex-col items-end">

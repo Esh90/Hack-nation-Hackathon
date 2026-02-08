@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronDown, ChevronRight } from "lucide-react";
+import { useTheme } from "next-themes";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -17,6 +18,8 @@ interface ConflictListProps {
 }
 
 export function ConflictList({ conflicts }: ConflictListProps) {
+  const { theme } = useTheme();
+  const isDark = theme === 'dark';
   const [statusFilter, setStatusFilter] = useState<StatusFilter>("all");
   const [expandedId, setExpandedId] = useState<string | null>(null);
 
@@ -24,6 +27,13 @@ export function ConflictList({ conflicts }: ConflictListProps) {
     low: "#6b7280",
     medium: "#f59e0b",
     high: "#ef4444",
+  };
+
+  // Light theme background colors for conflict cards
+  const lightSeverityBgColors = {
+    low: "#f3f4f6", // Light gray
+    medium: "#fef3c7", // Light yellow/amber
+    high: "#fee2e2", // Light red
   };
 
   const activeCount = conflicts.filter((c) => c.status === "ongoing" || c.status === "escalated").length;
@@ -86,10 +96,10 @@ export function ConflictList({ conflicts }: ConflictListProps) {
               initial={{ opacity: 0, y: 4 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: index * 0.05 }}
-              className="transition-default cursor-pointer"
+              className="transition-default cursor-pointer border-l-2"
               style={{
-                background: "hsl(0 0% 5%)",
-                borderLeft: `2px solid ${severityColors[conflict.severity]}`,
+                background: isDark ? "hsl(0 0% 5%)" : lightSeverityBgColors[conflict.severity],
+                borderLeftColor: severityColors[conflict.severity],
               }}
               onClick={() => setExpandedId(isExpanded ? null : conflict.id)}
             >

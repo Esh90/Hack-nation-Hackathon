@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useTheme } from "next-themes";
 import { ArrowLeft, AlertTriangle, Send, Bell } from "lucide-react";
 import { analyzeWithCritic } from "@/lib/api";
 import type { CriticContradiction } from "@/lib/api";
@@ -12,6 +13,8 @@ const EXAMPLE_INPUTS = [
 ];
 
 export default function CriticAgentPage() {
+  const { theme } = useTheme();
+  const isDark = theme === 'dark';
   const navigate = useNavigate();
   const [input, setInput] = useState("");
   const [result, setResult] = useState<{
@@ -50,7 +53,11 @@ export default function CriticAgentPage() {
         <div className="flex items-center gap-3">
           <button
             onClick={() => navigate("/")}
-            className="p-2 rounded border border-border hover:bg-secondary/50 transition-default text-text-secondary"
+            className="p-2 rounded border-2 border-border bg-secondary hover:bg-secondary/80 transition-default text-text-primary"
+            style={{
+              borderColor: isDark ? 'hsl(var(--border))' : '#d1d5db',
+              backgroundColor: isDark ? 'hsl(var(--secondary))' : '#f3f4f6'
+            }}
           >
             <ArrowLeft className="w-4 h-4" />
           </button>
@@ -68,8 +75,14 @@ export default function CriticAgentPage() {
       <div className="flex-1 overflow-auto p-4">
         <div className="max-w-2xl mx-auto space-y-4">
           {/* Description */}
-          <div className="p-3 border border-border bg-card">
-            <p className="text-[11px] text-text-secondary leading-relaxed">
+          <div 
+            className="p-3 border-2 rounded"
+            style={{
+              borderColor: isDark ? 'hsl(var(--border))' : '#d1d5db',
+              backgroundColor: isDark ? 'hsl(var(--card))' : '#f9fafb'
+            }}
+          >
+            <p className="text-[11px] text-text-primary leading-relaxed">
               Enter a meeting summary, or any new
               information. The Critic Agent compares it against the Knowledge
               Graph and flags contradictions (e.g. &quot;Manager says Friday, Document says
@@ -86,7 +99,11 @@ export default function CriticAgentPage() {
               value={input}
               onChange={(e) => setInput(e.target.value)}
               placeholder="e.g. The manager just said the deadline is Friday. Please update the team."
-              className="w-full min-h-[100px] px-3 py-2 text-sm bg-background border border-border rounded text-foreground placeholder:text-text-muted resize-y"
+              className="w-full min-h-[100px] px-3 py-2 text-sm bg-background border-2 border-border rounded text-foreground placeholder:text-text-muted resize-y"
+              style={{
+                borderColor: isDark ? 'hsl(var(--border))' : '#d1d5db',
+                backgroundColor: isDark ? 'hsl(var(--background))' : '#ffffff'
+              }}
               disabled={loading}
             />
           </div>
@@ -102,7 +119,11 @@ export default function CriticAgentPage() {
                   key={ex}
                   type="button"
                   onClick={() => setInput(ex)}
-                  className="px-2 py-1 text-[11px] rounded border border-border bg-background hover:bg-secondary/50 text-text-secondary transition-default text-left max-w-full truncate"
+                  className="px-2 py-1 text-[11px] rounded border-2 border-border bg-secondary hover:bg-secondary/80 text-text-primary transition-default text-left max-w-full truncate"
+                  style={{
+                    borderColor: isDark ? 'hsl(var(--border))' : '#d1d5db',
+                    backgroundColor: isDark ? 'hsl(var(--secondary))' : '#f3f4f6'
+                  }}
                 >
                   {ex.slice(0, 50)}…
                 </button>
@@ -160,7 +181,11 @@ export default function CriticAgentPage() {
               {result.contradictions.map((c, i) => (
                 <div
                   key={i}
-                  className="p-4 rounded border border-warning/50 bg-warning/5"
+                  className="p-4 rounded border-2"
+                  style={{
+                    borderColor: isDark ? 'rgba(245, 158, 11, 0.5)' : '#fef3c7',
+                    backgroundColor: isDark ? 'rgba(245, 158, 11, 0.05)' : '#fef3c7'
+                  }}
                 >
                   <div className="text-[10px] text-warning uppercase tracking-wide mb-2">
                     {c.type.replace(/_/g, " ")}
@@ -182,18 +207,24 @@ export default function CriticAgentPage() {
                       <span className="text-text-tertiary">{c.source_kg}</span>
                     </div>
                   </div>
-                  <div className="flex items-start gap-2 p-2 rounded bg-background/50 border border-border">
+                  <div 
+                    className="flex items-start gap-2 p-2 rounded border"
+                    style={{
+                      borderColor: isDark ? 'hsl(var(--border))' : '#e5e7eb',
+                      backgroundColor: isDark ? 'hsla(0, 0%, 10%, 0.5)' : '#ffffff'
+                    }}
+                  >
                     <Bell className="w-4 h-4 text-warning shrink-0 mt-0.5" />
                     <div>
                       <div className="text-[10px] text-text-muted uppercase tracking-wide mb-1">
                         Notify
                       </div>
-                      <div className="text-[11px] text-text-secondary">
+                      <div className="text-[11px] text-text-primary">
                         {c.parties_to_notify.length > 0
                           ? c.parties_to_notify.join(", ")
                           : "Relevant stakeholders"}
                       </div>
-                      <p className="text-[11px] text-text-tertiary mt-2">
+                      <p className="text-[11px] text-text-secondary mt-2">
                         {c.suggestion}
                       </p>
                     </div>

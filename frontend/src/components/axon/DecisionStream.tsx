@@ -90,7 +90,7 @@ export function DecisionStream({
               >
                 {/* Timeline node */}
                 <div 
-                  className="absolute left-[15px] top-1.5 w-2.5 h-2.5 rounded-full border-2 border-[#0a0a0a] z-10"
+                  className="absolute left-[15px] top-1.5 w-2.5 h-2.5 rounded-full border-2 border-background z-10"
                   style={{ 
                     backgroundColor: statusColors[decision.status],
                     boxShadow: decision.status === 'new' 
@@ -110,15 +110,13 @@ export function DecisionStream({
 
                 {/* Decision card */}
                 <div 
-                  className="bg-[#0d0d0d] p-2.5 cursor-pointer hover:bg-[#121212] transition-all"
-                  style={{ background: 'hsl(0 0% 5%)' }}
+                  className="bg-card p-2.5 cursor-pointer hover:bg-secondary/50 transition-all border border-border"
                   onClick={() => setExpandedId(expandedId === decision.id ? null : decision.id)}
                 >
                   <div className="flex items-start justify-between mb-1">
                     <div className="flex items-center gap-2">
                       <span 
-                        className="text-[10px] font-mono text-text-tertiary px-2 py-0.5"
-                        style={{ background: 'hsl(0 0% 10%)' }}
+                        className="text-[10px] font-mono text-text-tertiary px-2 py-0.5 bg-secondary"
                       >
                         v{decision.version}
                       </span>
