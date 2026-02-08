@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { ThemeToggle } from "./ThemeToggle";
 
 interface TopBarProps {
   healthScore: number;
@@ -58,6 +59,9 @@ export function TopBar({
             <span className={hasConflicts ? "text-warning" : "text-success"}>{healthScore}%</span>
           </span>
         </div>
+
+        {/* Theme Toggle */}
+        <ThemeToggle />
 
         {/* Timestamp */}
         <div className="flex flex-col items-end">

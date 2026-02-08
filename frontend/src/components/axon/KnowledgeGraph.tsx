@@ -17,13 +17,6 @@ import { motion } from 'framer-motion';
 import { useTheme } from 'next-themes';
 import type { GraphNode, GraphEdge } from "@/lib/api";
 
-<<<<<<< HEAD
-// Custom node component with decay effect
-const CustomNode = ({ data }: { data: GraphNode }) => {
-  const { theme } = useTheme();
-  const isDark = theme === 'dark';
-  
-=======
 // Compute scale factor so many nodes stay visible (smaller nodes when more nodes)
 function getNodeScale(nodeCount: number): number {
   if (nodeCount <= 4) return 1;
@@ -35,8 +28,10 @@ function getNodeScale(nodeCount: number): number {
 
 // Custom node component with decay effect; size scales with total node count
 const CustomNode = ({ data }: { data: GraphNode & { _scale?: number } }) => {
+  const { theme } = useTheme();
+  const isDark = theme === 'dark';
   const scale = data._scale ?? 1;
->>>>>>> 2c661b3bb1286221f0fff303efe7243fe7c176fa
+  
   const statusColors = {
     active: '#10b981',
     aging: '#f59e0b',
@@ -58,8 +53,11 @@ const CustomNode = ({ data }: { data: GraphNode & { _scale?: number } }) => {
     topic: '💡'
   };
 
-<<<<<<< HEAD
-  const isPerson = data.type === 'person';
+  const minW = Math.round(120 * scale);
+  const paddingX = Math.round(16 * scale);
+  const paddingY = Math.round(12 * scale);
+  const fontSize = scale < 0.8 ? '10px' : '12px';
+  const iconSize = scale < 0.8 ? 'text-base' : 'text-lg';
 
   // Determine background color based on theme and status
   const getBackgroundColor = () => {
@@ -96,19 +94,8 @@ const CustomNode = ({ data }: { data: GraphNode & { _scale?: number } }) => {
   };
 
   const getTeamColor = () => {
-    if (isDark) {
-      return '#6b7280';
-    } else {
-      return '#6b7280'; // Medium gray for team text in light mode
-    }
+    return '#6b7280'; // Medium gray for team text in both modes
   };
-=======
-  const minW = Math.round(120 * scale);
-  const paddingX = Math.round(16 * scale);
-  const paddingY = Math.round(12 * scale);
-  const fontSize = scale < 0.8 ? '10px' : '12px';
-  const iconSize = scale < 0.8 ? 'text-base' : 'text-lg';
->>>>>>> 2c661b3bb1286221f0fff303efe7243fe7c176fa
 
   return (
     <motion.div
@@ -121,11 +108,7 @@ const CustomNode = ({ data }: { data: GraphNode & { _scale?: number } }) => {
       className="relative"
     >
       <div 
-<<<<<<< HEAD
-        className="px-4 py-3 rounded-lg border-2 min-w-[120px] cursor-pointer transition-all"
-=======
-        className={`rounded-lg border-2 bg-[#0f0f0f] cursor-pointer hover:bg-[#121212] transition-all ${iconSize}`}
->>>>>>> 2c661b3bb1286221f0fff303efe7243fe7c176fa
+        className={`rounded-lg border-2 cursor-pointer transition-all ${iconSize}`}
         style={{ 
           backgroundColor: getBackgroundColor(),
           borderColor: statusColors[data.status],
@@ -141,29 +124,27 @@ const CustomNode = ({ data }: { data: GraphNode & { _scale?: number } }) => {
         }}
       >
         <div className="flex items-center gap-2">
-<<<<<<< HEAD
-          <span className="text-lg">{nodeTypeIcons[data.type]}</span>
-          <div>
+          <span>{nodeTypeIcons[data.type]}</span>
+          <div className="min-w-0">
             <div 
-              className="text-xs font-medium"
-              style={{ color: getTextColor() }}
+              className="font-medium truncate"
+              style={{ 
+                fontSize,
+                color: getTextColor()
+              }}
             >
               {data.label}
             </div>
             {data.team && (
               <div 
-                className="text-[10px]"
-                style={{ color: getTeamColor() }}
+                className="truncate"
+                style={{ 
+                  fontSize: Math.max(9, 10 * scale),
+                  color: getTeamColor()
+                }}
               >
                 {data.team}
               </div>
-=======
-          <span>{nodeTypeIcons[data.type]}</span>
-          <div className="min-w-0">
-            <div className="text-white font-medium truncate" style={{ fontSize }}>{data.label}</div>
-            {data.team && (
-              <div className="text-gray-500 truncate" style={{ fontSize: Math.max(9, 10 * scale) }}>{data.team}</div>
->>>>>>> 2c661b3bb1286221f0fff303efe7243fe7c176fa
             )}
           </div>
         </div>
@@ -173,7 +154,7 @@ const CustomNode = ({ data }: { data: GraphNode & { _scale?: number } }) => {
           className="absolute -top-1 -right-1 w-3 h-3 rounded-full border-2"
           style={{ 
             backgroundColor: statusColors[data.status],
-            borderColor: isDark ? '#0f0f0f' : getBackgroundColor()
+            borderColor: getBackgroundColor()
           }}
         />
       </div>
@@ -192,6 +173,9 @@ interface KnowledgeGraphProps {
 }
 
 function KnowledgeGraphInner({ nodes, edges, nodeCount: nodeCountProp }: KnowledgeGraphProps) {
+  const { theme } = useTheme();
+  const isDark = theme === 'dark';
+  
   const nodeCount = nodeCountProp ?? nodes.length;
   const scale = getNodeScale(nodeCount);
   const cols = Math.max(2, Math.min(5, Math.ceil(Math.sqrt(nodeCount))));
@@ -246,12 +230,7 @@ function KnowledgeGraphInner({ nodes, edges, nodeCount: nodeCountProp }: Knowled
     console.log('Node clicked:', node.data);
   }, []);
 
-<<<<<<< HEAD
-  const { theme } = useTheme();
-  const isDark = theme === 'dark';
-=======
   const layoutKey = `${nodes.length}-${edges.length}`;
->>>>>>> 2c661b3bb1286221f0fff303efe7243fe7c176fa
 
   return (
     <div className="w-full h-full absolute inset-0">
@@ -263,14 +242,9 @@ function KnowledgeGraphInner({ nodes, edges, nodeCount: nodeCountProp }: Knowled
         onNodeClick={onNodeClick}
         nodeTypes={nodeTypes}
         fitView
-<<<<<<< HEAD
-        className={isDark ? "bg-[#0a0a0a]" : "bg-[#f5f5f5]"}
-        minZoom={0.5}
-=======
         fitViewOptions={{ padding: 0.2, maxZoom: 1.2 }}
-        className="bg-[#0a0a0a]"
+        className={isDark ? "bg-[#0a0a0a]" : "bg-[#f5f5f5]"}
         minZoom={0.2}
->>>>>>> 2c661b3bb1286221f0fff303efe7243fe7c176fa
         maxZoom={2}
       >
         <FitViewOnChange key={layoutKey} />
@@ -281,19 +255,15 @@ function KnowledgeGraphInner({ nodes, edges, nodeCount: nodeCountProp }: Knowled
           className="opacity-30"
         />
         <Controls 
-<<<<<<< HEAD
           className={isDark ? "bg-[#0f0f0f] border border-[#2a2a2a]" : "bg-white border border-[#e5e5e5]"}
-        />
-        <MiniMap 
-          className={isDark ? "bg-[#0f0f0f] border border-[#2a2a2a]" : "bg-white border border-[#e5e5e5]"}
-=======
-          className="react-flow-controls-dark"
         />
         <MiniMap 
           position="bottom-right"
-          className="minimap-small !bg-[#0f0f0f] !border-[#1a1a1a] [&_svg]:!outline-none"
-          style={{ backgroundColor: '#0f0f0f', borderColor: '#1a1a1a' }}
->>>>>>> 2c661b3bb1286221f0fff303efe7243fe7c176fa
+          className={isDark ? "minimap-small !bg-[#0f0f0f] !border-[#1a1a1a] [&_svg]:!outline-none" : "minimap-small !bg-white !border-[#e5e5e5] [&_svg]:!outline-none"}
+          style={{ 
+            backgroundColor: isDark ? '#0f0f0f' : '#ffffff', 
+            borderColor: isDark ? '#1a1a1a' : '#e5e5e5' 
+          }}
           nodeColor={(node) => {
             const statusColors = {
               active: '#10b981',
@@ -325,4 +295,3 @@ export default function KnowledgeGraph(props: KnowledgeGraphProps) {
     </ReactFlowProvider>
   );
 }
-
