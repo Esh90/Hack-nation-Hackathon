@@ -32,7 +32,10 @@ elevenlabs>=1.0.0
 google-generativeai>=0.8.0
 langchain-google-genai>=2.0.0
 
-# OpenAI (preferred for Shadow Council)
+# Groq (FREE, ultra-fast - Llama 3.x 70B) - default for Shadow Council (SDK only; no langchain-groq to avoid dependency conflicts)
+groq>=0.29.0,<1
+
+# OpenAI
 langchain-openai>=0.2.0
 
 # Utilities

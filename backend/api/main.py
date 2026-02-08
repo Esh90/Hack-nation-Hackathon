@@ -115,7 +115,7 @@ async def root():
         "status": "online",
         "service": "Aetheris Intelligence API",
         "version": "1.0.0",
-        "powered_by": "Google Gemini + Anthropic Claude",
+        "powered_by": "Groq (default) / Gemini / OpenAI / Anthropic",
         "endpoints": {
             "graph": "/api/graph",
             "conflicts": "/api/conflicts",
@@ -279,7 +279,7 @@ async def query_council(query: VoiceQuery):
         print(f"❌ Error in council query: {str(e)}")
         raise HTTPException(
             status_code=500,
-            detail=f"Shadow Council error: {str(e)}",
+            detail="Shadow Council error. Check server logs for details.",
         )
 
 
@@ -309,7 +309,7 @@ async def critic_analyze(req: CriticAnalyzeRequest):
         print(f"❌ Critic Agent error: {str(e)}")
         raise HTTPException(
             status_code=500,
-            detail=f"Critic Agent error: {str(e)}",
+            detail="Critic Agent error. Check server logs for details.",
         )
 
 

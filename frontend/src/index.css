@@ -104,6 +104,7 @@
 
   html {
     @apply antialiased;
+    scroll-behavior: smooth;
   }
 
   body {
@@ -224,12 +225,87 @@
     @apply transition-all duration-150 ease-out;
   }
 
-  /* Backdrop blur */
+  /* Focus visible for accessibility */
+  .focus-visible-ring:focus-visible {
+    @apply outline-none ring-2 ring-ring ring-offset-2 ring-offset-background;
+  }
+
+  /* Custom scrollbar - subtle */
+  .scrollbar-thin::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  .scrollbar-thin::-webkit-scrollbar-track {
+    background: hsl(var(--background));
+  }
+  .scrollbar-thin::-webkit-scrollbar-thumb {
+    background: hsl(var(--border-subtle));
+    border-radius: 0;
+  }
+  .scrollbar-thin::-webkit-scrollbar-thumb:hover {
+    background: hsl(var(--text-hint));
+  }
+
+  /* Backdrop blur (with -webkit- for Safari 9+, Safari on iOS 9+) */
   .backdrop-blur-panel {
+    -webkit-backdrop-filter: blur(20px);
     backdrop-filter: blur(20px);
   }
 
   .backdrop-blur-strong {
+    -webkit-backdrop-filter: blur(30px);
     backdrop-filter: blur(30px);
+  }
+
+  /* React Flow: black theme for minimap and controls (no gray/white) */
+  .react-flow__minimap,
+  .react-flow__controls {
+    background: #0f0f0f !important;
+    border: 1px solid #1a1a1a !important;
+  }
+
+  /* Smaller minimap (bottom-right) so it doesn’t hide nodes or zoom controls */
+  .react-flow__minimap.minimap-small,
+  .minimap-small.react-flow__minimap {
+    width: 96px !important;
+    height: 72px !important;
+    min-width: 96px !important;
+    min-height: 72px !important;
+  }
+  .react-flow__minimap.minimap-small svg,
+  .minimap-small.react-flow__minimap svg {
+    width: 100% !important;
+    height: 100% !important;
+  }
+  .react-flow__controls button {
+    background: #0f0f0f !important;
+    border-color: #1a1a1a !important;
+  }
+  .react-flow__controls button:hover {
+    background: #1a1a1a !important;
+  }
+
+  /* Zoom controls: visible on dark theme (primary accent for icons) */
+  .react-flow-controls-dark.react-flow__controls,
+  .react-flow__controls.react-flow-controls-dark {
+    background: #0f0f0f !important;
+    border: 1px solid #2a2a2a !important;
+  }
+  .react-flow-controls-dark .react-flow__controls-button,
+  .react-flow__controls .react-flow__controls-button {
+    background: #151515 !important;
+    color: hsl(var(--primary)) !important;
+    border-color: #2a2a2a !important;
+    fill: hsl(var(--primary)) !important;
+  }
+  .react-flow-controls-dark .react-flow__controls-button:hover,
+  .react-flow__controls .react-flow__controls-button:hover {
+    background: #1f1f1f !important;
+    color: hsl(var(--primary)) !important;
+    fill: hsl(var(--primary)) !important;
+  }
+  .react-flow-controls-dark .react-flow__controls-button svg,
+  .react-flow__controls .react-flow__controls-button svg {
+    fill: currentColor !important;
   }
 }

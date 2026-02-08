@@ -36,36 +36,38 @@ export function KnowledgeGraphPanel({
 
       {/* Graph Area */}
       <div 
-        className="flex-1 relative grid-pattern"
+        className="flex-1 relative grid-pattern min-h-0"
         style={{
           background: 'radial-gradient(ellipse at center, hsl(0 0% 6%) 0%, hsl(0 0% 3%) 100%)'
         }}
       >
         {nodes && edges ? (
-          <KnowledgeGraph nodes={nodes} edges={edges} />
+          <KnowledgeGraph 
+            nodes={nodes} 
+            edges={edges} 
+            nodeCount={nodes.length} 
+          />
         ) : (
           <div className="absolute inset-0 flex flex-col items-center justify-center">
             <span className="text-text-hint text-sm">Graph initializing...</span>
             <div className="mt-4 w-8 h-8 rounded-full bg-text-hint/20 animate-fade-pulse" />
           </div>
         )}
+      </div>
 
-        {/* Legend */}
-        <div 
-          className="absolute bottom-2 left-2 w-[160px] p-2 backdrop-blur-panel border border-border z-10"
-          style={{ background: 'hsla(0, 0%, 6%, 0.95)' }}
-        >
-          <h3 className="text-[9px] uppercase tracking-widest text-text-tertiary mb-1.5">
+      {/* Bottom section: Node Status + minimap lives in graph (styled dark) - uses empty space below nodes */}
+      <div className="shrink-0 flex items-center gap-3 px-2 py-2 border-t border-[#1a1a1a] bg-[#0a0a0a]">
+        {/* Node Status box - black theme, no gray/white */}
+        <div className="flex items-center gap-2 px-2 py-1.5 border border-[#1a1a1a] bg-[#0f0f0f]">
+          <h3 className="text-[9px] uppercase tracking-widest text-text-tertiary">
             Node Status
           </h3>
-          <div className="space-y-1">
-            {legendItems.map((item) => (
-              <div key={item.label} className="flex items-center gap-2">
-                <div className={`w-2 h-2 rounded-full ${item.color}`} />
-                <span className="text-xs text-text-secondary">{item.label}</span>
-              </div>
-            ))}
-          </div>
+          {legendItems.map((item) => (
+            <div key={item.label} className="flex items-center gap-1.5">
+              <div className={`w-2 h-2 rounded-full shrink-0 ${item.color}`} />
+              <span className="text-[10px] text-text-secondary">{item.label}</span>
+            </div>
+          ))}
         </div>
       </div>
     </div>

@@ -1,4 +1,4 @@
-import { useCallback, useMemo } from 'react';
+import { useCallback, useMemo, useEffect } from 'react';
 import ReactFlow, {
   Node,
   Edge,
@@ -9,13 +9,25 @@ import ReactFlow, {
   useEdgesState,
   MarkerType,
   NodeTypes,
+  useReactFlow,
+  ReactFlowProvider,
 } from 'reactflow';
 import 'reactflow/dist/style.css';
 import { motion } from 'framer-motion';
 import type { GraphNode, GraphEdge } from "@/lib/api";
 
-// Custom node component with decay effect
-const CustomNode = ({ data }: { data: GraphNode }) => {
+// Compute scale factor so many nodes stay visible (smaller nodes when more nodes)
+function getNodeScale(nodeCount: number): number {
+  if (nodeCount <= 4) return 1;
+  if (nodeCount <= 8) return 0.95;
+  if (nodeCount <= 16) return 0.85;
+  if (nodeCount <= 24) return 0.75;
+  return Math.max(0.5, 0.7 - (nodeCount - 24) * 0.015);
+}
+
+// Custom node component with decay effect; size scales with total node count
+const CustomNode = ({ data }: { data: GraphNode & { _scale?: number } }) => {
+  const scale = data._scale ?? 1;
   const statusColors = {
     active: '#10b981',
     aging: '#f59e0b',
@@ -29,29 +41,37 @@ const CustomNode = ({ data }: { data: GraphNode }) => {
     topic: '💡'
   };
 
+  const minW = Math.round(120 * scale);
+  const paddingX = Math.round(16 * scale);
+  const paddingY = Math.round(12 * scale);
+  const fontSize = scale < 0.8 ? '10px' : '12px';
+  const iconSize = scale < 0.8 ? 'text-base' : 'text-lg';
+
   return (
     <motion.div
       initial={{ scale: 0 }}
       animate={{ 
-        scale: 0.5 + (data.centrality * 0.5),
+        scale: (0.5 + (data.centrality * 0.5)) * scale,
         opacity: data.decay 
       }}
       transition={{ duration: 0.3 }}
       className="relative"
     >
       <div 
-        className="px-4 py-3 rounded-lg border-2 bg-[#0f0f0f] min-w-[120px] cursor-pointer hover:bg-[#121212] transition-all"
+        className={`rounded-lg border-2 bg-[#0f0f0f] cursor-pointer hover:bg-[#121212] transition-all ${iconSize}`}
         style={{ 
           borderColor: statusColors[data.status],
-          boxShadow: `0 0 ${10 + data.centrality * 20}px ${statusColors[data.status]}40`
+          boxShadow: `0 0 ${10 + data.centrality * 20}px ${statusColors[data.status]}40`,
+          minWidth: minW,
+          padding: `${paddingY}px ${paddingX}px`,
         }}
       >
         <div className="flex items-center gap-2">
-          <span className="text-lg">{nodeTypeIcons[data.type]}</span>
-          <div>
-            <div className="text-xs text-white font-medium">{data.label}</div>
+          <span>{nodeTypeIcons[data.type]}</span>
+          <div className="min-w-0">
+            <div className="text-white font-medium truncate" style={{ fontSize }}>{data.label}</div>
             {data.team && (
-              <div className="text-[10px] text-gray-500">{data.team}</div>
+              <div className="text-gray-500 truncate" style={{ fontSize: Math.max(9, 10 * scale) }}>{data.team}</div>
             )}
           </div>
         </div>
@@ -73,21 +93,28 @@ const nodeTypes: NodeTypes = {
 interface KnowledgeGraphProps {
   nodes: GraphNode[];
   edges: GraphEdge[];
+  nodeCount?: number;
 }
 
-export default function KnowledgeGraph({ nodes, edges }: KnowledgeGraphProps) {
-  // Transform data to ReactFlow format
+function KnowledgeGraphInner({ nodes, edges, nodeCount: nodeCountProp }: KnowledgeGraphProps) {
+  const nodeCount = nodeCountProp ?? nodes.length;
+  const scale = getNodeScale(nodeCount);
+  const cols = Math.max(2, Math.min(5, Math.ceil(Math.sqrt(nodeCount))));
+  const spacingX = Math.max(100, 200 - nodeCount * 2);
+  const spacingY = Math.max(80, 120 - nodeCount);
+
+  // Transform data to ReactFlow format; layout by count so they spread nicely
   const flowNodes: Node[] = useMemo(() => 
     nodes.map((node, index) => ({
       id: node.id,
       type: 'custom',
       position: { 
-        x: (index % 4) * 180 + 60, 
-        y: Math.floor(index / 4) * 120 + 30 
+        x: (index % cols) * spacingX + 40, 
+        y: Math.floor(index / cols) * spacingY + 20 
       },
-      data: node,
+      data: { ...node, _scale: scale },
     })),
-    [nodes]
+    [nodes, cols, spacingX, spacingY, scale]
   );
 
   const flowEdges: Edge[] = useMemo(() =>
@@ -122,8 +149,9 @@ export default function KnowledgeGraph({ nodes, edges }: KnowledgeGraphProps) {
 
   const onNodeClick = useCallback((event: React.MouseEvent, node: Node) => {
     console.log('Node clicked:', node.data);
-    // TODO: Show node details panel
   }, []);
+
+  const layoutKey = `${nodes.length}-${edges.length}`;
 
   return (
     <div className="w-full h-full absolute inset-0">
@@ -135,10 +163,12 @@ export default function KnowledgeGraph({ nodes, edges }: KnowledgeGraphProps) {
         onNodeClick={onNodeClick}
         nodeTypes={nodeTypes}
         fitView
+        fitViewOptions={{ padding: 0.2, maxZoom: 1.2 }}
         className="bg-[#0a0a0a]"
-        minZoom={0.5}
+        minZoom={0.2}
         maxZoom={2}
       >
+        <FitViewOnChange key={layoutKey} />
         <Background 
           color="#151515" 
           gap={50} 
@@ -146,10 +176,12 @@ export default function KnowledgeGraph({ nodes, edges }: KnowledgeGraphProps) {
           className="opacity-30"
         />
         <Controls 
-          className="bg-[#0f0f0f] border border-[#2a2a2a]"
+          className="react-flow-controls-dark"
         />
         <MiniMap 
-          className="bg-[#0f0f0f] border border-[#2a2a2a]"
+          position="bottom-right"
+          className="minimap-small !bg-[#0f0f0f] !border-[#1a1a1a] [&_svg]:!outline-none"
+          style={{ backgroundColor: '#0f0f0f', borderColor: '#1a1a1a' }}
           nodeColor={(node) => {
             const statusColors = {
               active: '#10b981',
@@ -162,6 +194,23 @@ export default function KnowledgeGraph({ nodes, edges }: KnowledgeGraphProps) {
         />
       </ReactFlow>
     </div>
+  );
+}
+
+function FitViewOnChange() {
+  const { fitView } = useReactFlow();
+  useEffect(() => {
+    const t = setTimeout(() => fitView({ padding: 0.2, duration: 300 }), 80);
+    return () => clearTimeout(t);
+  }, [fitView]);
+  return null;
+}
+
+export default function KnowledgeGraph(props: KnowledgeGraphProps) {
+  return (
+    <ReactFlowProvider>
+      <KnowledgeGraphInner {...props} />
+    </ReactFlowProvider>
   );
 }
 
