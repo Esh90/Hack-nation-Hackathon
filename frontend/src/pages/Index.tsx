@@ -107,6 +107,12 @@ export default function Index() {
     }
   }, []);
 
+  /** When data source changes (CSV upload, URL load, reset), refetch so graph/edges update. */
+  useEffect(() => {
+    if (refreshTrigger === 0) return;
+    refreshDashboard();
+  }, [refreshTrigger, refreshDashboard]);
+
   const handleAdminGraphUpdated = useCallback(async () => {
     await refreshDashboard();
   }, [refreshDashboard]);
@@ -207,87 +213,87 @@ export default function Index() {
         </DialogContent>
       </Dialog>
 
-      {/* Main Content - Scrollable */}
+      {/* Main Content - Scrollable: always show layout so health & panels are visible from first paint */}
       <div className="flex-1 relative pb-14 min-h-0 overflow-auto scrollbar-thin">
         {error && (
           <div className="absolute top-4 left-1/2 -translate-x-1/2 z-50 px-4 py-2 bg-error/20 border border-error/50 text-error text-sm rounded shadow-lg">
             {error} — Ensure backend is running on port 8000
           </div>
         )}
-        {loading ? (
-          <div className="flex-1 flex items-center justify-center min-h-[400px]">
-            <div className="text-text-muted text-sm">Loading...</div>
+        {loading && (
+          <div className="absolute top-2 left-1/2 -translate-x-1/2 z-40 px-3 py-1.5 bg-background/95 border border-border rounded-md shadow-sm flex items-center gap-2 text-text-muted text-xs">
+            <span className="inline-block w-3 h-3 border-2 border-primary border-t-transparent rounded-full animate-spin" />
+            Loading…
           </div>
-        ) : (
-          <ResizablePanelGroup
-            direction={isMobile ? "vertical" : "horizontal"}
-            className="min-h-[calc(100vh-7.5rem)] max-h-[calc(100vh-4rem)]"
-          >
-            {/* Left Panel - Knowledge Graph (Resizable) */}
-            <ResizablePanel
-              defaultSize={40}
-              minSize={20}
-              maxSize={60}
-              className="min-w-0"
-            >
-              <div className="h-full overflow-auto scrollbar-thin">
-                <KnowledgeGraphPanel
-                  nodes={graphData?.nodes ?? []}
-                  edges={graphData?.edges ?? []}
-                  nodeCount={graphData?.nodes.length ?? 0}
-                  connectionCount={graphData?.edges.length ?? 0}
-                  highlightedNodeIds={highlightedNodeIds}
-                  changesToday={changesToday}
-                  onClearChanges={clearChangesHighlight}
-                  onPersonClick={(id) => navigate(`/context/${id}`)}
-                />
-              </div>
-            </ResizablePanel>
-
-            <ResizableHandle withHandle className="bg-border hover:bg-border-subtle" />
-
-            {/* Middle Panel - Conflict Monitor (Resizable, vertical split) */}
-            <ResizablePanel
-              defaultSize={30}
-              minSize={20}
-              maxSize={50}
-              className="min-w-0"
-            >
-              <ResizablePanelGroup direction="vertical" className="h-full">
-                <ResizablePanel defaultSize={40} minSize={15} maxSize={70}>
-                  <div className="h-full overflow-auto scrollbar-thin">
-                    <HealthDisplay score={healthScore} />
-                  </div>
-                </ResizablePanel>
-                <ResizableHandle withHandle className="bg-border hover:bg-border-subtle" />
-                <ResizablePanel defaultSize={60} minSize={30} maxSize={85}>
-                  <div className="h-full overflow-auto scrollbar-thin">
-                    <ConflictList conflicts={conflicts} />
-                  </div>
-                </ResizablePanel>
-              </ResizablePanelGroup>
-            </ResizablePanel>
-
-            <ResizableHandle withHandle className="bg-border hover:bg-border-subtle" />
-
-            {/* Right Panel - Decision Stream (Resizable) */}
-            <ResizablePanel
-              defaultSize={30}
-              minSize={20}
-              maxSize={50}
-              className="min-w-0"
-            >
-              <div className="h-full overflow-auto scrollbar-thin">
-                <DecisionStream
-                  decisions={decisions}
-                  nodes={graphData?.nodes ?? []}
-                  edges={graphData?.edges ?? []}
-                  conflicts={conflicts}
-                />
-              </div>
-            </ResizablePanel>
-          </ResizablePanelGroup>
         )}
+        <ResizablePanelGroup
+          direction={isMobile ? "vertical" : "horizontal"}
+          className="min-h-[calc(100vh-7.5rem)] max-h-[calc(100vh-4rem)]"
+        >
+          {/* Left Panel - Knowledge Graph (Resizable) */}
+          <ResizablePanel
+            defaultSize={40}
+            minSize={20}
+            maxSize={60}
+            className="min-w-0"
+          >
+            <div className="h-full overflow-auto scrollbar-thin">
+              <KnowledgeGraphPanel
+                nodes={graphData?.nodes ?? []}
+                edges={graphData?.edges ?? []}
+                nodeCount={graphData?.nodes.length ?? 0}
+                connectionCount={graphData?.edges.length ?? 0}
+                highlightedNodeIds={highlightedNodeIds}
+                changesToday={changesToday}
+                onClearChanges={clearChangesHighlight}
+                onPersonClick={(id) => navigate(`/context/${id}`)}
+              />
+            </div>
+          </ResizablePanel>
+
+          <ResizableHandle withHandle className="bg-border hover:bg-border-subtle" />
+
+          {/* Middle Panel - Conflict Monitor (Resizable, vertical split) */}
+          <ResizablePanel
+            defaultSize={30}
+            minSize={20}
+            maxSize={50}
+            className="min-w-0"
+          >
+            <ResizablePanelGroup direction="vertical" className="h-full">
+              <ResizablePanel defaultSize={40} minSize={15} maxSize={70}>
+                <div className="h-full overflow-auto scrollbar-thin">
+                  <HealthDisplay score={healthScore} />
+                </div>
+              </ResizablePanel>
+              <ResizableHandle withHandle className="bg-border hover:bg-border-subtle" />
+              <ResizablePanel defaultSize={60} minSize={30} maxSize={85}>
+                <div className="h-full overflow-auto scrollbar-thin">
+                  <ConflictList conflicts={conflicts} />
+                </div>
+              </ResizablePanel>
+            </ResizablePanelGroup>
+          </ResizablePanel>
+
+          <ResizableHandle withHandle className="bg-border hover:bg-border-subtle" />
+
+          {/* Right Panel - Decision Stream (Resizable) */}
+          <ResizablePanel
+            defaultSize={30}
+            minSize={20}
+            maxSize={50}
+            className="min-w-0"
+          >
+            <div className="h-full overflow-auto scrollbar-thin">
+              <DecisionStream
+                decisions={decisions}
+                nodes={graphData?.nodes ?? []}
+                edges={graphData?.edges ?? []}
+                conflicts={conflicts}
+              />
+            </div>
+          </ResizablePanel>
+        </ResizablePanelGroup>
       </div>
 
       {/* Shadow Council - Fixed at bottom */}

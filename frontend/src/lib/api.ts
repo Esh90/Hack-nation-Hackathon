@@ -77,8 +77,8 @@ function normalizeNode(n: Record<string, unknown>): GraphNode {
 }
 
 function normalizeEdge(e: Record<string, unknown>, index: number): GraphEdge {
-  const src = String(e.source ?? "");
-  const tgt = String(e.target ?? "");
+  const src = String(e.source ?? e.from ?? "");
+  const tgt = String(e.target ?? e.to ?? "");
   return {
     id: String(e.id ?? `e${index}`),
     source: src,

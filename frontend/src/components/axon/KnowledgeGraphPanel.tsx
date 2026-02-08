@@ -77,13 +77,26 @@ export function KnowledgeGraphPanel({
               {changesToday.recent_decisions.length > 0 && (
                 <div>
                   <span className="text-text-tertiary font-medium">Recent decisions: </span>
-                  {changesToday.recent_decisions.slice(0, 3).map((d) => d.title).filter(Boolean).join(", ") || "—"}
+                  {changesToday.recent_decisions.slice(0, 5).map((d) => d.title).filter(Boolean).join(", ") || "—"}
                 </div>
               )}
               {changesToday.ongoing_conflicts.length > 0 && (
                 <div>
                   <span className="text-text-tertiary font-medium">Ongoing conflicts: </span>
-                  {changesToday.ongoing_conflicts.length}
+                  {changesToday.ongoing_conflicts
+                    .map((c) => c.topic || `${c.team1} vs ${c.team2}`)
+                    .filter(Boolean)
+                    .slice(0, 5)
+                    .join(", ") || String(changesToday.ongoing_conflicts.length)}
+                </div>
+              )}
+              {changesToday.recent_conflicts?.length > 0 && (
+                <div>
+                  <span className="text-text-tertiary font-medium">New today: </span>
+                  {changesToday.recent_conflicts
+                    .map((c) => c.topic || `${c.team1} vs ${c.team2}`)
+                    .filter(Boolean)
+                    .join(", ")}
                 </div>
               )}
             </div>

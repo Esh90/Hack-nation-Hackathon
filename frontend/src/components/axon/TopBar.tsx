@@ -25,7 +25,7 @@ export function TopBar({
   onMyBrief,
   loadingBrief = false,
 }: TopBarProps) {
-  const { isCrisisActive, getDisplayHealthScore, activateCrisis } = useCrisisMode();
+  const { isCrisisActive, getDisplayHealthScore, activateCrisis, deactivateCrisis } = useCrisisMode();
   const displayHealthScore = getDisplayHealthScore(healthScore);
   const [timestamp, setTimestamp] = useState(new Date());
 
@@ -98,8 +98,9 @@ export function TopBar({
       {/* System Status - responsive */}
       <div className="flex items-center gap-2 sm:gap-4 shrink-0">
         {/* Crisis Simulator Button */}
-        <CrisisSimulator 
-          onSimulateCrisis={() => activateCrisis(healthScore)}
+        <CrisisSimulator
+          onActivateCrisis={() => activateCrisis(healthScore)}
+          onDeactivateCrisis={deactivateCrisis}
           isSimulating={isCrisisActive}
         />
 

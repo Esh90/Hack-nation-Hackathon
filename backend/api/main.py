@@ -591,6 +591,7 @@ async def get_changes_today():
     """
     What changed today: recent decisions, ongoing/new conflicts, and affected node/edge ids
     for visual delta and narrative. Used by "What changed today?" founder moment.
+    All content is derived from the current knowledge graph (decisions, conflicts, nodes, edges).
     """
     nodes = knowledge_graph.get("nodes", [])
     edges = knowledge_graph.get("edges", [])
@@ -601,25 +602,38 @@ async def get_changes_today():
     today_date = now.date()
 
     def parse_ts(ts):
-        if not ts:
+        if ts is None:
             return None
         try:
             if isinstance(ts, datetime):
                 return ts
-            dt = datetime.fromisoformat(ts.replace("Z", "+00:00"))
+            s = ts if isinstance(ts, str) else str(ts)
+            dt = datetime.fromisoformat(s.replace("Z", "+00:00"))
             return dt
         except Exception:
             return None
 
+    def decision_date(d):
+        ts = parse_ts(d.get("timestamp")) or parse_ts(d.get("date"))
+        return ts.date() if ts else None
+
+    # Recent decisions: is_recent, or timestamp/date is today, or (data-driven fallback) last 10 with a title
     recent_decisions = []
     for d in decisions:
-        ts = parse_ts(d.get("timestamp"))
         is_recent = d.get("is_recent", False)
-        if is_recent or (ts is not None and ts.date() == today_date):
+        d_date = decision_date(d)
+        if is_recent or (d_date is not None and d_date == today_date):
             recent_decisions.append(d)
+    if not recent_decisions and decisions:
+        recent_decisions = [d for d in decisions if d.get("title")][:10]
 
     ongoing_conflicts = [c for c in conflicts if c.get("status") == "ongoing"]
-    recent_conflicts = [c for c in conflicts if (lambda t: t is not None and t.date() == today_date)(parse_ts(c.get("timestamp")))]
+    # Recent conflicts: timestamp or date is today (conflicts often use "date" in JSON)
+    recent_conflicts = []
+    for c in conflicts:
+        ts = parse_ts(c.get("timestamp")) or parse_ts(c.get("date"))
+        if ts is not None and ts.date() == today_date:
+            recent_conflicts.append(c)
 
     node_ids_affected = set()
     edge_ids_affected = set()
@@ -640,14 +654,23 @@ async def get_changes_today():
             if e.get("source") in node_ids_affected or e.get("target") in node_ids_affected:
                 edge_ids_affected.add(e.get("id"))
 
+    # Narrative built from actual data: decision titles and conflict topics
     summary_parts = []
     if recent_decisions:
-        summary_parts.append(f"{len(recent_decisions)} recent decision(s)")
+        titles = [d.get("title", "").strip() for d in recent_decisions[:5] if d.get("title")]
+        if titles:
+            summary_parts.append("Recent decisions: " + ", ".join(titles[:3]) + ("…" if len(titles) > 3 else ""))
+        else:
+            summary_parts.append(f"{len(recent_decisions)} recent decision(s)")
     if ongoing_conflicts:
-        summary_parts.append(f"{len(ongoing_conflicts)} ongoing conflict(s)")
+        topics = [c.get("topic", c.get("title", "")) for c in ongoing_conflicts if c.get("topic") or c.get("title")]
+        if topics:
+            summary_parts.append("Ongoing: " + ", ".join(topics[:3]) + ("…" if len(topics) > 3 else ""))
+        else:
+            summary_parts.append(f"{len(ongoing_conflicts)} ongoing conflict(s)")
     if recent_conflicts:
         summary_parts.append(f"{len(recent_conflicts)} new conflict(s) today")
-    narrative_summary = "; ".join(summary_parts) if summary_parts else "No changes recorded today. Ask the Chief of Staff for a full brief."
+    narrative_summary = ". ".join(summary_parts) if summary_parts else "No changes recorded today. Data source may be empty or not yet loaded."
 
     return {
         "narrative_summary": narrative_summary,

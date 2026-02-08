@@ -8,6 +8,7 @@ import {
 } from "@/lib/api";
 import { stopAllAudio, registerAudio } from "@/lib/audioController";
 import { useSpeechRecognition } from "@/hooks/useSpeechRecognition";
+import { useTheme } from "next-themes";
 import type { CouncilResponse } from "@/lib/api";
 
 export interface ReasoningStep {
@@ -54,26 +55,28 @@ const FALLBACK_QUESTIONS = [
   "What's the highest-impact decision we should make this week?",
 ];
 
-const roleColors = {
-  optimist: {
-    dot: "bg-success",
-    avatar: "bg-success/20 text-success",
-    bubble: "bg-[#0f1f0f] border-[#1a3a1a]",
-    heading: "text-success",
-  },
-  chief: {
-    dot: "bg-info",
-    avatar: "bg-info/20 text-info",
-    bubble: "bg-secondary border-border",
-    heading: "text-info",
-  },
-  skeptic: {
-    dot: "bg-warning",
-    avatar: "bg-warning/20 text-warning",
-    bubble: "bg-[#1f1709] border-[#3a2a0a]",
-    heading: "text-warning",
-  },
-};
+function getRoleColors(isDark: boolean) {
+  return {
+    optimist: {
+      dot: "bg-success",
+      avatar: "bg-success/20 text-success",
+      bubble: isDark ? "bg-[#0f1f0f] border-[#1a3a1a]" : "bg-emerald-50 border-emerald-200",
+      heading: "text-success",
+    },
+    chief: {
+      dot: "bg-info",
+      avatar: "bg-info/20 text-info",
+      bubble: isDark ? "bg-secondary border-border" : "bg-sky-50 border-sky-200",
+      heading: "text-info",
+    },
+    skeptic: {
+      dot: "bg-warning",
+      avatar: "bg-warning/20 text-warning",
+      bubble: isDark ? "bg-[#1f1709] border-[#3a2a0a]" : "bg-amber-50 border-amber-200",
+      heading: "text-warning",
+    },
+  };
+}
 
 /** Format long LLM text into readable blocks: paragraphs and lists */
 function formatAgentMessage(text: string) {
@@ -137,6 +140,9 @@ function stepSummary(output: string, maxLen = 80): string {
 }
 
 export function ShadowCouncil() {
+  const { theme } = useTheme();
+  const isDark = theme === "dark";
+  const roleColors = getRoleColors(isDark);
   const [isActive, setIsActive] = useState(false);
   const [question, setQuestion] = useState("");
   const [agents, setAgents] = useState<Agent[]>(defaultAgents);
@@ -252,7 +258,9 @@ export function ShadowCouncil() {
       {isActive && (
         <div
           className="fixed bottom-14 left-0 right-0 h-[380px] sm:h-[420px] border-t border-border-subtle backdrop-blur-strong z-50 overflow-hidden flex flex-col"
-          style={{ background: "hsla(0, 0%, 4%, 0.95)" }}
+          style={{
+            background: isDark ? "hsla(0, 0%, 4%, 0.95)" : "hsla(0, 0%, 100%, 0.98)",
+          }}
         >
           {/* Close button */}
           <button

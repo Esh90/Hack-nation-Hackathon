@@ -3,49 +3,55 @@ import { AlertTriangle } from 'lucide-react';
 import { useTheme } from 'next-themes';
 
 interface CrisisSimulatorProps {
-  onSimulateCrisis: () => void;
+  onActivateCrisis: () => void;
+  onDeactivateCrisis: () => void;
   isSimulating: boolean;
 }
 
-export function CrisisSimulator({ onSimulateCrisis, isSimulating }: CrisisSimulatorProps) {
+export function CrisisSimulator({ onActivateCrisis, onDeactivateCrisis, isSimulating }: CrisisSimulatorProps) {
   const { theme } = useTheme();
   const isDark = theme === 'dark';
   const [showConfirm, setShowConfirm] = useState(false);
 
   const handleClick = () => {
-    if (!isSimulating) {
+    if (isSimulating) {
+      // If crisis is active, deactivate immediately (no confirmation needed)
+      onDeactivateCrisis();
+    } else {
+      // If crisis is not active, show confirmation dialog
       setShowConfirm(true);
     }
   };
 
   const handleConfirm = () => {
     setShowConfirm(false);
-    onSimulateCrisis();
+    onActivateCrisis();
   };
 
   return (
     <div className="relative">
       <button
         onClick={handleClick}
-        disabled={isSimulating}
         className={`
           px-3 py-1.5 sm:px-4 sm:py-2 rounded text-[10px] sm:text-[11px] font-medium
           flex items-center gap-1.5 sm:gap-2 transition-all shrink-0
           ${isSimulating 
-            ? 'bg-red-500/20 text-red-400 cursor-not-allowed border border-red-500/30' 
+            ? 'bg-green-500/20 text-green-400 hover:bg-green-500/30 border border-green-500/30' 
             : 'bg-red-500/10 text-red-500 hover:bg-red-500/20 border border-red-500/30'
           }
         `}
         style={{
           backgroundColor: isSimulating 
-            ? (isDark ? 'rgba(239, 68, 68, 0.2)' : 'rgba(239, 68, 68, 0.15)')
+            ? (isDark ? 'rgba(34, 197, 94, 0.2)' : 'rgba(34, 197, 94, 0.15)')
             : (isDark ? 'rgba(239, 68, 68, 0.1)' : 'rgba(239, 68, 68, 0.08)'),
-          borderColor: isDark ? 'rgba(239, 68, 68, 0.3)' : 'rgba(239, 68, 68, 0.4)'
+          borderColor: isSimulating 
+            ? (isDark ? 'rgba(34, 197, 94, 0.3)' : 'rgba(34, 197, 94, 0.4)')
+            : (isDark ? 'rgba(239, 68, 68, 0.3)' : 'rgba(239, 68, 68, 0.4)')
         }}
       >
         <AlertTriangle className="w-3 h-3 sm:w-4 sm:h-4" />
-        <span className="hidden sm:inline">{isSimulating ? 'Crisis Active...' : 'Simulate Conflict'}</span>
-        <span className="sm:hidden">{isSimulating ? 'Active...' : 'Simulate'}</span>
+        <span className="hidden sm:inline">{isSimulating ? 'End Crisis' : 'Simulate Conflict'}</span>
+        <span className="sm:hidden">{isSimulating ? 'End' : 'Simulate'}</span>
       </button>
 
       {showConfirm && (
@@ -123,4 +129,3 @@ export function CrisisSimulator({ onSimulateCrisis, isSimulating }: CrisisSimula
     </div>
   );
 }
-

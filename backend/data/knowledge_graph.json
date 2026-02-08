@@ -1,128 +1,98 @@
 {
   "nodes": [
     {
-      "id": "sarah_chen",
+      "id": "dr_ahmed",
       "type": "person",
-      "label": "Sarah Chen",
+      "label": "Dr. Fatima Ahmed",
       "status": "active",
-      "team": "Product",
-      "role": "VP Product",
-      "centrality": 0.9
+      "team": "Clinical",
+      "role": "Chief Medical Officer",
+      "centrality": 0.92
     },
     {
-      "id": "marcus_johnson",
+      "id": "maria",
       "type": "person",
-      "label": "Marcus Johnson",
+      "label": "Maria Santos",
       "status": "active",
-      "team": "Engineering",
-      "role": "CTO",
+      "team": "Operations",
+      "role": "Hospital Admin Lead",
       "centrality": 0.88
     },
     {
-      "id": "david_kim",
+      "id": "chen",
       "type": "person",
-      "label": "David Kim",
+      "label": "Dr. Wei Chen",
       "status": "active",
-      "team": "Finance",
-      "role": "CFO",
+      "team": "Clinical",
+      "role": "Department Head",
       "centrality": 0.85
     },
     {
-      "id": "emily_rodriguez",
+      "id": "rachel",
       "type": "person",
-      "label": "Emily Rodriguez",
+      "label": "Rachel Green",
       "status": "active",
-      "team": "Marketing",
-      "role": "CMO",
-      "centrality": 0.8
-    },
-    {
-      "id": "maria_garcia",
-      "type": "person",
-      "label": "Maria Garcia",
-      "status": "active",
-      "team": "Product",
-      "role": "PM",
-      "centrality": 0.75
-    },
-    {
-      "id": "kevin_zhang",
-      "type": "person",
-      "label": "Kevin Zhang",
-      "status": "active",
-      "team": "Engineering",
-      "role": "DevOps Lead",
-      "centrality": 0.78
-    },
-    {
-      "id": "q1_launch",
-      "type": "topic",
-      "label": "Q1 Product Launch",
-      "status": "active",
-      "centrality": 0.88
-    },
-    {
-      "id": "pricing",
-      "type": "topic",
-      "label": "Pricing Strategy",
-      "status": "aging",
-      "centrality": 0.8
-    },
-    {
-      "id": "feature_prioritization",
-      "type": "topic",
-      "label": "Feature Prioritization",
-      "status": "conflicted",
-      "centrality": 0.75
-    },
-    {
-      "id": "api_v3",
-      "type": "topic",
-      "label": "API v3 Development",
-      "status": "active",
+      "team": "Finance",
+      "role": "Billing Director",
       "centrality": 0.82
     },
     {
-      "id": "decision_1770539524.115522",
+      "id": "emr",
+      "type": "topic",
+      "label": "EMR Upgrade",
+      "status": "active",
+      "team": null,
+      "role": null,
+      "centrality": 0.9
+    },
+    {
+      "id": "staffing",
+      "type": "topic",
+      "label": "Staffing Model",
+      "status": "active",
+      "team": null,
+      "role": null,
+      "centrality": 0.85
+    },
+    {
+      "id": "compliance",
+      "type": "topic",
+      "label": "Compliance Audit",
+      "status": "aging",
+      "team": null,
+      "role": null,
+      "centrality": 0.8
+    },
+    {
+      "id": "decision_1770554899.872503",
       "type": "decision",
-      "label": "AI Assistant Launch",
+      "label": "Launch of X",
       "status": "active",
       "decay": 1,
       "centrality": 0.8,
-      "reasoning": "Launching AI Assistant",
-      "last_mentioned": "2026-02-08T13:32:04.115522"
+      "reasoning": "The company is launching X",
+      "last_mentioned": "2026-02-08T17:48:19.872544"
     },
     {
-      "id": "person_engineering",
+      "id": "person_engineering_leads",
       "type": "person",
-      "label": "Engineering",
+      "label": "Engineering leads",
       "status": "active",
       "decay": 1,
       "centrality": 0.7,
       "team": "Engineering",
-      "reasoning": "Mentioned as owner",
-      "last_mentioned": "2026-02-08T13:32:04.115522"
+      "reasoning": "Mentioned as mentioned",
+      "last_mentioned": "2026-02-08T17:48:19.872640"
     },
     {
-      "id": "person_marketing",
-      "type": "person",
-      "label": "Marketing",
-      "status": "active",
-      "decay": 1,
-      "centrality": 0.7,
-      "team": "Marketing",
-      "reasoning": "Mentioned as stakeholder",
-      "last_mentioned": "2026-02-08T13:32:04.115522"
-    },
-    {
-      "id": "topic_ai_assistant_launch",
+      "id": "topic_launch_of_x",
       "type": "topic",
-      "label": "AI Assistant Launch",
+      "label": "Launch of X",
       "status": "active",
       "decay": 1,
       "centrality": 0.75,
       "reasoning": "Category: product",
-      "last_mentioned": "2026-02-08T13:32:04.115522"
+      "last_mentioned": "2026-02-08T17:48:19.872644"
     },
     {
       "id": "person_admin",
@@ -133,284 +103,127 @@
       "centrality": 0.7,
       "team": "Unknown",
       "reasoning": "Mentioned as owner",
-      "last_mentioned": "2026-02-08T13:42:32.663467"
+      "last_mentioned": "2026-02-08T17:49:50.522731"
     },
     {
-      "id": "topic_new_feature_marketing",
+      "id": "topic_compliance_audit_and_emr_upgrade",
       "type": "topic",
-      "label": "new feature marketing",
+      "label": "compliance audit and emr upgrade",
       "status": "active",
       "decay": 1,
       "centrality": 0.75,
-      "reasoning": "Category: marketing",
-      "last_mentioned": "2026-02-08T13:42:32.663467"
-    },
-    {
-      "id": "decision_1770544756.513567",
-      "type": "decision",
-      "label": "New Conflict",
-      "status": "active",
-      "decay": 1,
-      "centrality": 0.8,
-      "reasoning": "Raise a new conflict between marketing and HR",
-      "last_mentioned": "2026-02-08T14:59:16.513567"
-    },
-    {
-      "id": "topic_interdepartmental_conflict",
-      "type": "topic",
-      "label": "Interdepartmental Conflict",
-      "status": "active",
-      "decay": 1,
-      "centrality": 0.75,
-      "reasoning": "Category: other",
-      "last_mentioned": "2026-02-08T14:59:16.513567"
+      "reasoning": "Category: engineering",
+      "last_mentioned": "2026-02-08T17:49:50.522741"
     }
   ],
   "edges": [
     {
       "id": "e1",
-      "source": "sarah_chen",
-      "target": "q1_launch",
+      "source": "emr",
+      "target": "0.95",
       "type": "influences",
-      "strength": 0.9
+      "strength": 0.8
     },
     {
       "id": "e2",
-      "source": "marcus_johnson",
-      "target": "q1_launch",
+      "source": "emr",
+      "target": "0.9",
       "type": "influences",
-      "strength": 0.85
+      "strength": 0.8
     },
     {
       "id": "e3",
-      "source": "api_v3",
-      "target": "q1_launch",
-      "type": "depends_on",
-      "strength": 0.9
+      "source": "staffing",
+      "target": "0.88",
+      "type": "influences",
+      "strength": 0.8
     },
     {
       "id": "e4",
-      "source": "david_kim",
-      "target": "pricing",
-      "type": "influences",
-      "strength": 0.88
-    },
-    {
-      "id": "e5",
-      "source": "sarah_chen",
-      "target": "pricing",
-      "type": "influences",
-      "strength": 0.82
-    },
-    {
-      "id": "e6",
-      "source": "david_kim",
-      "target": "maria_garcia",
-      "type": "conflicts_with",
-      "strength": 0.7
-    },
-    {
-      "id": "e7",
-      "source": "marcus_johnson",
-      "target": "feature_prioritization",
-      "type": "influences",
-      "strength": 0.85
-    },
-    {
-      "id": "e8",
-      "source": "sarah_chen",
-      "target": "feature_prioritization",
+      "source": "compliance",
+      "target": "0.85",
       "type": "influences",
       "strength": 0.8
     },
     {
-      "id": "e9",
-      "source": "kevin_zhang",
-      "target": "api_v3",
-      "type": "influences",
-      "strength": 0.9
-    },
-    {
-      "id": "e10",
-      "source": "emily_rodriguez",
-      "target": "q1_launch",
-      "type": "influences",
-      "strength": 0.8
-    },
-    {
-      "id": "edge_person_engineering_decision_1770539524.115522",
-      "source": "person_engineering",
-      "target": "decision_1770539524.115522",
-      "type": "influences",
-      "strength": 0.8
-    },
-    {
-      "id": "edge_person_marketing_decision_1770539524.115522",
-      "source": "person_marketing",
-      "target": "decision_1770539524.115522",
+      "id": "edge_person_engineering_leads_decision_1770554899.872503",
+      "source": "person_engineering_leads",
+      "target": "decision_1770554899.872503",
       "type": "depends_on",
       "strength": 0.8
-    },
-    {
-      "id": "conflict_person_marketing_person_engineering",
-      "source": "person_marketing",
-      "target": "person_engineering",
-      "type": "conflicts_with",
-      "strength": 0.7
-    },
-    {
-      "id": "edge_person_admin_decision_1770544756.513567",
-      "source": "person_admin",
-      "target": "decision_1770544756.513567",
-      "type": "influences",
-      "strength": 0.8
-    },
-    {
-      "id": "conflict_person_marketing_person_hr",
-      "source": "person_marketing",
-      "target": "person_hr",
-      "type": "conflicts_with",
-      "strength": 0.7
     }
   ],
   "decisions": [
     {
-      "id": "decision_1770539524.115522",
-      "title": "AI Assistant Launch",
+      "id": "decision_1770554899.872503",
+      "title": "Launch of X",
       "version": 1,
       "author": "Admin",
-      "timestamp": "2026-02-08T13:32:04.115522",
-      "change": "Launching AI Assistant",
-      "reasoning": "Launching AI Assistant",
+      "timestamp": "2026-02-08T17:48:19.872544",
+      "change": "The company is launching X",
+      "reasoning": "The company is launching X",
       "status": "new",
       "is_recent": true,
       "impact": "medium"
     },
     {
       "id": "dec_001",
-      "title": "Q1 Product Launch Date",
-      "version": 2,
-      "author": "Sarah Chen",
-      "impact": "high",
-      "is_recent": true,
-      "change": "Extended to accommodate API v3",
-      "reasoning": "Engineering confirmed API v3 is a hard dependency. March 1 confirmed with Marketing alignment."
+      "title": "Dr. Fatima Ahmed",
+      "author": "",
+      "version": 1,
+      "impact": "medium",
+      "is_recent": false,
+      "date": null,
+      "change": "",
+      "reasoning": ""
     },
     {
       "id": "dec_002",
-      "title": "Pricing Strategy Approval",
-      "version": 2,
-      "author": "David Kim",
-      "impact": "high",
-      "is_recent": true,
-      "change": "Approved $99 Pro tier",
-      "reasoning": "Compromise between Finance and Product. Sales briefed on positioning."
-    },
-    {
-      "id": "dec_003",
-      "title": "Feature Prioritization Q2",
+      "title": "Maria Santos",
+      "author": "",
       "version": 1,
-      "author": "Sarah Chen",
       "impact": "medium",
       "is_recent": false,
-      "change": "50/50 enterprise features and tech debt",
-      "reasoning": "Balancing Engineering tech debt with Product roadmap."
-    },
-    {
-      "id": "decision_1770544756.513567",
-      "title": "New Conflict",
-      "version": 1,
-      "author": "Admin",
-      "timestamp": "2026-02-08T14:59:16.513567",
-      "change": "Raise a new conflict between marketing and HR",
-      "reasoning": "Raise a new conflict between marketing and HR",
-      "status": "new",
-      "is_recent": true,
-      "impact": "medium"
+      "date": null,
+      "change": "",
+      "reasoning": ""
     }
   ],
   "conflicts": [
     {
-      "id": "conf_002",
-      "title": "Feature Prioritization",
-      "team1": "Engineering",
-      "team2": "Product",
-      "topic": "Tech debt vs features",
+      "id": "conf_001",
+      "title": "Schedule flexibility",
+      "team1": "Clinical",
+      "team2": "Operations",
+      "topic": "Schedule flexibility",
       "severity": "high",
       "status": "resolved",
-      "description": "Engineering wants 70% tech debt; Product wants enterprise features. 50/50 compromise but tension remains."
+      "date": null,
+      "description": "Shift patterns vs coverage"
     },
     {
-      "id": "conf_001",
-      "title": "Pricing Strategy",
+      "id": "conf_002",
+      "title": "Budget for equipment",
       "team1": "Finance",
-      "team2": "Product",
-      "topic": "Pro tier pricing",
-      "severity": "medium",
-      "status": "resolved",
-      "description": "Finance wanted $119; Product insisted on $99. Resolved with reduced feature set."
-    },
-    {
-      "id": "conflict_person_marketing_person_engineering",
-      "team1": "Marketing",
-      "team2": "Engineering",
-      "topic": "Live update from admin",
-      "severity": "medium",
-      "status": "resolved",
-      "timestamp": "2026-02-08T13:34:22.868138",
-      "description": "Conflict between Marketing and Engineering (added via admin chat)."
-    },
-    {
-      "id": "conflict_person_marketing_person_hr",
-      "team1": "Marketing",
-      "team2": "person_hr",
-      "topic": "Live update from admin",
+      "team2": "Clinical",
+      "topic": "Budget for equipment",
       "severity": "medium",
       "status": "ongoing",
-      "timestamp": "2026-02-08T14:59:26.828754",
-      "description": "Conflict between Marketing and person_hr (added via admin chat)."
-    }
-  ],
-  "dependencies": [
-    {
-      "id": "dep_001",
-      "blocker": "API v3 Development",
-      "blocked": "Q1 Product Launch",
-      "type": "hard_dependency",
-      "risk_level": "high",
-      "description": "Launch depends on API v3 by Feb 15th. Document states final deadline is Wednesday."
+      "date": null,
+      "description": "Prioritization of spend"
     },
     {
-      "id": "dep_002",
-      "blocker": "Pricing Decision",
-      "blocked": "Sales Comp Plan",
-      "type": "soft_dependency",
-      "risk_level": "low",
-      "description": "Comp plan aligned with new pricing tiers."
+      "id": "conf_003",
+      "title": "Headcount approval",
+      "team1": "Operations",
+      "team2": "Finance",
+      "topic": "Headcount approval",
+      "severity": "medium",
+      "status": "ongoing",
+      "date": null,
+      "description": "Open positions freeze"
     }
   ],
-  "insights": [
-    {
-      "type": "risk",
-      "title": "Resource Contention",
-      "description": "Engineering bottleneck for API v3 and Q1 launch",
-      "severity": "high",
-      "affected_nodes": [
-        "marcus_johnson",
-        "kevin_zhang",
-        "q1_launch"
-      ]
-    },
-    {
-      "type": "trend",
-      "title": "Cross-Team Alignment",
-      "description": "Product-Engineering-Marketing aligning on Q1",
-      "severity": "low",
-      "affected_nodes": [
-        "sarah_chen",
-        "marcus_johnson",
-        "emily_rodriguez"
-      ]
-    }
-  ]
+  "dependencies": [],
+  "insights": []
 }

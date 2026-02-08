@@ -1,5 +1,6 @@
 import { LineChart, Line, ResponsiveContainer, YAxis, Tooltip } from "recharts";
 import { motion } from "framer-motion";
+import { useTheme } from "next-themes";
 import { generateHeartbeatData, calculateHealthScore } from "@/lib/synthetic-data";
 
 interface ConflictHeartbeatProps {
@@ -7,6 +8,8 @@ interface ConflictHeartbeatProps {
 }
 
 export default function ConflictHeartbeat({ healthScore: propScore }: ConflictHeartbeatProps) {
+  const { theme } = useTheme();
+  const isDark = theme === "dark";
   const healthScore = propScore ?? calculateHealthScore();
   const heartbeatData = generateHeartbeatData(healthScore);
 
@@ -30,15 +33,11 @@ export default function ConflictHeartbeat({ healthScore: propScore }: ConflictHe
         >
           <div 
             className="text-5xl font-light font-mono mb-1"
-            style={{ 
-              background: `linear-gradient(135deg, ${healthColor}, ${healthColor}cc)`,
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent'
-            }}
+            style={{ color: healthColor }}
           >
             {healthScore}%
           </div>
-          <div className="text-[10px] text-gray-600 tracking-widest">
+          <div className="text-[10px] text-text-muted tracking-widest">
             ORGANIZATIONAL HEALTH SCORE
           </div>
         </motion.div>
@@ -50,12 +49,13 @@ export default function ConflictHeartbeat({ healthScore: propScore }: ConflictHe
               <YAxis hide domain={[0, 100]} />
               <Tooltip 
                 contentStyle={{ 
-                  background: '#0f0f0f', 
-                  border: '1px solid #2a2a2a',
+                  background: isDark ? '#0f0f0f' : '#ffffff',
+                  border: isDark ? '1px solid #2a2a2a' : '1px solid #e5e7eb',
                   borderRadius: '4px',
-                  fontSize: '11px'
+                  fontSize: '11px',
+                  color: isDark ? '#e5e5e5' : '#374151'
                 }}
-                labelStyle={{ color: '#888' }}
+                labelStyle={{ color: isDark ? '#888' : '#6b7280' }}
               />
               <Line 
                 type="monotone" 
