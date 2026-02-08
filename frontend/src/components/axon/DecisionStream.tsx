@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ChevronRight, ChevronDown } from "lucide-react";
+import { ChevronRight, ChevronDown, Bell } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import {
   DropdownMenu,
@@ -8,12 +8,13 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import type { Decision, GraphNode, Conflict } from "@/lib/api";
+import type { Decision, GraphNode, GraphEdge, Conflict } from "@/lib/api";
 import { formatDistanceToNow } from "date-fns";
 
 interface DecisionStreamProps {
   decisions: Decision[];
   nodes?: GraphNode[];
+  edges?: GraphEdge[];
   conflicts?: Conflict[];
 }
 
@@ -29,12 +30,32 @@ function getTeams(nodes: GraphNode[], conflicts: Conflict[]): string[] {
   return Array.from(teams).sort();
 }
 
+/** Who needs to know: stakeholders connected to this decision in the graph */
+function getWhoNeedsToKnow(decision: Decision, nodes: GraphNode[], edges: GraphEdge[]): string[] {
+  const idToLabel = new Map(nodes.map((n) => [n.id, n.label]));
+  const decisionNode = nodes.find(
+    (n) =>
+      n.label === decision.title ||
+      n.id === decision.id ||
+      (n.type === "decision" && n.label?.toLowerCase() === decision.title?.toLowerCase())
+  );
+  if (!decisionNode) return [];
+  const ids = new Set<string>();
+  edges.forEach((e) => {
+    if (e.source === decisionNode.id) ids.add(e.target);
+    if (e.target === decisionNode.id) ids.add(e.source);
+  });
+  return [...ids].map((id) => idToLabel.get(id) ?? id).filter(Boolean);
+}
+
 export function DecisionStream({
   decisions,
   nodes = [],
+  edges = [],
   conflicts = [],
 }: DecisionStreamProps) {
   const [expandedId, setExpandedId] = useState<string | null>(null);
+  const [notifiedDecisions, setNotifiedDecisions] = useState<Set<string>>(new Set());
   const navigate = useNavigate();
   const teams = getTeams(nodes, conflicts);
 
@@ -151,12 +172,45 @@ export function DecisionStream({
                         transition={{ duration: 0.2 }}
                         className="overflow-hidden"
                       >
-                        <div className="mt-2 pt-2 border-t border-border">
-                          <div className="text-[10px] text-text-tertiary uppercase tracking-wide mb-1">
-                            Reasoning
-                          </div>
-                          <div className="text-[11px] text-text-secondary leading-relaxed">
-                            {decision.reasoning}
+                        <div className="mt-2 pt-2 border-t border-border space-y-2">
+                          {(() => {
+                            const who = getWhoNeedsToKnow(decision, nodes, edges);
+                            const notified = notifiedDecisions.has(decision.id);
+                            return who.length > 0 ? (
+                              <div>
+                                <div className="text-[10px] text-text-tertiary uppercase tracking-wide mb-1">
+                                  Who needs to know
+                                </div>
+                                <div className="flex items-center gap-1.5 flex-wrap">
+                                  <Bell className="w-3 h-3 text-info shrink-0" />
+                                  <span className="text-[11px] text-text-secondary">
+                                    {who.join(", ")}
+                                  </span>
+                                  {!notified ? (
+                                    <button
+                                      type="button"
+                                      onClick={(e) => {
+                                        e.stopPropagation();
+                                        setNotifiedDecisions((s) => new Set(s).add(decision.id));
+                                      }}
+                                      className="px-2 py-0.5 text-[10px] rounded border border-info/50 text-info hover:bg-info/20"
+                                    >
+                                      Notify
+                                    </button>
+                                  ) : (
+                                    <span className="text-[10px] text-success">Notified</span>
+                                  )}
+                                </div>
+                              </div>
+                            ) : null;
+                          })()}
+                          <div>
+                            <div className="text-[10px] text-text-tertiary uppercase tracking-wide mb-1">
+                              Reasoning
+                            </div>
+                            <div className="text-[11px] text-text-secondary leading-relaxed">
+                              {decision.reasoning}
+                            </div>
                           </div>
                         </div>
                       </motion.div>

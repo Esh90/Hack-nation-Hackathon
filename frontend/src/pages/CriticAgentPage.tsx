@@ -1,7 +1,8 @@
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
-import { ArrowLeft, AlertTriangle, Send, Bell } from "lucide-react";
+import { ArrowLeft, AlertTriangle, Send, Bell, Mic } from "lucide-react";
 import { analyzeWithCritic } from "@/lib/api";
+import { useSpeechRecognition } from "@/hooks/useSpeechRecognition";
 import type { CriticContradiction } from "@/lib/api";
 
 const EXAMPLE_INPUTS = [
@@ -23,6 +24,11 @@ export default function CriticAgentPage() {
   } | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  const onSpeechResult = useCallback((transcript: string) => {
+    setInput((prev) => (prev ? `${prev} ${transcript}` : transcript));
+  }, []);
+  const { isListening, startListening, stopListening, supported: micSupported } = useSpeechRecognition(onSpeechResult);
 
   const handleAnalyze = async () => {
     const text = input.trim();
@@ -79,9 +85,23 @@ export default function CriticAgentPage() {
 
           {/* Input */}
           <div>
-            <label className="text-[11px] text-text-muted block mb-1.5">
-              New input (voice note / meeting summary)
-            </label>
+            <div className="flex items-center justify-between mb-1.5">
+              <label className="text-[11px] text-text-muted">
+                New input (voice note / meeting summary)
+              </label>
+              {micSupported && (
+                <button
+                  type="button"
+                  onClick={isListening ? stopListening : startListening}
+                  className={`flex items-center gap-1 px-2 py-1 text-[11px] rounded border transition-default ${
+                    isListening ? "border-error/50 bg-error/10 text-error" : "border-border text-text-muted hover:text-text-secondary"
+                  }`}
+                >
+                  <Mic className="w-3.5 h-3.5" />
+                  {isListening ? "Stop" : "Voice"}
+                </button>
+              )}
+            </div>
             <textarea
               value={input}
               onChange={(e) => setInput(e.target.value)}

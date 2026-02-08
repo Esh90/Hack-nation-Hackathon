@@ -4,11 +4,19 @@ import { Link } from "react-router-dom";
 interface TopBarProps {
   healthScore: number;
   hasConflicts: boolean;
+  onWhatChangedToday?: () => void;
+  loadingChanges?: boolean;
+  onMyBrief?: () => void;
+  loadingBrief?: boolean;
 }
 
 export function TopBar({
   healthScore,
-  hasConflicts
+  hasConflicts,
+  onWhatChangedToday,
+  loadingChanges = false,
+  onMyBrief,
+  loadingBrief = false,
 }: TopBarProps) {
   const [timestamp, setTimestamp] = useState(new Date());
   useEffect(() => {
@@ -46,6 +54,26 @@ export function TopBar({
         >
           Critic Agent
         </Link>
+        {onWhatChangedToday && (
+          <button
+            type="button"
+            onClick={onWhatChangedToday}
+            disabled={loadingChanges}
+            className="text-[10px] sm:text-[11px] text-info hover:text-primary transition-default px-2 py-1.5 border border-info/50 hover:border-primary/50 shrink-0 disabled:opacity-50"
+          >
+            {loadingChanges ? "Loading…" : "What changed today?"}
+          </button>
+        )}
+        {onMyBrief && (
+          <button
+            type="button"
+            onClick={onMyBrief}
+            disabled={loadingBrief}
+            className="text-[10px] sm:text-[11px] text-primary hover:text-primary/90 transition-default px-2 py-1.5 border border-primary/50 hover:border-primary shrink-0 disabled:opacity-50"
+          >
+            {loadingBrief ? "Loading…" : "My brief"}
+          </button>
+        )}
       </div>
 
       {/* System Status - responsive */}

@@ -1,43 +1,416 @@
 {
   "nodes": [
-    {"id": "sarah_chen", "type": "person", "label": "Sarah Chen", "status": "active", "team": "Product", "role": "VP Product", "centrality": 0.9},
-    {"id": "marcus_johnson", "type": "person", "label": "Marcus Johnson", "status": "active", "team": "Engineering", "role": "CTO", "centrality": 0.88},
-    {"id": "david_kim", "type": "person", "label": "David Kim", "status": "active", "team": "Finance", "role": "CFO", "centrality": 0.85},
-    {"id": "emily_rodriguez", "type": "person", "label": "Emily Rodriguez", "status": "active", "team": "Marketing", "role": "CMO", "centrality": 0.8},
-    {"id": "maria_garcia", "type": "person", "label": "Maria Garcia", "status": "active", "team": "Product", "role": "PM", "centrality": 0.75},
-    {"id": "kevin_zhang", "type": "person", "label": "Kevin Zhang", "status": "active", "team": "Engineering", "role": "DevOps Lead", "centrality": 0.78},
-    {"id": "q1_launch", "type": "topic", "label": "Q1 Product Launch", "status": "active", "centrality": 0.88},
-    {"id": "pricing", "type": "topic", "label": "Pricing Strategy", "status": "aging", "centrality": 0.8},
-    {"id": "feature_prioritization", "type": "topic", "label": "Feature Prioritization", "status": "conflicted", "centrality": 0.75},
-    {"id": "api_v3", "type": "topic", "label": "API v3 Development", "status": "active", "centrality": 0.82}
+    {
+      "id": "sarah_chen",
+      "type": "person",
+      "label": "Sarah Chen",
+      "status": "active",
+      "team": "Product",
+      "role": "VP Product",
+      "centrality": 0.9
+    },
+    {
+      "id": "marcus_johnson",
+      "type": "person",
+      "label": "Marcus Johnson",
+      "status": "active",
+      "team": "Engineering",
+      "role": "CTO",
+      "centrality": 0.88
+    },
+    {
+      "id": "david_kim",
+      "type": "person",
+      "label": "David Kim",
+      "status": "active",
+      "team": "Finance",
+      "role": "CFO",
+      "centrality": 0.85
+    },
+    {
+      "id": "emily_rodriguez",
+      "type": "person",
+      "label": "Emily Rodriguez",
+      "status": "active",
+      "team": "Marketing",
+      "role": "CMO",
+      "centrality": 0.8
+    },
+    {
+      "id": "maria_garcia",
+      "type": "person",
+      "label": "Maria Garcia",
+      "status": "active",
+      "team": "Product",
+      "role": "PM",
+      "centrality": 0.75
+    },
+    {
+      "id": "kevin_zhang",
+      "type": "person",
+      "label": "Kevin Zhang",
+      "status": "active",
+      "team": "Engineering",
+      "role": "DevOps Lead",
+      "centrality": 0.78
+    },
+    {
+      "id": "q1_launch",
+      "type": "topic",
+      "label": "Q1 Product Launch",
+      "status": "active",
+      "centrality": 0.88
+    },
+    {
+      "id": "pricing",
+      "type": "topic",
+      "label": "Pricing Strategy",
+      "status": "aging",
+      "centrality": 0.8
+    },
+    {
+      "id": "feature_prioritization",
+      "type": "topic",
+      "label": "Feature Prioritization",
+      "status": "conflicted",
+      "centrality": 0.75
+    },
+    {
+      "id": "api_v3",
+      "type": "topic",
+      "label": "API v3 Development",
+      "status": "active",
+      "centrality": 0.82
+    },
+    {
+      "id": "decision_1770539524.115522",
+      "type": "decision",
+      "label": "AI Assistant Launch",
+      "status": "active",
+      "decay": 1,
+      "centrality": 0.8,
+      "reasoning": "Launching AI Assistant",
+      "last_mentioned": "2026-02-08T13:32:04.115522"
+    },
+    {
+      "id": "person_engineering",
+      "type": "person",
+      "label": "Engineering",
+      "status": "active",
+      "decay": 1,
+      "centrality": 0.7,
+      "team": "Engineering",
+      "reasoning": "Mentioned as owner",
+      "last_mentioned": "2026-02-08T13:32:04.115522"
+    },
+    {
+      "id": "person_marketing",
+      "type": "person",
+      "label": "Marketing",
+      "status": "active",
+      "decay": 1,
+      "centrality": 0.7,
+      "team": "Marketing",
+      "reasoning": "Mentioned as stakeholder",
+      "last_mentioned": "2026-02-08T13:32:04.115522"
+    },
+    {
+      "id": "topic_ai_assistant_launch",
+      "type": "topic",
+      "label": "AI Assistant Launch",
+      "status": "active",
+      "decay": 1,
+      "centrality": 0.75,
+      "reasoning": "Category: product",
+      "last_mentioned": "2026-02-08T13:32:04.115522"
+    },
+    {
+      "id": "person_admin",
+      "type": "person",
+      "label": "admin",
+      "status": "active",
+      "decay": 1,
+      "centrality": 0.7,
+      "team": "Unknown",
+      "reasoning": "Mentioned as owner",
+      "last_mentioned": "2026-02-08T13:42:32.663467"
+    },
+    {
+      "id": "topic_new_feature_marketing",
+      "type": "topic",
+      "label": "new feature marketing",
+      "status": "active",
+      "decay": 1,
+      "centrality": 0.75,
+      "reasoning": "Category: marketing",
+      "last_mentioned": "2026-02-08T13:42:32.663467"
+    },
+    {
+      "id": "decision_1770544756.513567",
+      "type": "decision",
+      "label": "New Conflict",
+      "status": "active",
+      "decay": 1,
+      "centrality": 0.8,
+      "reasoning": "Raise a new conflict between marketing and HR",
+      "last_mentioned": "2026-02-08T14:59:16.513567"
+    },
+    {
+      "id": "topic_interdepartmental_conflict",
+      "type": "topic",
+      "label": "Interdepartmental Conflict",
+      "status": "active",
+      "decay": 1,
+      "centrality": 0.75,
+      "reasoning": "Category: other",
+      "last_mentioned": "2026-02-08T14:59:16.513567"
+    }
   ],
   "edges": [
-    {"id": "e1", "source": "sarah_chen", "target": "q1_launch", "type": "influences", "strength": 0.9},
-    {"id": "e2", "source": "marcus_johnson", "target": "q1_launch", "type": "influences", "strength": 0.85},
-    {"id": "e3", "source": "api_v3", "target": "q1_launch", "type": "depends_on", "strength": 0.9},
-    {"id": "e4", "source": "david_kim", "target": "pricing", "type": "influences", "strength": 0.88},
-    {"id": "e5", "source": "sarah_chen", "target": "pricing", "type": "influences", "strength": 0.82},
-    {"id": "e6", "source": "david_kim", "target": "maria_garcia", "type": "conflicts_with", "strength": 0.7},
-    {"id": "e7", "source": "marcus_johnson", "target": "feature_prioritization", "type": "influences", "strength": 0.85},
-    {"id": "e8", "source": "sarah_chen", "target": "feature_prioritization", "type": "influences", "strength": 0.8},
-    {"id": "e9", "source": "kevin_zhang", "target": "api_v3", "type": "influences", "strength": 0.9},
-    {"id": "e10", "source": "emily_rodriguez", "target": "q1_launch", "type": "influences", "strength": 0.8}
+    {
+      "id": "e1",
+      "source": "sarah_chen",
+      "target": "q1_launch",
+      "type": "influences",
+      "strength": 0.9
+    },
+    {
+      "id": "e2",
+      "source": "marcus_johnson",
+      "target": "q1_launch",
+      "type": "influences",
+      "strength": 0.85
+    },
+    {
+      "id": "e3",
+      "source": "api_v3",
+      "target": "q1_launch",
+      "type": "depends_on",
+      "strength": 0.9
+    },
+    {
+      "id": "e4",
+      "source": "david_kim",
+      "target": "pricing",
+      "type": "influences",
+      "strength": 0.88
+    },
+    {
+      "id": "e5",
+      "source": "sarah_chen",
+      "target": "pricing",
+      "type": "influences",
+      "strength": 0.82
+    },
+    {
+      "id": "e6",
+      "source": "david_kim",
+      "target": "maria_garcia",
+      "type": "conflicts_with",
+      "strength": 0.7
+    },
+    {
+      "id": "e7",
+      "source": "marcus_johnson",
+      "target": "feature_prioritization",
+      "type": "influences",
+      "strength": 0.85
+    },
+    {
+      "id": "e8",
+      "source": "sarah_chen",
+      "target": "feature_prioritization",
+      "type": "influences",
+      "strength": 0.8
+    },
+    {
+      "id": "e9",
+      "source": "kevin_zhang",
+      "target": "api_v3",
+      "type": "influences",
+      "strength": 0.9
+    },
+    {
+      "id": "e10",
+      "source": "emily_rodriguez",
+      "target": "q1_launch",
+      "type": "influences",
+      "strength": 0.8
+    },
+    {
+      "id": "edge_person_engineering_decision_1770539524.115522",
+      "source": "person_engineering",
+      "target": "decision_1770539524.115522",
+      "type": "influences",
+      "strength": 0.8
+    },
+    {
+      "id": "edge_person_marketing_decision_1770539524.115522",
+      "source": "person_marketing",
+      "target": "decision_1770539524.115522",
+      "type": "depends_on",
+      "strength": 0.8
+    },
+    {
+      "id": "conflict_person_marketing_person_engineering",
+      "source": "person_marketing",
+      "target": "person_engineering",
+      "type": "conflicts_with",
+      "strength": 0.7
+    },
+    {
+      "id": "edge_person_admin_decision_1770544756.513567",
+      "source": "person_admin",
+      "target": "decision_1770544756.513567",
+      "type": "influences",
+      "strength": 0.8
+    },
+    {
+      "id": "conflict_person_marketing_person_hr",
+      "source": "person_marketing",
+      "target": "person_hr",
+      "type": "conflicts_with",
+      "strength": 0.7
+    }
   ],
   "decisions": [
-    {"id": "dec_001", "title": "Q1 Product Launch Date", "version": 2, "author": "Sarah Chen", "impact": "high", "is_recent": true, "change": "Extended to accommodate API v3", "reasoning": "Engineering confirmed API v3 is a hard dependency. March 1 confirmed with Marketing alignment."},
-    {"id": "dec_002", "title": "Pricing Strategy Approval", "version": 2, "author": "David Kim", "impact": "high", "is_recent": true, "change": "Approved $99 Pro tier", "reasoning": "Compromise between Finance and Product. Sales briefed on positioning."},
-    {"id": "dec_003", "title": "Feature Prioritization Q2", "version": 1, "author": "Sarah Chen", "impact": "medium", "is_recent": false, "change": "50/50 enterprise features and tech debt", "reasoning": "Balancing Engineering tech debt with Product roadmap."}
+    {
+      "id": "decision_1770539524.115522",
+      "title": "AI Assistant Launch",
+      "version": 1,
+      "author": "Admin",
+      "timestamp": "2026-02-08T13:32:04.115522",
+      "change": "Launching AI Assistant",
+      "reasoning": "Launching AI Assistant",
+      "status": "new",
+      "is_recent": true,
+      "impact": "medium"
+    },
+    {
+      "id": "dec_001",
+      "title": "Q1 Product Launch Date",
+      "version": 2,
+      "author": "Sarah Chen",
+      "impact": "high",
+      "is_recent": true,
+      "change": "Extended to accommodate API v3",
+      "reasoning": "Engineering confirmed API v3 is a hard dependency. March 1 confirmed with Marketing alignment."
+    },
+    {
+      "id": "dec_002",
+      "title": "Pricing Strategy Approval",
+      "version": 2,
+      "author": "David Kim",
+      "impact": "high",
+      "is_recent": true,
+      "change": "Approved $99 Pro tier",
+      "reasoning": "Compromise between Finance and Product. Sales briefed on positioning."
+    },
+    {
+      "id": "dec_003",
+      "title": "Feature Prioritization Q2",
+      "version": 1,
+      "author": "Sarah Chen",
+      "impact": "medium",
+      "is_recent": false,
+      "change": "50/50 enterprise features and tech debt",
+      "reasoning": "Balancing Engineering tech debt with Product roadmap."
+    },
+    {
+      "id": "decision_1770544756.513567",
+      "title": "New Conflict",
+      "version": 1,
+      "author": "Admin",
+      "timestamp": "2026-02-08T14:59:16.513567",
+      "change": "Raise a new conflict between marketing and HR",
+      "reasoning": "Raise a new conflict between marketing and HR",
+      "status": "new",
+      "is_recent": true,
+      "impact": "medium"
+    }
   ],
   "conflicts": [
-    {"id": "conf_001", "title": "Pricing Strategy", "team1": "Finance", "team2": "Product", "topic": "Pro tier pricing", "severity": "medium", "status": "resolved", "description": "Finance wanted $119; Product insisted on $99. Resolved with reduced feature set."},
-    {"id": "conf_002", "title": "Feature Prioritization", "team1": "Engineering", "team2": "Product", "topic": "Tech debt vs features", "severity": "high", "status": "ongoing", "description": "Engineering wants 70% tech debt; Product wants enterprise features. 50/50 compromise but tension remains."}
+    {
+      "id": "conf_002",
+      "title": "Feature Prioritization",
+      "team1": "Engineering",
+      "team2": "Product",
+      "topic": "Tech debt vs features",
+      "severity": "high",
+      "status": "resolved",
+      "description": "Engineering wants 70% tech debt; Product wants enterprise features. 50/50 compromise but tension remains."
+    },
+    {
+      "id": "conf_001",
+      "title": "Pricing Strategy",
+      "team1": "Finance",
+      "team2": "Product",
+      "topic": "Pro tier pricing",
+      "severity": "medium",
+      "status": "resolved",
+      "description": "Finance wanted $119; Product insisted on $99. Resolved with reduced feature set."
+    },
+    {
+      "id": "conflict_person_marketing_person_engineering",
+      "team1": "Marketing",
+      "team2": "Engineering",
+      "topic": "Live update from admin",
+      "severity": "medium",
+      "status": "resolved",
+      "timestamp": "2026-02-08T13:34:22.868138",
+      "description": "Conflict between Marketing and Engineering (added via admin chat)."
+    },
+    {
+      "id": "conflict_person_marketing_person_hr",
+      "team1": "Marketing",
+      "team2": "person_hr",
+      "topic": "Live update from admin",
+      "severity": "medium",
+      "status": "ongoing",
+      "timestamp": "2026-02-08T14:59:26.828754",
+      "description": "Conflict between Marketing and person_hr (added via admin chat)."
+    }
   ],
   "dependencies": [
-    {"id": "dep_001", "blocker": "API v3 Development", "blocked": "Q1 Product Launch", "type": "hard_dependency", "risk_level": "high", "description": "Launch depends on API v3 by Feb 15th. Document states final deadline is Wednesday."},
-    {"id": "dep_002", "blocker": "Pricing Decision", "blocked": "Sales Comp Plan", "type": "soft_dependency", "risk_level": "low", "description": "Comp plan aligned with new pricing tiers."}
+    {
+      "id": "dep_001",
+      "blocker": "API v3 Development",
+      "blocked": "Q1 Product Launch",
+      "type": "hard_dependency",
+      "risk_level": "high",
+      "description": "Launch depends on API v3 by Feb 15th. Document states final deadline is Wednesday."
+    },
+    {
+      "id": "dep_002",
+      "blocker": "Pricing Decision",
+      "blocked": "Sales Comp Plan",
+      "type": "soft_dependency",
+      "risk_level": "low",
+      "description": "Comp plan aligned with new pricing tiers."
+    }
   ],
   "insights": [
-    {"type": "risk", "title": "Resource Contention", "description": "Engineering bottleneck for API v3 and Q1 launch", "severity": "high", "affected_nodes": ["marcus_johnson", "kevin_zhang", "q1_launch"]},
-    {"type": "trend", "title": "Cross-Team Alignment", "description": "Product-Engineering-Marketing aligning on Q1", "severity": "low", "affected_nodes": ["sarah_chen", "marcus_johnson", "emily_rodriguez"]}
+    {
+      "type": "risk",
+      "title": "Resource Contention",
+      "description": "Engineering bottleneck for API v3 and Q1 launch",
+      "severity": "high",
+      "affected_nodes": [
+        "marcus_johnson",
+        "kevin_zhang",
+        "q1_launch"
+      ]
+    },
+    {
+      "type": "trend",
+      "title": "Cross-Team Alignment",
+      "description": "Product-Engineering-Marketing aligning on Q1",
+      "severity": "low",
+      "affected_nodes": [
+        "sarah_chen",
+        "marcus_johnson",
+        "emily_rodriguez"
+      ]
+    }
   ]
 }
