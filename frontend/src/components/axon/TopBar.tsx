@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { ThemeToggle } from "./ThemeToggle";
+import { CrisisSimulator } from "./CrisisSimulator";
+import { useCrisisMode } from "@/hooks/useCrisisMode";
 import { playAudioSfx } from "@/lib/api";
 import { DataSourceSheet } from "./DataSourceSheet";
 
@@ -23,6 +25,8 @@ export function TopBar({
   onMyBrief,
   loadingBrief = false,
 }: TopBarProps) {
+  const { isCrisisActive, getDisplayHealthScore, activateCrisis } = useCrisisMode();
+  const displayHealthScore = getDisplayHealthScore(healthScore);
   const [timestamp, setTimestamp] = useState(new Date());
 
   useEffect(() => {
@@ -93,16 +97,24 @@ export function TopBar({
 
       {/* System Status - responsive */}
       <div className="flex items-center gap-2 sm:gap-4 shrink-0">
+        {/* Crisis Simulator Button */}
+        <CrisisSimulator 
+          onSimulateCrisis={() => activateCrisis(healthScore)}
+          isSimulating={isCrisisActive}
+        />
+
         {/* Health Indicator */}
         <div className="flex items-center gap-2 sm:gap-3">
           <div
             className={`w-2 h-2 rounded-full shrink-0 ${
-              hasConflicts ? "bg-warning animate-pulse-slow" : "bg-success animate-pulse-slow"
+              isCrisisActive || hasConflicts ? "bg-warning animate-pulse-slow" : "bg-success animate-pulse-slow"
             }`}
           />
           <span className="font-mono text-[10px] sm:text-xs text-text-secondary whitespace-nowrap">
             <span className="hidden sm:inline">System Health: </span>
-            <span className={hasConflicts ? "text-warning" : "text-success"}>{healthScore}%</span>
+            <span className={isCrisisActive || hasConflicts ? "text-warning" : "text-success"}>
+              {displayHealthScore}%
+            </span>
           </span>
         </div>
 

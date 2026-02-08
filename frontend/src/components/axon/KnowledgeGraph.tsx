@@ -19,6 +19,7 @@ import { motion } from 'framer-motion';
 import { useTheme } from 'next-themes';
 import dagre from 'dagre';
 import { Tooltip, TooltipContent, TooltipTrigger, TooltipProvider } from '@/components/ui/tooltip';
+import { useCrisisMode } from '@/hooks/useCrisisMode';
 import type { GraphNode, GraphEdge } from "@/lib/api";
 
 const NODE_WIDTH = 140;
@@ -96,6 +97,8 @@ const CustomNode = ({
 }) => {
   const { theme } = useTheme();
   const isDark = theme === 'dark';
+  const { isCrisisActive } = useCrisisMode();
+  const nodeStatus = isCrisisActive ? 'conflicted' : data.status;
   const scale = data._scale ?? 1;
   const highlighted = data._highlighted ?? false;
   const statusColors = {
@@ -128,12 +131,12 @@ const CustomNode = ({
 
   const getBackgroundColor = () => {
     if (isDark) return '#0f0f0f';
-    return lightStatusBgColors[data.status];
+    return lightStatusBgColors[nodeStatus];
   };
   const getHoverBackgroundColor = () => {
     if (isDark) return '#121212';
     const hoverColors = { active: '#bae6d1', aging: '#fde68a', conflicted: '#fecaca', stale: '#e5e7eb' };
-    return hoverColors[data.status];
+    return hoverColors[nodeStatus];
   };
   const getTextColor = () => (isDark ? '#ffffff' : '#25343F');
   const getTeamColor = () => '#6b7280';
@@ -142,7 +145,9 @@ const CustomNode = ({
     <motion.div
       initial={{ scale: 0 }}
       animate={{
-        scale: (0.5 + (data.centrality ?? 0) * 0.5) * scale,
+        scale: isCrisisActive
+          ? 1.1 * (0.5 + (data.centrality ?? 0) * 0.5) * scale
+          : (0.5 + (data.centrality ?? 0) * 0.5) * scale,
         opacity: data.decay ?? 1,
       }}
       transition={{ duration: 0.3 }}
@@ -153,13 +158,13 @@ const CustomNode = ({
       <Handle type="source" position={Position.Bottom} className="!w-2 !h-2 !border-0 !bg-gray-500" />
       <Handle type="source" position={Position.Right} className="!w-2 !h-2 !border-0 !bg-gray-500" />
       <div
-        className={`rounded-lg border-2 cursor-pointer transition-all ${iconSize} ${highlighted ? "ring-2 ring-info ring-offset-2 ring-offset-[#0a0a0a]" : ""}`}
+        className={`rounded-lg border-2 cursor-pointer transition-all ${iconSize} ${highlighted ? "ring-2 ring-info ring-offset-2 ring-offset-[#0a0a0a]" : ""} ${isCrisisActive ? 'animate-pulse' : ''}`}
         style={{
           backgroundColor: getBackgroundColor(),
-          borderColor: highlighted ? '#3b82f6' : statusColors[data.status],
+          borderColor: highlighted ? '#3b82f6' : statusColors[nodeStatus],
           boxShadow: highlighted
-            ? `0 0 20px rgba(59, 130, 246, 0.6), 0 0 ${10 + (data.centrality ?? 0) * 20}px ${statusColors[data.status]}40`
-            : `0 0 ${10 + (data.centrality ?? 0) * 20}px ${statusColors[data.status]}40`,
+            ? `0 0 20px rgba(59, 130, 246, 0.6), 0 0 ${10 + (data.centrality ?? 0) * 20}px ${statusColors[nodeStatus]}40`
+            : `0 0 ${10 + (data.centrality ?? 0) * 20}px ${statusColors[nodeStatus]}40`,
           minWidth: minW,
           padding: `${paddingY}px ${paddingX}px`,
         }}
@@ -192,8 +197,8 @@ const CustomNode = ({
           </div>
         </div>
         <div
-          className="absolute -top-1 -right-1 w-3 h-3 rounded-full border-2"
-          style={{ backgroundColor: statusColors[data.status], borderColor: getBackgroundColor() }}
+          className={`absolute -top-1 -right-1 w-3 h-3 rounded-full border-2 ${isCrisisActive ? 'animate-pulse' : ''}`}
+          style={{ backgroundColor: statusColors[nodeStatus], borderColor: getBackgroundColor() }}
         />
       </div>
     </motion.div>
