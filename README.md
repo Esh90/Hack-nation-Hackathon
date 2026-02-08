@@ -1,4 +1,4 @@
-# AxonAI (Aetheris)
+# AxonAI
 
 AI-powered organizational intelligence system: knowledge graph, **Shadow Council** (multi-agent advisory), **Critic Agent**, and voice synthesis. Built for hackathons with a **free-first** LLM stack (Groq default).
 
