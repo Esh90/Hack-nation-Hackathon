@@ -1,6 +1,6 @@
 """
 Multi-agent system: Optimist, Skeptic, Chief of Staff
-Uses LangGraph with OpenAI (preferred), Google Gemini, or Anthropic.
+Uses LangGraph with Groq (default/free), Gemini, OpenAI, or Anthropic.
 Falls back to mock data if no API key or API fails.
 """
 
@@ -10,7 +10,7 @@ from typing import TypedDict, Annotated, Sequence
 from pathlib import Path
 
 from langgraph.graph import StateGraph, END
-from langchain_core.messages import HumanMessage, SystemMessage, BaseMessage
+from langchain_core.messages import HumanMessage, SystemMessage, BaseMessage, AIMessage
 from dotenv import load_dotenv
 import operator
 
@@ -18,7 +18,44 @@ import operator
 _backend_dir = Path(__file__).resolve().parent.parent
 load_dotenv(_backend_dir / ".env")
 
-# LLM selection: OpenAI (preferred) → Gemini → Anthropic. Backend decides; no frontend toggle.
+
+def _groq_messages_to_api(messages: Sequence[BaseMessage]) -> list:
+    """Convert LangChain messages to Groq API format."""
+    out = []
+    for m in messages:
+        if isinstance(m, SystemMessage):
+            out.append({"role": "system", "content": m.content})
+        elif isinstance(m, HumanMessage):
+            out.append({"role": "user", "content": m.content})
+        elif hasattr(m, "content"):
+            out.append({"role": "assistant", "content": m.content})
+    return out
+
+
+class _GroqChatWrapper:
+    """Thin wrapper around Groq API so we don't need langchain-groq (avoids langchain-core 1.x conflict)."""
+
+    def __init__(self, api_key: str, model: str = "llama-3.3-70b-versatile", temperature: float = 0.7, max_tokens: int = 4000):
+        from groq import Groq
+        self._client = Groq(api_key=api_key)
+        self._model = model
+        self._temperature = temperature
+        self._max_tokens = max_tokens
+
+    def invoke(self, messages: Sequence[BaseMessage]):
+        api_messages = _groq_messages_to_api(messages)
+        resp = self._client.chat.completions.create(
+            model=self._model,
+            messages=api_messages,
+            temperature=self._temperature,
+            max_tokens=self._max_tokens,
+        )
+        content = resp.choices[0].message.content or ""
+        return AIMessage(content=content)
+
+
+# LLM selection: Groq (default/free, Llama 3.x 70B) → Gemini → OpenAI → Anthropic.
+_groq_key = (os.getenv("GROQ_API_KEY") or "").strip()
 _openai_key = (os.getenv("OPENAI_API_KEY") or "").strip()
 _gemini_key = (os.getenv("GEMINI_API_KEY") or "").strip()
 _anthropic_key = (os.getenv("ANTHROPIC_API_KEY") or "").strip()
@@ -26,7 +63,32 @@ _anthropic_key = (os.getenv("ANTHROPIC_API_KEY") or "").strip()
 llm = None
 _model_name = "None"
 
-if _openai_key and (_openai_key.startswith("sk-") or _openai_key.startswith("sk-proj-")):
+if _groq_key and _groq_key.startswith("gsk_"):
+    try:
+        llm = _GroqChatWrapper(
+            api_key=_groq_key,
+            model="llama-3.3-70b-versatile",
+            temperature=0.7,
+            max_tokens=4000,
+        )
+        _model_name = "Groq (Llama 3.3 70B)"
+        print("  ✓ Shadow Council: Using Groq (GROQ_API_KEY) [default]")
+    except Exception as e:
+        print(f"  ⚠ Groq init failed: {e}. Will try next provider or mock on queries.")
+if llm is None and _gemini_key and _gemini_key.startswith("AIza"):
+    try:
+        from langchain_google_genai import ChatGoogleGenerativeAI
+        llm = ChatGoogleGenerativeAI(
+            model="gemini-2.0-flash",
+            temperature=0.7,
+            google_api_key=_gemini_key,
+            max_tokens=4000,
+        )
+        _model_name = "Google Gemini"
+        print("  ✓ Shadow Council: Using Gemini (GEMINI_API_KEY)")
+    except Exception as e:
+        print(f"  ⚠ Gemini init failed: {e}. Will try next provider or mock on queries.")
+if llm is None and _openai_key and (_openai_key.startswith("sk-") or _openai_key.startswith("sk-proj-")):
     try:
         from langchain_openai import ChatOpenAI
         llm = ChatOpenAI(
@@ -39,20 +101,7 @@ if _openai_key and (_openai_key.startswith("sk-") or _openai_key.startswith("sk-
         print("  ✓ Shadow Council: Using OpenAI (OPENAI_API_KEY)")
     except Exception as e:
         print(f"  ⚠ OpenAI init failed: {e}. Will use mock on queries.")
-elif _gemini_key and _gemini_key.startswith("AIza"):
-    try:
-        from langchain_google_genai import ChatGoogleGenerativeAI
-        llm = ChatGoogleGenerativeAI(
-            model="gemini-2.0-flash",
-            temperature=0.7,
-            google_api_key=_gemini_key,
-            max_tokens=4000,
-        )
-        _model_name = "Google Gemini"
-        print("  ✓ Shadow Council: Using Gemini (GEMINI_API_KEY)")
-    except Exception as e:
-        print(f"  ⚠ Gemini init failed: {e}. Will use mock on queries.")
-elif _anthropic_key and _anthropic_key.startswith("sk-ant"):
+if llm is None and _anthropic_key and _anthropic_key.startswith("sk-ant"):
     try:
         from langchain_anthropic import ChatAnthropic
         llm = ChatAnthropic(
@@ -67,7 +116,7 @@ elif _anthropic_key and _anthropic_key.startswith("sk-ant"):
         print(f"  ⚠ Anthropic init failed: {e}. Will use mock on queries.")
 
 if llm is None:
-    print("  ⚠ Shadow Council: No API key (OPENAI_API_KEY, GEMINI_API_KEY, ANTHROPIC_API_KEY). Using mock data.")
+    print("  ⚠ Shadow Council: No API key (GROQ_API_KEY, GEMINI_API_KEY, OPENAI_API_KEY, ANTHROPIC_API_KEY). Using mock data.")
 
 
 # State shared across agents

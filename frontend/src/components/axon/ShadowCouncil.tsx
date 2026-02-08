@@ -1,7 +1,7 @@
-import { useState, useRef } from "react";
-import { Mic, MicOff, Send, Volume2, VolumeX, X } from "lucide-react";
-import { useTheme } from "next-themes";
-import { queryCouncil, playIntroThenProcessing, playAudio, synthesizeSpeech } from "@/lib/api";
+import { useState, useRef, useCallback } from "react";
+import { Mic, MicOff, Send, Volume2, VolumeX, X, Square } from "lucide-react";
+import { queryCouncil, synthesizeSpeech } from "@/lib/api";
+import { stopAllAudio, registerAudio } from "@/lib/audioController";
 import type { CouncilResponse } from "@/lib/api";
 
 interface Agent {
@@ -42,11 +42,11 @@ const MOCK_QUESTIONS = [
   "What's the highest-impact decision we should make this week?",
 ];
 
-const getRoleColors = (isDark: boolean) => ({
+const roleColors = {
   optimist: {
     dot: "bg-success",
     avatar: "bg-success/20 text-success",
-    bubble: isDark ? "bg-[#0f1f0f] border-[#1a3a1a]" : "bg-[#d1fae5] border-[#10b981]",
+    bubble: "bg-[#0f1f0f] border-[#1a3a1a]",
   },
   chief: {
     dot: "bg-info",
@@ -56,9 +56,9 @@ const getRoleColors = (isDark: boolean) => ({
   skeptic: {
     dot: "bg-warning",
     avatar: "bg-warning/20 text-warning",
-    bubble: isDark ? "bg-[#1f1709] border-[#3a2a0a]" : "bg-[#fef3c7] border-[#f59e0b]",
+    bubble: "bg-[#1f1709] border-[#3a2a0a]",
   },
-});
+};
 
 function responseToAgents(res: CouncilResponse): Agent[] {
   return [
@@ -74,16 +74,20 @@ function responseToAgents(res: CouncilResponse): Agent[] {
 }
 
 export function ShadowCouncil() {
-  const { theme } = useTheme();
-  const isDark = theme === 'dark';
   const [isActive, setIsActive] = useState(false);
   const [question, setQuestion] = useState("");
   const [agents, setAgents] = useState<Agent[]>(defaultAgents);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [voiceOn, setVoiceOn] = useState(true);
-  const audioRef = useRef<HTMLAudioElement | null>(null);
-  const roleColors = getRoleColors(isDark);
+  const [isVoicePlaying, setIsVoicePlaying] = useState(false);
+  const abortRef = useRef(false);
+
+  const handleStopVoice = useCallback(() => {
+    stopAllAudio();
+    setIsVoicePlaying(false);
+    abortRef.current = true;
+  }, []);
 
   const handleAsk = async () => {
     const q = question.trim();
@@ -92,52 +96,41 @@ export function ShadowCouncil() {
       return;
     }
     setError(null);
+    abortRef.current = false;
+    stopAllAudio();
+    setIsVoicePlaying(false);
     setLoading(true);
     setAgents([
-      {
-        id: "1",
-        name: "Optimist",
-        role: "optimist",
-        message: "...",
-        isTyping: true,
-      },
-      {
-        id: "2",
-        name: "Chief of Staff",
-        role: "chief",
-        message: "Querying Shadow Council...",
-        isTyping: true,
-      },
-      {
-        id: "3",
-        name: "Skeptic",
-        role: "skeptic",
-        message: "...",
-        isTyping: true,
-      },
+      { id: "1", name: "Optimist", role: "optimist", message: "...", isTyping: true },
+      { id: "2", name: "Chief of Staff", role: "chief", message: "Querying Shadow Council...", isTyping: true },
+      { id: "3", name: "Skeptic", role: "skeptic", message: "...", isTyping: true },
     ]);
-
-    if (voiceOn) {
-      playIntroThenProcessing();
-    }
 
     try {
       const result = await queryCouncil(q);
+      if (abortRef.current) return;
       setAgents(responseToAgents(result));
 
-      if (voiceOn) {
-        playAudio("complete");
+      if (voiceOn && result.final_answer) {
+        stopAllAudio();
         const url = await synthesizeSpeech(result.final_answer);
-        if (url) {
-          const audio = new Audio(url);
-          audioRef.current = audio;
-          audio.onended = () => URL.revokeObjectURL(url);
-          audio.play().catch(() => URL.revokeObjectURL(url));
-        }
+        if (!url || abortRef.current) return;
+
+        const audio = new Audio(url);
+        const cleanup = () => {
+          URL.revokeObjectURL(url);
+          setIsVoicePlaying(false);
+        };
+        audio.onended = cleanup;
+        audio.onerror = cleanup;
+        registerAudio(audio);
+        audio.play()
+          .then(() => setIsVoicePlaying(true))
+          .catch(cleanup);
       }
     } catch (e) {
-      const msg = e instanceof Error ? e.message : "Failed to query council";
-      setError(msg);
+      if (abortRef.current) return;
+      setError(e instanceof Error ? e.message : "Failed to query council");
       setAgents(defaultAgents);
     } finally {
       setLoading(false);
@@ -150,47 +143,25 @@ export function ShadowCouncil() {
       <div
         className="fixed bottom-0 left-0 right-0 h-14 z-40 border-t border-border flex flex-col items-center justify-center backdrop-blur-panel"
         style={{
-          background: isDark
-            ? "linear-gradient(180deg, transparent, hsl(0 0% 4%) 20%)"
-            : "linear-gradient(180deg, transparent, hsl(0 0% 98%) 20%)",
+          background: "linear-gradient(180deg, transparent, hsl(0 0% 4%) 20%)",
         }}
       >
         {/* Voice Button */}
         <button
           onClick={() => setIsActive(!isActive)}
-          className={`w-[240px] h-9 flex items-center justify-center gap-2 border-2 transition-default font-medium
+          className={`w-[240px] h-9 flex items-center justify-center gap-2 border transition-default
             ${
               isActive
-                ? "border-success/50 bg-success/10 glow-success text-success"
-                : "text-white"
+                ? "border-success/50 bg-success/10 glow-success"
+                : "border-border-subtle bg-gradient-to-b from-secondary to-background hover:border-text-hint"
             }`}
-          style={{
-            borderColor: isActive 
-              ? (isDark ? 'rgba(16, 185, 129, 0.5)' : 'rgba(16, 185, 129, 0.5)')
-              : (isDark ? '#10b981' : '#10b981'),
-            backgroundColor: isActive
-              ? (isDark ? 'rgba(16, 185, 129, 0.1)' : 'rgba(16, 185, 129, 0.1)')
-              : (isDark ? '#10b981' : '#10b981')
-          }}
-          onMouseEnter={(e) => {
-            if (!isActive) {
-              e.currentTarget.style.backgroundColor = isDark ? '#059669' : '#059669';
-              e.currentTarget.style.borderColor = isDark ? '#059669' : '#047857';
-            }
-          }}
-          onMouseLeave={(e) => {
-            if (!isActive) {
-              e.currentTarget.style.backgroundColor = isDark ? '#10b981' : '#10b981';
-              e.currentTarget.style.borderColor = isDark ? '#10b981' : '#10b981';
-            }
-          }}
         >
           {isActive ? (
-            <MicOff className="w-4 h-4" />
+            <MicOff className="w-4 h-4 text-success" />
           ) : (
-            <Mic className="w-4 h-4" />
+            <Mic className="w-4 h-4 text-text-tertiary" />
           )}
-          <span className="text-sm">
+          <span className="text-sm text-text-secondary">
             {isActive ? "Listening..." : "Ask Chief of Staff"}
           </span>
         </button>
@@ -206,16 +177,15 @@ export function ShadowCouncil() {
       {/* Overlay Panel */}
       {isActive && (
         <div
-          className="fixed bottom-14 left-0 right-0 h-[380px] border-t border-border-subtle backdrop-blur-strong z-50"
-          style={{ 
-            background: isDark 
-              ? "hsla(0, 0%, 4%, 0.95)" 
-              : "hsla(0, 0%, 100%, 0.95)" 
-          }}
+          className="fixed bottom-14 left-0 right-0 h-[380px] sm:h-[420px] border-t border-border-subtle backdrop-blur-strong z-50 overflow-hidden flex flex-col"
+          style={{ background: "hsla(0, 0%, 4%, 0.95)" }}
         >
           {/* Close button */}
           <button
-            onClick={() => setIsActive(false)}
+            onClick={() => {
+              handleStopVoice();
+              setIsActive(false);
+            }}
             className="absolute top-2 left-2 p-2 rounded border border-border hover:bg-secondary/50 text-text-muted hover:text-foreground transition-default z-10"
             title="Minimize"
           >
@@ -223,26 +193,42 @@ export function ShadowCouncil() {
           </button>
 
           {/* Question input */}
-          <div className="pl-12 pr-2 py-2 flex gap-2 items-center border-b border-border">
-            <button
-              type="button"
-              onClick={() => setVoiceOn(!voiceOn)}
-              className={`p-2 rounded border transition-default ${
-                voiceOn
-                  ? "border-success/50 bg-success/10 text-success"
-                  : "border-border text-text-muted hover:text-text-secondary"
-              }`}
-              title={voiceOn ? "Voice on" : "Voice off"}
-            >
-              {voiceOn ? <Volume2 className="w-4 h-4" /> : <VolumeX className="w-4 h-4" />}
-            </button>
+          <div className="pl-12 pr-2 py-2 flex flex-wrap gap-2 items-center border-b border-border">
+            <div className="flex gap-1">
+              <button
+                type="button"
+                onClick={() => {
+                  if (isVoicePlaying) handleStopVoice();
+                  setVoiceOn(!voiceOn);
+                }}
+                className={`p-2 rounded border transition-default ${
+                  voiceOn
+                    ? "border-success/50 bg-success/10 text-success"
+                    : "border-border text-text-muted hover:text-text-secondary"
+                }`}
+                title={voiceOn ? "Voice on" : "Voice off"}
+              >
+                {voiceOn ? <Volume2 className="w-4 h-4" /> : <VolumeX className="w-4 h-4" />}
+              </button>
+              {isVoicePlaying && (
+                <button
+                  type="button"
+                  onClick={handleStopVoice}
+                  className="p-2 rounded border border-error/50 bg-error/10 text-error hover:bg-error/20 transition-default"
+                  title="Stop voice playback"
+                  aria-label="Stop voice playback"
+                >
+                  <Square className="w-4 h-4 fill-current" />
+                </button>
+              )}
+            </div>
             <input
               type="text"
               value={question}
               onChange={(e) => setQuestion(e.target.value)}
               onKeyDown={(e) => e.key === "Enter" && handleAsk()}
               placeholder="e.g. What are the biggest risks to our Q1 launch?"
-              className="flex-1 px-3 py-2 text-sm bg-background border border-border rounded text-foreground placeholder:text-text-muted"
+              className="flex-1 min-w-[180px] px-3 py-2 text-sm bg-background border border-border rounded text-foreground placeholder:text-text-muted"
               disabled={loading}
             />
             <button
@@ -261,7 +247,7 @@ export function ShadowCouncil() {
           )}
 
           {/* Mock question suggestions */}
-          <div className="px-2 py-1.5 border-b border-border">
+          <div className="px-2 py-1.5 border-b border-border shrink-0">
             <div className="text-[10px] text-text-muted uppercase tracking-wide mb-1">
               Try a question
             </div>
@@ -271,7 +257,7 @@ export function ShadowCouncil() {
                   key={mq}
                   type="button"
                   onClick={() => setQuestion(mq)}
-                  className="px-2 py-1 text-[11px] rounded border border-border bg-secondary hover:bg-secondary/80 text-text-primary transition-default text-left max-w-full truncate"
+                  className="px-2 py-1 text-[11px] rounded border border-border bg-background hover:bg-secondary/50 text-text-secondary transition-default text-left max-w-full truncate"
                 >
                   {mq}
                 </button>
@@ -279,17 +265,15 @@ export function ShadowCouncil() {
             </div>
           </div>
 
-          {/* Agent panels */}
-          <div className="h-[calc(100%-80px)] grid grid-cols-3 gap-px bg-border">
+          {/* Agent panels - scrollable */}
+          <div className="flex-1 min-h-0 grid grid-cols-1 sm:grid-cols-3 gap-px bg-border overflow-auto">
             {agents.map((agent) => {
               const colors = roleColors[agent.role];
               return (
-                <div key={agent.id} className="bg-background p-2 flex flex-col min-h-0">
+                <div key={agent.id} className="bg-background p-2 flex flex-col min-h-[120px]">
                   {/* Header */}
-                  <div className="flex items-center gap-2 mb-2">
-                    <div
-                      className={`w-2 h-2 rounded-full ${colors.dot}`}
-                    />
+                  <div className="flex items-center gap-2 mb-2 shrink-0">
+                    <div className={`w-2 h-2 rounded-full ${colors.dot}`} />
                     <span className="text-xs font-medium text-text-secondary">
                       {agent.name}
                     </span>
@@ -297,14 +281,14 @@ export function ShadowCouncil() {
 
                   {/* Avatar */}
                   <div
-                    className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-medium mb-2 ${colors.avatar}`}
+                    className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-medium mb-2 shrink-0 ${colors.avatar}`}
                   >
                     {agent.name.charAt(0)}
                   </div>
 
                   {/* Speech Bubble */}
                   <div
-                    className={`flex-1 p-2 border overflow-auto text-[11px] ${colors.bubble}`}
+                    className={`flex-1 p-2 border overflow-auto text-[11px] min-h-0 ${colors.bubble}`}
                   >
                     {agent.isTyping ? (
                       <div className="flex flex-col gap-2">
