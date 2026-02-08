@@ -1,0 +1,17 @@
+record_type,id,type,label,status,team,role,centrality,source,target,strength,title,author,team1,team2,topic,severity,description
+node,maya,person,Maya Chen,active,Engineering,CTO,0.92,,,,,,,,,,
+node,james,person,James Okonkwo,active,Product,Head of Product,0.88,,,,,,,,,,
+node,sophie,person,Sophie Laurent,active,Marketing,Growth Lead,0.82,,,,,,,,,,
+node,omar,person,Omar Hassan,active,Engineering,Backend Lead,0.85,,,,,,,,,,
+node,launch_q1,topic,Q1 Product Launch,active,,,0.9,,,,,,,,,,
+node,api_v2,topic,API v2 Migration,active,,,0.88,,,,,,,,,,
+node,budget_q1,topic,Q1 Budget,aging,,,0.75,,,,,,,,,,
+edge,,,,,,,maya,launch_q1,0.95,,,,,,,,
+edge,,,,,,,james,launch_q1,0.9,,,,,,,,
+edge,,,,,,,sophie,launch_q1,0.8,,,,,,,,
+edge,,,,,,,omar,api_v2,0.92,,,,,,,,
+edge,,,,,,,maya,api_v2,0.9,,,,,,,,
+decision,,,,,,,,,,Ship API v2 first,James Okonkwo,,,,,
+decision,,,,,,,,,,Q1 Launch date March 15,Maya Chen,,,,,
+conflict,,,,,,,,,,,,,Engineering,Product,Launch timeline,high,Scope vs deadline
+conflict,,,,,,,,,,,,,Marketing,Product,Feature prioritization,medium,User acquisition vs core features

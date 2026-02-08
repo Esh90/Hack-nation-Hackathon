@@ -1,5 +1,5 @@
 """
-Extract knowledge graph entities from emails using Google Gemini (FREE tier)
+Extract knowledge graph entities from emails using Groq.
 """
 
 import os
@@ -9,25 +9,31 @@ import re
 from datetime import datetime
 from typing import List, Dict
 
-import google.generativeai as genai
 from dotenv import load_dotenv
 
 # Load .env from backend directory (works when run from any cwd)
 _backend_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 load_dotenv(os.path.join(_backend_dir, ".env"))
 
-api_key = (os.getenv("GEMINI_API_KEY") or "").strip()
-if not api_key or not api_key.startswith("AIza"):
-    raise ValueError(
-        "GEMINI_API_KEY not found or invalid. Add it to backend/.env (starts with AIza...)"
-    )
-genai.configure(api_key=api_key)
+_groq_key = (os.getenv("GROQ_API_KEY") or "").strip()
+_extract_llm = None
+
+if _groq_key:
+    try:
+        from langchain_groq import ChatGroq
+        _extract_llm = ChatGroq(
+            model="llama-3.3-70b-versatile",
+            temperature=0.3,
+            groq_api_key=_groq_key,
+            max_tokens=16000,
+        )
+    except Exception:
+        pass
 
 
 def extract_entities_batch(emails: List[Dict]) -> Dict:
     """
-    Extract people, decisions, topics, and relationships from emails
-    Uses Claude Sonnet 4 for intelligent analysis
+    Extract people, decisions, topics, and relationships from emails using Groq.
     """
 
     # Prepare batch of emails for analysis (process all emails!)
@@ -162,20 +168,18 @@ Emails to analyze:
 Return ONLY the JSON object, no other text.
 """
 
-    print("🧠 Calling Google Gemini for knowledge extraction...")
+    if _extract_llm is None:
+        raise ValueError(
+            "GROQ_API_KEY not found or invalid. Add it to backend/.env to run knowledge extraction."
+        )
+
+    print("🧠 Calling Groq for knowledge extraction...")
     print(f"📧 Processing {len(emails)} emails...")
 
-    model = genai.GenerativeModel("gemini-2.0-flash")
-    response = model.generate_content(
-        prompt,
-        generation_config=genai.types.GenerationConfig(
-            max_output_tokens=16000,
-            temperature=0.3,
-        ),
-    )
+    from langchain_core.messages import HumanMessage
 
-    # Extract the text content
-    response_text = response.text
+    response = _extract_llm.invoke([HumanMessage(content=prompt)])
+    response_text = response.content if hasattr(response, "content") else str(response)
 
     # Parse the JSON response
     try:
@@ -207,7 +211,7 @@ Return ONLY the JSON object, no other text.
                 return result
             except json.JSONDecodeError:
                 pass
-        print(f"❌ Error parsing Gemini response: {e}")
+        print(f"❌ Error parsing Groq response: {e}")
         print(f"Response was: {response_text[:500]}...")
         return {
             "nodes": [],
@@ -323,7 +327,7 @@ def process_emails_to_graph(email_file: str = "data/company_emails.json"):
 
     print(f"✅ Loaded {len(emails)} emails")
 
-    print("\n🧠 Extracting knowledge graph with Google Gemini...")
+    print("\n🧠 Extracting knowledge graph with Groq...")
     print("⏳ This may take 30-60 seconds...")
 
     knowledge_graph = extract_entities_batch(emails)
@@ -360,7 +364,7 @@ def process_emails_to_graph(email_file: str = "data/company_emails.json"):
     print(f"Total Insights: {len(knowledge_graph.get('insights', []))}")
     print("=" * 60)
     print("\n✨ Knowledge extraction complete!")
-    print("💰 Using Gemini FREE tier - no cost!")
+    print("💰 Groq (see console.groq.com for usage).")
 
     return knowledge_graph
 

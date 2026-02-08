@@ -30,211 +30,273 @@ MONTHS = {
 }
 
 
-def extract_deadlines_from_text(text: str) -> list[dict[str, Any]]:
-    """Extract deadline/date mentions from text."""
-    text_lower = text.lower()
-    findings = []
-
-    # Weekday patterns: "deadline is friday", "due friday", "by wednesday"
-    for day_name, day_num in WEEKDAYS.items():
-        pattern = rf"\b(deadline|due|by|target|launch)\s+(?:is\s+)?{day_name}\b"
-        if re.search(pattern, text_lower, re.I):
-            findings.append({
-                "type": "weekday",
-                "value": day_name.title(),
-                "context": "mentioned in text",
-            })
-
-    # Month + day: "March 1", "Feb 15th", "April 15"
-    month_day = re.findall(
-        r"\b(january|february|march|april|may|june|july|august|september|october|november|december|jan|feb|mar|apr|jun|jul|aug|sep|oct|nov|dec)\s+(\d{1,2})(?:st|nd|rd|th)?\b",
-        text_lower,
-        re.I,
-    )
-    for month, day in month_day:
-        if month in MONTHS:
-            findings.append({
-                "type": "date",
-                "value": f"{month.title()} {day}",
-                "context": "mentioned in text",
-            })
-
-    # Numeric dates: "Feb 15", "3/1"
-    short_date = re.findall(r"\b(feb|mar|apr|jun|jul|aug|sep|oct|nov|dec|jan)\s+(\d{1,2})\b", text_lower)
-    for month, day in short_date:
-        if month in MONTHS:
-            findings.append({
-                "type": "date",
-                "value": f"{month.title()} {day}",
-                "context": "mentioned in text",
-            })
-
-    return findings
-
-
-def extract_deadlines_from_kg(knowledge_graph: dict) -> list[dict[str, Any]]:
-    """Extract deadline/date mentions from knowledge graph content."""
+def extract_deadlines_from_text(text: str | None) -> list[dict[str, Any]]:
+    """Extract deadline/date mentions from any user input using regex."""
+    text_lower = (text or "").lower()
     findings = []
     seen = set()
 
-    def add_finding(value: str, source: str, author: str = "", teams: list = None):
-        key = (value.lower(), source)
-        if key in seen:
-            return
-        seen.add(key)
-        findings.append({
-            "type": "date" if any(m in value.lower() for m in MONTHS) else "weekday",
-            "value": value,
-            "source": source,
-            "author": author,
-            "teams": teams or [],
-        })
+    def add_weekday(value: str):
+        key = ("weekday", value.lower())
+        if key not in seen:
+            seen.add(key)
+            findings.append({"type": "weekday", "value": value.title(), "context": "mentioned in text"})
 
-    for d in knowledge_graph.get("decisions", []):
-        title = d.get("title", "")
-        reasoning = d.get("reasoning", "")
-        change = d.get("change", "")
-        author = d.get("author", "")
-        text = f"{title} {reasoning} {change}"
+    def add_date(value: str):
+        key = ("date", value.lower())
+        if key not in seen:
+            seen.add(key)
+            findings.append({"type": "date", "value": value, "context": "mentioned in text"})
 
-        for day_name in WEEKDAYS:
-            if re.search(rf"\b{day_name}\b", text.lower()):
-                add_finding(day_name.title(), f"Decision: {title}", author)
+    # Weekday patterns – flexible for any natural input:
+    # "deadline is Friday", "due Friday", "by Wednesday", "on Monday", "for Tuesday"
+    # "launch Friday", "ship Wednesday", "meeting Friday", "delivery Monday"
+    # "Friday is the deadline", "Wednesday works", "next Friday", "this Monday"
+    weekday_triggers = (
+        r"(deadline|due|by|on|for|target|launch|meeting|ship|delivery|scheduled|planned|set|push|move|shift)"
+        r"\s+(?:is\s+|for\s+|to\s+)?(?:next\s+|this\s+)?"
+    )
+    for day_name in WEEKDAYS:
+        # Trigger + weekday: "deadline Friday", "due by Wednesday"
+        if re.search(rf"\b{weekday_triggers}{day_name}\b", text_lower, re.I):
+            add_weekday(day_name)
+        # Weekday + trigger: "Friday is the deadline", "Wednesday we launch"
+        if re.search(rf"\b(?:next\s+|this\s+)?{day_name}\s+(?:is\s+)?(?:the\s+)?(deadline|due|date|launch|meeting|ship)\b", text_lower, re.I):
+            add_weekday(day_name)
+        # Preposition + weekday: "on Friday", "by Wednesday", "for Monday"
+        if re.search(rf"\b(?:on|by|for)\s+(?:next\s+|this\s+)?{day_name}\b", text_lower, re.I):
+            add_weekday(day_name)
+        # Standalone weekday in date context (near deadline/launch/etc):
+        if re.search(rf"\b(?:deadline|launch|due|meeting|ship|delivery)[^.]*?\b{day_name}\b", text_lower, re.I):
+            add_weekday(day_name)
+        # "Friday" or "Wednesday" alone when text mentions dates/deadlines
+        if re.search(rf"\b{day_name}\b", text_lower) and re.search(r"\b(deadline|due|launch|meeting|date|schedule|timeline)\b", text_lower, re.I):
+            add_weekday(day_name)
 
-        for month in MONTHS:
-            match = re.search(rf"\b{month}\s+(\d{{1,2}})(?:st|nd|rd|th)?\b", text.lower())
-            if match:
-                add_finding(f"{month.title()} {match.group(1)}", f"Decision: {title}", author)
+    # Month + day: "March 1", "Feb 15th", "April 15", "15 March", "15th of March"
+    for pattern in [
+        r"\b(january|february|march|april|may|june|july|august|september|october|november|december|jan|feb|mar|apr|jun|jul|aug|sep|oct|nov|dec)\s+(\d{1,2})(?:st|nd|rd|th)?\b",
+        r"\b(\d{1,2})(?:st|nd|rd|th)?\s+(?:of\s+)?(january|february|march|april|may|june|july|august|september|october|november|december|jan|feb|mar|apr|jun|jul|aug|sep|oct|nov|dec)\b",
+    ]:
+        for m in re.finditer(pattern, text_lower, re.I):
+            groups = m.groups()
+            month = groups[0] if groups[0].isalpha() else groups[1]
+            day = groups[1] if groups[1].isdigit() else groups[0]
+            if month in MONTHS:
+                add_date(f"{month.title()} {day}")
 
-    for c in knowledge_graph.get("conflicts", []):
-        desc = c.get("description", "")
-        team1 = c.get("team1", "")
-        team2 = c.get("team2", "")
-        for day_name in WEEKDAYS:
-            if re.search(rf"\b{day_name}\b", desc.lower()):
-                add_finding(day_name.title(), f"Conflict: {c.get('topic', '')}", teams=[team1, team2])
-        for month in MONTHS:
-            match = re.search(rf"\b{month}\s+(\d{{1,2}})(?:st|nd|rd|th)?\b", desc.lower())
-            if match:
-                add_finding(f"{month.title()} {match.group(1)}", f"Conflict: {c.get('topic', '')}", teams=[team1, team2])
-
-    for dep in knowledge_graph.get("dependencies", []):
-        desc = dep.get("description", "")
-        blocker = dep.get("blocker", "")
-        for month in MONTHS:
-            match = re.search(rf"\b{month}\s+(\d{{1,2}})(?:st|nd|rd|th)?\b", desc.lower())
-            if match:
-                add_finding(f"{month.title()} {match.group(1)}", f"Dependency: {blocker}")
+    # Numeric: "3/15", "3-15", "15/3", "2025-03-15"
+    for m in re.finditer(r"\b(\d{1,2})[/\-](\d{1,2})(?:[/\-](\d{2,4}))?\b", text_lower):
+        add_date(f"{m.group(1)}/{m.group(2)}")
 
     return findings
 
 
+def _safe_str(x: Any) -> str:
+    """Return non-None string for KG fields that may be None (e.g. from URL/CSV)."""
+    if x is None:
+        return ""
+    return str(x).strip()
+
+
+def _normalize_date_for_compare(value: str | None) -> str:
+    """Normalize 'March 1, 2025', 'March 1', 'Mar 1' to 'march 1' for comparison."""
+    v = _safe_str(value).lower()
+    # Strip year (e.g. ", 2025")
+    v = re.sub(r",\s*\d{4}\b", "", v)
+    # Expand month abbreviations so "feb 15" matches "february 15"
+    full_months = [
+        ("jan", "january"), ("feb", "february"), ("mar", "march"), ("apr", "april"),
+        ("jun", "june"), ("jul", "july"), ("aug", "august"), ("sep", "september"),
+        ("oct", "october"), ("nov", "november"), ("dec", "december"),
+    ]
+    for short, full in full_months:
+        v = re.sub(rf"\b{short}\b", full, v)
+    v = re.sub(r"\s+", " ", v).strip()
+    return v
+
+
+def extract_deadlines_from_kg(knowledge_graph: dict | None) -> list[dict[str, Any]]:
+    """
+    One canonical date per KG item (day + year). Prefer "date" field; fallback to regex in text.
+    Each finding has: value (display with year), value_normalized (for compare), source, topic, author/teams.
+    """
+    findings = []
+    if not knowledge_graph or not isinstance(knowledge_graph, dict):
+        return findings
+
+    for d in knowledge_graph.get("decisions") or []:
+        if not isinstance(d, dict):
+            continue
+        title = _safe_str(d.get("title"))
+        author = _safe_str(d.get("author"))
+        canonical = _safe_str(d.get("date"))
+        if canonical:
+            findings.append({
+                "type": "date",
+                "value": canonical,
+                "value_normalized": _normalize_date_for_compare(canonical),
+                "source": f"Decision: {title}",
+                "topic": title,
+                "author": author,
+                "teams": [],
+            })
+            continue
+        reasoning = _safe_str(d.get("reasoning")) + " " + _safe_str(d.get("change"))
+        for month in MONTHS:
+            match = re.search(rf"\b{month}\s+(\d{{1,2}})(?:st|nd|rd|th)?(?:\s*,\s*\d{{4}})?\b", reasoning.lower())
+            if match:
+                raw = match.group(0).title()
+                findings.append({
+                    "type": "date",
+                    "value": raw,
+                    "value_normalized": _normalize_date_for_compare(raw),
+                    "source": f"Decision: {title}",
+                    "topic": title,
+                    "author": author,
+                    "teams": [],
+                })
+                break
+
+    for dep in knowledge_graph.get("dependencies") or []:
+        if not isinstance(dep, dict):
+            continue
+        blocker = _safe_str(dep.get("blocker"))
+        blocked = _safe_str(dep.get("blocked"))
+        source_label = f"Dependency: {blocker} → {blocked}"
+        canonical = _safe_str(dep.get("date"))
+        if canonical:
+            findings.append({
+                "type": "date",
+                "value": canonical,
+                "value_normalized": _normalize_date_for_compare(canonical),
+                "source": source_label,
+                "topic": f"{blocker} {blocked}",
+                "author": "",
+                "teams": [],
+            })
+            continue
+        desc = _safe_str(dep.get("description"))
+        for month in MONTHS:
+            match = re.search(rf"\b{month}\s+(\d{{1,2}})(?:st|nd|rd|th)?(?:\s*,\s*\d{{4}})?\b", desc.lower())
+            if match:
+                raw = match.group(0).title()
+                findings.append({
+                    "type": "date",
+                    "value": raw,
+                    "value_normalized": _normalize_date_for_compare(raw),
+                    "source": source_label,
+                    "topic": f"{blocker} {blocked}",
+                    "author": "",
+                    "teams": [],
+                })
+                break
+
+    for c in knowledge_graph.get("conflicts") or []:
+        if not isinstance(c, dict):
+            continue
+        title = _safe_str(c.get("title"))
+        topic = _safe_str(c.get("topic")) or title
+        team1 = _safe_str(c.get("team1"))
+        team2 = _safe_str(c.get("team2"))
+        canonical = _safe_str(c.get("date"))
+        if canonical:
+            findings.append({
+                "type": "date",
+                "value": canonical,
+                "value_normalized": _normalize_date_for_compare(canonical),
+                "source": f"Conflict: {title}",
+                "topic": f"{title} {topic}",
+                "author": "",
+                "teams": [team1, team2] if team1 or team2 else [],
+            })
+
+    return findings
+
+
+def _topic_matches(user_text: str, kg_topic: str | None) -> bool:
+    """True if user text likely refers to the same topic as the KG item (e.g. meeting, Q1 launch)."""
+    if not kg_topic:
+        return False
+    u = (user_text or "").lower()
+    t = (kg_topic or "").lower()
+    # Extract meaningful tokens from KG topic (e.g. "Q1 Product Launch Date" -> q1, product, launch, date)
+    kg_tokens = set(re.findall(r"[a-z0-9]+", t))
+    kg_tokens.discard("the")
+    kg_tokens.discard("and")
+    if not kg_tokens:
+        return False
+    # User text mentions at least one of these (e.g. "meeting on march 1" + "Q1 Product Launch" -> launch)
+    overlap = [w for w in kg_tokens if len(w) > 1 and w in u]
+    if overlap:
+        return True
+    # Or user said "meeting" / "launch" / "deadline" and topic has "launch" etc.
+    generic = {"meeting", "launch", "deadline", "date", "q1", "api", "pricing", "feb", "march", "february"}
+    return bool(generic & kg_tokens and any(g in u for g in generic))
+
+
 def find_contradictions(
-    new_input: str, knowledge_graph: dict
+    new_input: str | None, knowledge_graph: dict | None
 ) -> list[dict[str, Any]]:
     """
-    Cross-reference new input with KG and return detected contradictions.
-
-    Returns list of:
-    {
-        "type": "deadline_mismatch" | "date_conflict" | "semantic_conflict",
-        "source_new": "Voice note / Meeting summary",
-        "source_kg": "Decision: Q1 Launch",
-        "new_value": "Friday",
-        "kg_value": "Wednesday",
-        "description": "Deadline mismatch: Manager said Friday, document says Wednesday",
-        "parties_to_notify": ["Sarah Chen", "Marcus Johnson"],
-        "suggestion": "Notify both parties to align on the correct deadline."
-    }
+    Cross-reference new input with KG. Only flag when the same topic has a different date.
+    KG has one canonical date (day + year) per item. Safe for any graph shape (URL/CSV/synthetic).
     """
     contradictions = []
+    new_input = new_input or ""
+    kg = knowledge_graph if isinstance(knowledge_graph, dict) else {}
 
     input_deadlines = extract_deadlines_from_text(new_input)
-    kg_deadlines = extract_deadlines_from_kg(knowledge_graph)
-
-    # Build set of weekdays mentioned in KG for the same topic
-    kg_weekdays = {f["value"].lower() for f in kg_deadlines if f["type"] == "weekday"}
-    kg_dates = {f["value"].lower() for f in kg_deadlines if f["type"] == "date"}
-
-    for inv in input_deadlines:
-        inv_val = inv["value"].lower()
-
-        # Check weekday conflicts: input says "Friday", KG says "Wednesday"
-        if inv["type"] == "weekday" and kg_weekdays:
-            for kg in kg_deadlines:
-                if kg["type"] == "weekday" and kg["value"].lower() != inv_val:
-                    parties = []
-                    if kg.get("author"):
-                        parties.append(kg["author"])
-                    parties.extend(kg.get("teams", []))
-                    parties = list(dict.fromkeys(parties))
-
-                    contradictions.append({
-                        "type": "deadline_mismatch",
-                        "source_new": "New input (voice note / meeting)",
-                        "source_kg": kg.get("source", "Knowledge Graph"),
-                        "new_value": inv["value"],
-                        "kg_value": kg["value"],
-                        "description": f"Deadline contradiction: New info says '{inv['value']}' but Knowledge Graph records '{kg['value']}' for the same context.",
-                        "parties_to_notify": parties[:5],
-                        "suggestion": "Notify both parties to resolve the deadline discrepancy before it causes project delays.",
-                    })
-                    break
-
-        # If input has weekday but KG only has dates: flag potential mismatch
-        if inv["type"] == "weekday" and not kg_weekdays and kg_dates:
-            for kg in kg_deadlines:
-                if kg["type"] == "date":
-                    parties = []
-                    if kg.get("author"):
-                        parties.append(kg["author"])
-                    parties.extend(kg.get("teams", []))
-                    parties = list(dict.fromkeys(parties))
-                    contradictions.append({
-                        "type": "deadline_mismatch",
-                        "source_new": "New input (voice note / meeting)",
-                        "source_kg": kg.get("source", "Knowledge Graph"),
-                        "new_value": inv["value"],
-                        "kg_value": kg["value"],
-                        "description": f"Deadline contradiction: New info says '{inv['value']}' but Knowledge Graph has '{kg['value']}' on record. These may refer to the same milestone—verify and align.",
-                        "parties_to_notify": parties[:5],
-                        "suggestion": "Notify both parties to resolve the deadline discrepancy immediately.",
-                    })
-                    break
-
-        # Check date conflicts: input says "March 1", KG says "Feb 28"
-        if inv["type"] == "date" and kg_dates:
-            for kg in kg_deadlines:
-                if kg["type"] == "date" and kg["value"].lower() != inv_val:
-                    parties = []
-                    if kg.get("author"):
-                        parties.append(kg["author"])
-                    parties.extend(kg.get("teams", []))
-                    parties = list(dict.fromkeys(parties))
-
-                    contradictions.append({
-                        "type": "date_conflict",
-                        "source_new": "New input (voice note / meeting)",
-                        "source_kg": kg.get("source", "Knowledge Graph"),
-                        "new_value": inv["value"],
-                        "kg_value": kg["value"],
-                        "description": f"Date contradiction: New info says '{inv['value']}' but Knowledge Graph has '{kg['value']}' on record.",
-                        "parties_to_notify": parties[:5],
-                        "suggestion": "Align on the correct date and update the Knowledge Graph to prevent downstream confusion.",
-                    })
-                    break
-
-    # If no date/weekday contradictions found, do semantic check on decisions
-    # Look for conflicting keywords (e.g. different numbers, opposing terms)
+    kg_deadlines = extract_deadlines_from_kg(kg)
     input_lower = new_input.lower()
-    for d in knowledge_graph.get("decisions", []):
-        title = d.get("title", "")
-        reasoning = d.get("reasoning", "").lower()
-        # Extract numbers from both
+
+    # Only flag if user's date does NOT match ANY topic-matching KG item (KG never "changes" – we only flag real mismatches)
+    for inv in input_deadlines:
+        inv_val = inv.get("value")
+        inv_normalized = _normalize_date_for_compare(inv_val)
+        matching_kg = [kg for kg in kg_deadlines if _topic_matches(input_lower, kg.get("topic"))]
+        # If any topic-matching item has the same date, user is aligned with the graph – no contradiction
+        if any(
+            inv_normalized == (kg.get("value_normalized") or _normalize_date_for_compare(kg.get("value")))
+            for kg in matching_kg
+        ):
+            continue
+        # User's date matches no topic-matching item – flag only the first mismatch (one per user date)
+        if not matching_kg:
+            continue
+        kg = matching_kg[0]
+        parties = []
+        if kg.get("author"):
+            parties.append(kg["author"])
+        parties.extend(kg.get("teams", []))
+        parties = list(dict.fromkeys(parties))[:5]
+        contradictions.append({
+            "type": "date_conflict",
+            "source_new": "New input (voice note / meeting)",
+            "source_kg": kg.get("source", "Knowledge Graph"),
+            "new_value": inv["value"],
+            "kg_value": kg["value"],
+            "description": f"Date mismatch: you said '{inv['value']}' but Knowledge Graph has {kg['source']} on {kg['value']}.",
+            "parties_to_notify": parties,
+            "suggestion": "Align on the correct date and update the Knowledge Graph if needed.",
+        })
+
+    # Semantic check: different numbers for same topic (budget, headcount, dates, etc.)
+    input_lower = new_input.lower()
+    topic_words = [
+        "budget", "launch", "deadline", "headcount", "hiring", "cost", "price",
+        "timeline", "q1", "q2", "q3", "q4", "million", "thousand", "sprint",
+        "revenue", "target", "goal", "team", "people", "engineers", "api",
+        "week", "month", "year", "percent", "%", "approved", "confirmed",
+    ]
+    for d in kg.get("decisions") or []:
+        if not isinstance(d, dict):
+            continue
+        title = _safe_str(d.get("title"))
+        reasoning = (_safe_str(d.get("reasoning")) + " " + _safe_str(d.get("change"))).lower()
         input_nums = set(re.findall(r"\b(\d+)\b", input_lower))
         kg_nums = set(re.findall(r"\b(\d+)\b", reasoning))
-        # If both mention the same topic but different numbers (e.g. budget, headcount)
-        topic_words = ["budget", "launch", "deadline", "headcount", "hiring", "cost", "price"]
+        # Both mention same topic and have different numbers
         if any(t in input_lower for t in topic_words) and any(t in reasoning for t in topic_words):
             conflicting = input_nums - kg_nums
             if conflicting and kg_nums:
@@ -242,24 +304,28 @@ def find_contradictions(
                     "type": "semantic_conflict",
                     "source_new": "New input",
                     "source_kg": f"Decision: {title}",
-                    "new_value": f"Numbers mentioned: {', '.join(sorted(conflicting)[:3])}",
-                    "kg_value": f"Numbers on record: {', '.join(sorted(kg_nums)[:3])}",
+                    "new_value": f"Numbers mentioned: {', '.join(sorted(conflicting)[:5])}",
+                    "kg_value": f"Numbers on record: {', '.join(sorted(kg_nums)[:5])}",
                     "description": f"Potential mismatch between new input and recorded decision '{title}'. Different figures may indicate a contradiction.",
-                    "parties_to_notify": [d.get("author", "")] if d.get("author") else [],
+                    "parties_to_notify": [_safe_str(d.get("author"))] if d.get("author") else [],
                     "suggestion": "Verify with the decision author that the new information aligns with the approved decision.",
                 })
+                break  # One semantic conflict per decision is enough
 
     return contradictions
 
 
-def run_critic_agent(new_input: str, knowledge_graph: dict) -> dict:
+def run_critic_agent(new_input: str, knowledge_graph: dict | None) -> dict:
     """
-    Main entry: analyze new input against KG and return contradictions + analysis.
+    Main entry: analyze new input against current KG and return contradictions + analysis.
+    Works with any graph shape (from URL, CSV, or synthetic); safely handles None/missing fields.
     """
-    contradictions = find_contradictions(new_input, knowledge_graph)
+    kg = knowledge_graph if isinstance(knowledge_graph, dict) else {}
+    contradictions = find_contradictions(new_input or "", kg)
 
+    summary = (new_input or "")[:200] + ("..." if len(new_input or "") > 200 else "")
     return {
-        "input_summary": new_input[:200] + ("..." if len(new_input) > 200 else ""),
+        "input_summary": summary,
         "contradictions": contradictions,
         "contradiction_count": len(contradictions),
         "has_contradictions": len(contradictions) > 0,

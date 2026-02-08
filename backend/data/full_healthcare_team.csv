@@ -1,0 +1,17 @@
+record_type,id,type,label,status,team,role,centrality,source,target,strength,title,author,team1,team2,topic,severity,description
+node,dr_ahmed,person,Dr. Fatima Ahmed,active,Clinical,Chief Medical Officer,0.92,,,,,,,,,,
+node,maria,person,Maria Santos,active,Operations,Hospital Admin Lead,0.88,,,,,,,,,,
+node,chen,person,Dr. Wei Chen,active,Clinical,Department Head,0.85,,,,,,,,,,
+node,rachel,person,Rachel Green,active,Finance,Billing Director,0.82,,,,,,,,,,
+node,emr,topic,EMR Upgrade,active,,,0.9,,,,,,,,,,
+node,staffing,topic,Staffing Model,active,,,0.85,,,,,,,,,,
+node,compliance,topic,Compliance Audit,aging,,,0.8,,,,,,,,,,
+edge,,,,,,,dr_ahmed,emr,0.95,,,,,,,,
+edge,,,,,,,maria,emr,0.9,,,,,,,,
+edge,,,,,,,chen,staffing,0.88,,,,,,,,
+edge,,,,,,,rachel,compliance,0.85,,,,,,,,
+decision,,,,,,,,,,Go live EMR Phase 2,Dr. Fatima Ahmed,,,,,
+decision,,,,,,,,,,New staffing ratios,Maria Santos,,,,,
+conflict,,,,,,,,,,,,,Clinical,Operations,Schedule flexibility,high,Shift patterns vs coverage
+conflict,,,,,,,,,,,,,Finance,Clinical,Budget for equipment,medium,Prioritization of spend
+conflict,,,,,,,,,,,,,Operations,Finance,Headcount approval,medium,Open positions freeze

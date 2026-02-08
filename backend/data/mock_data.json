@@ -24,17 +24,17 @@
     {"id": "e10", "source": "emily_rodriguez", "target": "q1_launch", "type": "influences", "strength": 0.8}
   ],
   "decisions": [
-    {"id": "dec_001", "title": "Q1 Product Launch Date", "version": 2, "author": "Sarah Chen", "impact": "high", "is_recent": true, "change": "Extended to accommodate API v3", "reasoning": "Engineering confirmed API v3 is a hard dependency. March 1 confirmed with Marketing alignment."},
-    {"id": "dec_002", "title": "Pricing Strategy Approval", "version": 2, "author": "David Kim", "impact": "high", "is_recent": true, "change": "Approved $99 Pro tier", "reasoning": "Compromise between Finance and Product. Sales briefed on positioning."},
-    {"id": "dec_003", "title": "Feature Prioritization Q2", "version": 1, "author": "Sarah Chen", "impact": "medium", "is_recent": false, "change": "50/50 enterprise features and tech debt", "reasoning": "Balancing Engineering tech debt with Product roadmap."}
+    {"id": "dec_001", "title": "Q1 Product Launch Date", "version": 2, "author": "Sarah Chen", "impact": "high", "is_recent": true, "date": "March 1, 2025", "change": "Extended to accommodate API v3", "reasoning": "Engineering confirmed API v3 is a hard dependency. Launch date March 1, 2025 confirmed with Marketing alignment."},
+    {"id": "dec_002", "title": "Pricing Strategy Approval", "version": 2, "author": "David Kim", "impact": "high", "is_recent": true, "date": "February 20, 2025", "change": "Approved $99 Pro tier", "reasoning": "Compromise between Finance and Product. Sales briefed on positioning. Effective February 20, 2025."},
+    {"id": "dec_003", "title": "Feature Prioritization Q2", "version": 1, "author": "Sarah Chen", "impact": "medium", "is_recent": false, "date": "April 15, 2025", "change": "50/50 enterprise features and tech debt", "reasoning": "Balancing Engineering tech debt with Product roadmap. Review scheduled April 15, 2025."}
   ],
   "conflicts": [
-    {"id": "conf_001", "title": "Pricing Strategy", "team1": "Finance", "team2": "Product", "topic": "Pro tier pricing", "severity": "medium", "status": "resolved", "description": "Finance wanted $119; Product insisted on $99. Resolved with reduced feature set."},
-    {"id": "conf_002", "title": "Feature Prioritization", "team1": "Engineering", "team2": "Product", "topic": "Tech debt vs features", "severity": "high", "status": "ongoing", "description": "Engineering wants 70% tech debt; Product wants enterprise features. 50/50 compromise but tension remains."}
+    {"id": "conf_001", "title": "Pricing Strategy", "team1": "Finance", "team2": "Product", "topic": "Pro tier pricing", "severity": "medium", "status": "resolved", "date": "February 20, 2025", "description": "Finance wanted $119; Product insisted on $99. Resolved with reduced feature set on February 20, 2025."},
+    {"id": "conf_002", "title": "Feature Prioritization", "team1": "Engineering", "team2": "Product", "topic": "Tech debt vs features", "severity": "high", "status": "ongoing", "date": "March 10, 2025", "description": "Engineering wants 70% tech debt; Product wants enterprise features. Next alignment meeting March 10, 2025."}
   ],
   "dependencies": [
-    {"id": "dep_001", "blocker": "API v3 Development", "blocked": "Q1 Product Launch", "type": "hard_dependency", "risk_level": "high", "description": "Launch depends on API v3 by Feb 15th. Document states final deadline is Wednesday."},
-    {"id": "dep_002", "blocker": "Pricing Decision", "blocked": "Sales Comp Plan", "type": "soft_dependency", "risk_level": "low", "description": "Comp plan aligned with new pricing tiers."}
+    {"id": "dep_001", "blocker": "API v3 Development", "blocked": "Q1 Product Launch", "type": "hard_dependency", "risk_level": "high", "date": "February 15, 2025", "description": "Q1 Launch depends on API v3. API v3 deadline is February 15, 2025."},
+    {"id": "dep_002", "blocker": "Pricing Decision", "blocked": "Sales Comp Plan", "type": "soft_dependency", "risk_level": "low", "date": "March 10, 2025", "description": "Comp plan aligned with new pricing tiers. Sales comp plan due March 10, 2025."}
   ],
   "insights": [
     {"type": "risk", "title": "Resource Contention", "description": "Engineering bottleneck for API v3 and Q1 launch", "severity": "high", "affected_nodes": ["marcus_johnson", "kevin_zhang", "q1_launch"]},

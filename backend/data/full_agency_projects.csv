@@ -1,0 +1,18 @@
+record_type,id,type,label,status,team,role,centrality,source,target,strength,title,author,team1,team2,topic,severity,description
+node,nina,person,Nina Patel,active,Creative,Creative Director,0.9,,,,,,,,,,
+node,tom,person,Tom Bradley,active,Accounts,Account Director,0.88,,,,,,,,,,
+node,zara,person,Zara Kim,active,Strategy,Strategy Lead,0.85,,,,,,,,,,
+node,leo,person,Leo Martinez,active,Production,Production Manager,0.82,,,,,,,,,,
+node,client_a,topic,Client A Rebrand,active,,,0.9,,,,,,,,,,
+node,client_b,topic,Client B Campaign,active,,,0.85,,,,,,,,,,
+node,pitch,topic,Q2 New Business,aging,,,0.8,,,,,,,,,,
+edge,,,,,,,nina,client_a,0.95,,,,,,,,
+edge,,,,,,,tom,client_a,0.9,,,,,,,,
+edge,,,,,,,zara,client_b,0.88,,,,,,,,
+edge,,,,,,,leo,client_a,0.85,,,,,,,,
+edge,,,,,,,nina,client_b,0.88,,,,,,,,
+decision,,,,,,,,,,Approve Client A timeline,Tom Bradley,,,,,
+decision,,,,,,,,,,Resource allocation Q2,Nina Patel,,,,,
+conflict,,,,,,,,,,,,,Creative,Accounts,Scope creep,high,Revisions vs fixed scope
+conflict,,,,,,,,,,,,,Production,Creative,Deadline vs quality,medium,Delivery date pushback
+conflict,,,,,,,,,,,,,Strategy,Accounts,Pricing model,medium,Fee structure disagreement
